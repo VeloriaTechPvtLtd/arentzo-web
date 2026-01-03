@@ -1,0 +1,741 @@
+[
+    {
+        "id": "travel_transport",
+        "name": "Travel & Transport",
+        "icon": "Car",
+        "subcategories": [
+            {
+                "name": "Cars",
+                "examples": [
+                    "Economy Car",
+                    "Luxury Car",
+                    "Electric Car",
+                    "Sports Car",
+                    "Convertible",
+                    "Vintage Car",
+                    "Chauffeur Car"
+                ]
+            },
+            {
+                "name": "SUVs",
+                "examples": [
+                    "Compact SUV",
+                    "Mid-size SUV",
+                    "Full-size SUV",
+                    "Luxury SUV",
+                    "Off-road SUV"
+                ]
+            },
+            {
+                "name": "Campers",
+                "examples": [
+                    "Motorhome",
+                    "Campervan",
+                    "Travel Trailer",
+                    "Fifth-Wheel",
+                    "Pop-up Camper",
+                    "Toy Hauler"
+                ]
+            },
+            {
+                "name": "Trucks",
+                "examples": [
+                    "Cargo Truck",
+                    "Box Truck",
+                    "Refrigerated Truck",
+                    "Flatbed Truck",
+                    "Dump Truck",
+                    "Dump Trailer"
+                ]
+            },
+            {
+                "name": "Vans",
+                "examples": [
+                    "Cargo Van",
+                    "Delivery Van",
+                    "Moving Van",
+                    "Passenger Van"
+                ]
+            },
+            {
+                "name": "Buses",
+                "examples": [
+                    "Mini Bus",
+                    "Coach Bus",
+                    "Party Bus",
+                    "School Bus",
+                    "Shuttle Bus"
+                ]
+            },
+            {
+                "name": "Boats",
+                "examples": [
+                    "Speedboat",
+                    "Sailboat",
+                    "Yacht",
+                    "Motor Yacht",
+                    "Fishing Boat"
+                ]
+            },
+            {
+                "name": "Watercraft",
+                "examples": [
+                    "Jet Ski",
+                    "Canoe",
+                    "Kayak",
+                    "Pontoon Boat",
+                    "Paddleboard"
+                ]
+            },
+            {
+                "name": "Off-Road Vehicles",
+                "examples": [
+                    "ATV",
+                    "UTV",
+                    "Dune Buggy",
+                    "Dirt Bike",
+                    "Go-Kart",
+                    "4x4 Vehicle"
+                ]
+            },
+            {
+                "name": "Snow Vehicles",
+                "examples": [
+                    "Snowmobile",
+                    "Snowcat",
+                    "Snow Sled",
+                    "Snowmobile Trailer"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "home_essentials",
+        "name": "Home Essentials",
+        "icon": "Home",
+        "subcategories": [
+            {
+                "name": "Sofas",
+                "examples": [
+                    "Sofa",
+                    "Sectional",
+                    "Recliner",
+                    "Loveseat"
+                ]
+            },
+            {
+                "name": "Chairs",
+                "examples": [
+                    "Armchair",
+                    "Dining Chair",
+                    "Office Chair",
+                    "Rocking Chair"
+                ]
+            },
+            {
+                "name": "Beds",
+                "examples": [
+                    "Single Bed",
+                    "Double Bed",
+                    "Queen Bed",
+                    "King Bed",
+                    "Bunk Bed"
+                ]
+            },
+            {
+                "name": "Tables",
+                "examples": [
+                    "Dining Table",
+                    "Coffee Table",
+                    "End Table",
+                    "Office Desk"
+                ]
+            },
+            {
+                "name": "Storage Furniture",
+                "examples": [
+                    "Wardrobe",
+                    "Dresser",
+                    "Bookshelf",
+                    "TV Stand"
+                ]
+            },
+            {
+                "name": "Large Appliances",
+                "examples": [
+                    "Refrigerator",
+                    "Washing Machine",
+                    "Dryer",
+                    "Air Conditioner",
+                    "Dishwasher"
+                ]
+            },
+            {
+                "name": "Small Appliances",
+                "examples": [
+                    "Microwave",
+                    "Blender",
+                    "Coffee Maker",
+                    "Toaster",
+                    "Vacuum Cleaner"
+                ]
+            },
+            {
+                "name": "Decor & Art",
+                "examples": [
+                    "Artwork",
+                    "Rug",
+                    "Lamp",
+                    "Mirror",
+                    "Curtains"
+                ]
+            },
+            {
+                "name": "DIY Tools",
+                "examples": [
+                    "Drill",
+                    "Saw",
+                    "Ladder",
+                    "Sander",
+                    "Nail Gun"
+                ]
+            },
+            {
+                "name": "Real Estate",
+                "examples": [
+                    "Vacation Home",
+                    "Apartment",
+                    "Condo",
+                    "Parking Space",
+                    "Garage"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "garden_outdoor",
+        "name": "Garden & Outdoor",
+        "icon": "Trees",
+        "subcategories": [
+            {
+                "name": "Outdoor Furniture",
+                "examples": [
+                    "Patio Set",
+                    "Lounge Chair",
+                    "Hammock",
+                    "Garden Bench",
+                    "Gazebo"
+                ]
+            },
+            {
+                "name": "Lawn & Garden Equipment",
+                "examples": [
+                    "Lawn Mower",
+                    "Hedge Trimmer",
+                    "Leaf Blower",
+                    "Chainsaw",
+                    "Wood Chipper"
+                ]
+            },
+            {
+                "name": "Seasonal Gear",
+                "examples": [
+                    "BBQ Grill",
+                    "Hot Tub",
+                    "Pool Cleaner",
+                    "Fire Pit",
+                    "Outdoor Heater"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "tech_gadgets",
+        "name": "Tech & Gadgets",
+        "icon": "Laptop",
+        "subcategories": [
+            {
+                "name": "Computers",
+                "examples": [
+                    "Laptop",
+                    "Desktop",
+                    "Tablet",
+                    "Server",
+                    "Monitor"
+                ]
+            },
+            {
+                "name": "Printers",
+                "examples": [
+                    "Inkjet Printer",
+                    "Laser Printer",
+                    "3D Printer"
+                ]
+            },
+            {
+                "name": "Scanners",
+                "examples": [
+                    "Flatbed Scanner",
+                    "Handheld Scanner",
+                    "Document Scanner"
+                ]
+            },
+            {
+                "name": "Cameras",
+                "examples": [
+                    "DSLR",
+                    "Mirrorless",
+                    "Action Camera",
+                    "Drone"
+                ]
+            },
+            {
+                "name": "Camera Accessories",
+                "examples": [
+                    "Lens",
+                    "Tripod",
+                    "Lighting",
+                    "Stabilizer",
+                    "Backdrop"
+                ]
+            },
+            {
+                "name": "Gaming",
+                "examples": [
+                    "Gaming Console",
+                    "VR Headset",
+                    "Gaming Chair",
+                    "Simulator"
+                ]
+            },
+            {
+                "name": "Audio Equipment",
+                "examples": [
+                    "Microphone",
+                    "Speaker",
+                    "PA System",
+                    "Mixer",
+                    "DJ Equipment"
+                ]
+            },
+            {
+                "name": "Specialized Devices",
+                "examples": [
+                    "GPS",
+                    "Satellite Phone",
+                    "Metal Detector",
+                    "Night Vision"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "events_parties",
+        "name": "Events & Parties",
+        "icon": "PartyPopper",
+        "subcategories": [
+            {
+                "name": "Venues",
+                "examples": [
+                    "Banquet Hall",
+                    "Wedding Venue",
+                    "Conference Room",
+                    "Outdoor Pavilion",
+                    "Rooftop Venue"
+                ]
+            },
+            {
+                "name": "Tents & Structures",
+                "examples": [
+                    "Frame Tent",
+                    "Pole Tent",
+                    "Marquee",
+                    "Canopy",
+                    "Stage"
+                ]
+            },
+            {
+                "name": "Furniture & Decor",
+                "examples": [
+                    "Table",
+                    "Chair",
+                    "Centerpiece",
+                    "String Lights",
+                    "Backdrop"
+                ]
+            },
+            {
+                "name": "Audio-Visual",
+                "examples": [
+                    "LED Screen",
+                    "Sound System",
+                    "Projector",
+                    "Microphone"
+                ]
+            },
+            {
+                "name": "Catering Equipment",
+                "examples": [
+                    "Chafing Dish",
+                    "Coffee Urn",
+                    "Ice Machine",
+                    "Bar Setup",
+                    "Glassware"
+                ]
+            },
+            {
+                "name": "Entertainment",
+                "examples": [
+                    "Photo Booth",
+                    "Bounce House",
+                    "Carnival Game",
+                    "Karaoke Machine"
+                ]
+            },
+            {
+                "name": "Rituals & Ceremonies",
+                "examples": [
+                    "Wedding Arch",
+                    "Unity Candle",
+                    "Aisle Runner",
+                    "Festival Setup"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "work_industry",
+        "name": "Work & Industry",
+        "icon": "Briefcase",
+        "subcategories": [
+            {
+                "name": "Office Equipment",
+                "examples": [
+                    "Desk",
+                    "Chair",
+                    "Filing Cabinet",
+                    "Whiteboard",
+                    "Copier"
+                ]
+            },
+            {
+                "name": "Retail Equipment",
+                "examples": [
+                    "Mannequin",
+                    "POS Terminal",
+                    "Display Case",
+                    "Clothing Rack"
+                ]
+            },
+            {
+                "name": "Film Equipment",
+                "examples": [
+                    "Cinema Camera",
+                    "Lighting Kit",
+                    "Green Screen",
+                    "Dolly",
+                    "Editing Station"
+                ]
+            },
+            {
+                "name": "Construction Machinery",
+                "examples": [
+                    "Excavator",
+                    "Bulldozer",
+                    "Crane",
+                    "Forklift",
+                    "Scissor Lift"
+                ]
+            },
+            {
+                "name": "Industrial Tools",
+                "examples": [
+                    "Welder",
+                    "Air Compressor",
+                    "Generator",
+                    "CNC Machine",
+                    "Power Tool Set"
+                ]
+            },
+            {
+                "name": "Agricultural Machines",
+                "examples": [
+                    "Tractor",
+                    "Harvester",
+                    "Plow",
+                    "Seeder",
+                    "Irrigation Pump"
+                ]
+            },
+            {
+                "name": "Laboratory Gear",
+                "examples": [
+                    "Microscope",
+                    "Centrifuge",
+                    "Autoclave",
+                    "Incubator",
+                    "Fume Hood"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "fashion_accessories",
+        "name": "Fashion & Accessories",
+        "icon": "Shirt",
+        "subcategories": [
+            {
+                "name": "Formal Wear",
+                "examples": [
+                    "Tuxedo",
+                    "Evening Gown",
+                    "Suit",
+                    "Cocktail Dress",
+                    "Dress Shoes"
+                ]
+            },
+            {
+                "name": "Luxury Items",
+                "examples": [
+                    "Designer Bag",
+                    "Luxury Watch",
+                    "Fine Jewelry",
+                    "Designer Sunglasses"
+                ]
+            },
+            {
+                "name": "Costumes",
+                "examples": [
+                    "Halloween Costume",
+                    "Theatrical Costume",
+                    "Mascot Outfit",
+                    "Cosplay Outfit"
+                ]
+            },
+            {
+                "name": "Sportswear",
+                "examples": [
+                    "Diving Suit",
+                    "Cycling Kit",
+                    "Ski Jacket",
+                    "Yoga Outfit",
+                    "Team Jersey"
+                ]
+            },
+            {
+                "name": "Luggage",
+                "examples": [
+                    "Suitcase",
+                    "Backpack",
+                    "Duffel Bag",
+                    "Garment Bag",
+                    "Camera Bag"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "sports_leisure",
+        "name": "Sports & Leisure",
+        "icon": "Dumbbell",
+        "subcategories": [
+            {
+                "name": "Water Sports",
+                "examples": [
+                    "Surfboard",
+                    "Wetsuit",
+                    "Scuba Gear",
+                    "Kayak",
+                    "Paddleboard",
+                    "Fishing Rod"
+                ]
+            },
+            {
+                "name": "Snow Sports",
+                "examples": [
+                    "Skis",
+                    "Snowboard",
+                    "Ice Skates",
+                    "Sled",
+                    "Snowshoes"
+                ]
+            },
+            {
+                "name": "Camping Gear",
+                "examples": [
+                    "Tent",
+                    "Sleeping Bag",
+                    "Camp Chair",
+                    "Cooler",
+                    "Lantern"
+                ]
+            },
+            {
+                "name": "Fitness Gear",
+                "examples": [
+                    "Treadmill",
+                    "Stationary Bike",
+                    "Dumbbells",
+                    "Weight Bench",
+                    "Resistance Bands"
+                ]
+            },
+            {
+                "name": "Musical Instruments",
+                "examples": [
+                    "Piano",
+                    "Guitar",
+                    "Drum Set",
+                    "Violin",
+                    "DJ Console"
+                ]
+            },
+            {
+                "name": "Arts & Crafts",
+                "examples": [
+                    "Pottery Wheel",
+                    "Loom",
+                    "Sewing Machine",
+                    "Kiln",
+                    "Easel"
+                ]
+            },
+            {
+                "name": "Aviation",
+                "examples": [
+                    "Light Aircraft",
+                    "Helicopter",
+                    "Glider",
+                    "Flight Simulator"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "care_wellness",
+        "name": "Care & Wellness",
+        "icon": "HeartPulse",
+        "subcategories": [
+            {
+                "name": "Medical Equipment",
+                "examples": [
+                    "Hospital Bed",
+                    "Oxygen Concentrator",
+                    "CPAP Machine",
+                    "Patient Lift",
+                    "Nebulizer"
+                ]
+            },
+            {
+                "name": "Mobility Aids",
+                "examples": [
+                    "Wheelchair",
+                    "Walker",
+                    "Cane",
+                    "Crutch",
+                    "Motorized Scooter"
+                ]
+            },
+            {
+                "name": "Baby Gear",
+                "examples": [
+                    "Crib",
+                    "Stroller",
+                    "Car Seat",
+                    "High Chair",
+                    "Baby Monitor"
+                ]
+            },
+            {
+                "name": "Special Needs",
+                "examples": [
+                    "Adaptive Chair",
+                    "Communication Device",
+                    "Refactory Toy",
+                    "Transfer Board"
+                ]
+            },
+            {
+                "name": "Books & Media",
+                "examples": [
+                    "Textbook",
+                    "E-Reader",
+                    "Vinyl Record",
+                    "Audiobook",
+                    "Board Game"
+                ]
+            },
+            {
+                "name": "Pet Care",
+                "examples": [
+                    "Pet Carrier",
+                    "Dog Crate",
+                    "Cat Tree",
+                    "Pet Stroller",
+                    "Aquarium"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "storage_space",
+        "name": "Storage & Space",
+        "icon": "Box",
+        "subcategories": [
+            {
+                "name": "Personal Storage",
+                "examples": [
+                    "Storage Unit",
+                    "Storage Pod",
+                    "Moving Box",
+                    "Storage Bin"
+                ]
+            },
+            {
+                "name": "Business Storage",
+                "examples": [
+                    "Warehouse",
+                    "Pallet Rack",
+                    "Industrial Shelf",
+                    "Inventory Cage"
+                ]
+            },
+            {
+                "name": "Climate-Controlled Storage",
+                "examples": [
+                    "Wine Cellar",
+                    "Art Storage",
+                    "Document Vault",
+                    "Climate Locker"
+                ]
+            },
+            {
+                "name": "Vehicle Storage",
+                "examples": [
+                    "Car Garage",
+                    "Boat Slip",
+                    "RV Spot",
+                    "Aircraft Hangar"
+                ]
+            },
+            {
+                "name": "Secure Document Storage",
+                "examples": [
+                    "Vault",
+                    "Safety Deposit Box",
+                    "Archive Cabinet",
+                    "Document Shredding"
+                ]
+            },
+            {
+                "name": "Temporary Storage",
+                "examples": [
+                    "Rental Locker",
+                    "Event Storage",
+                    "Seasonal Storage",
+                    "Renovation Storage"
+                ]
+            }
+        ]
+    }
+]
