@@ -1,5 +1,9 @@
 import React from 'react';
 import { Search, Star, Sparkles } from 'lucide-react';
+import hero1 from '../../../assets/images/hero/hero-1.jpg';
+import hero2 from '../../../assets/images/hero/hero-2.jpg';
+import hero3 from '../../../assets/images/hero/hero-3.jpg';
+import hero4 from '../../../assets/images/hero/hero-4.jpg';
 
 export const HeroSection: React.FC = () => {
     return (
@@ -9,7 +13,7 @@ export const HeroSection: React.FC = () => {
             <div className="absolute bottom-[5%] left-[-5%] w-[350px] h-[350px] bg-[#feb47b]/8 rounded-full blur-[70px] -z-10" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-center">
 
                     {/* Left Content */}
                     <div className="max-w-xl text-left">
@@ -31,7 +35,9 @@ export const HeroSection: React.FC = () => {
                             Your premium platform for all rental needs. From luxury furniture to vehicles, construction equipment to event supplies — experience hassle-free rentals.
                         </p>
 
-                        {/* Search Bar */}
+
+
+                        {/* Search Bar - Moved below buttons or integrated */}
                         <div className="flex items-center gap-3 mb-10 max-w-[420px]">
                             <div className="flex-1 flex items-center gap-3 px-4 bg-white rounded-lg shadow-[0_10px_40px_-10px_rgba(0,0,0,0.12)] border border-gray-100 transition-all hover:shadow-xl focus-within:border-[#ff7e5f]/20">
                                 <Search className="w-5 h-5 text-gray-400" />
@@ -67,54 +73,55 @@ export const HeroSection: React.FC = () => {
                     </div>
 
                     {/* Right Content: 2-Column Overlapping Image Grid */}
-                    <div className="hidden lg:flex gap-3 max-w-[440px] mx-auto">
+                    {/* Right Content: 2-Column Overlapping Image Grid */}
+                    <div className="grid max-md:hidden grid-cols-2 w-full gap-3 max-w-[440px] mx-auto">
                         {/* Left Column */}
-                        <div className="flex flex-col gap-3 flex-1">
+                        <div className="flex flex-col gap-3">
                             {/* Image 1 - Tall (1:1.3 aspect ratio) */}
                             <div
-                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300"
+                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300 bg-gray-100"
                                 style={{ aspectRatio: '1 / 1.3' }}
                             >
                                 <img
-                                    src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=600"
-                                    className="w-full h-full object-cover"
+                                    src={hero1}
+                                    className="w-full h-full object-cover block"
                                     alt="Modern Living Room"
                                 />
                             </div>
                             {/* Image 3 - Short (1:0.8 aspect ratio) */}
                             <div
-                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300"
+                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300 bg-gray-100"
                                 style={{ aspectRatio: '1 / 0.8' }}
                             >
                                 <img
-                                    src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=600"
-                                    className="w-full h-full object-cover"
+                                    src={hero2}
+                                    className="w-full h-full object-cover block"
                                     alt="Luxury Sports Car"
                                 />
                             </div>
                         </div>
 
                         {/* Right Column - offset down to create overlap effect */}
-                        <div className="flex flex-col gap-3 flex-1 mt-12">
+                        <div className="flex flex-col gap-3 mt-12">
                             {/* Image 2 - Short (1:0.8 aspect ratio) */}
                             <div
-                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300"
+                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300 bg-gray-100"
                                 style={{ aspectRatio: '1 / 0.8' }}
                             >
                                 <img
-                                    src="https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&q=80&w=600"
-                                    className="w-full h-full object-cover"
+                                    src={hero3}
+                                    className="w-full h-full object-cover block"
                                     alt="Office Setup"
                                 />
                             </div>
                             {/* Image 4 - Tall (1:1.3 aspect ratio) */}
                             <div
-                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300"
+                                className="w-full rounded-lg overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-300 bg-gray-100"
                                 style={{ aspectRatio: '1 / 1.3' }}
                             >
                                 <img
-                                    src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=600"
-                                    className="w-full h-full object-cover"
+                                    src={hero4}
+                                    className="w-full h-full object-cover block"
                                     alt="Event Space"
                                 />
                             </div>
@@ -122,27 +129,27 @@ export const HeroSection: React.FC = () => {
                     </div>
 
                     {/* Mobile Image Grid - All 4 images */}
-                    <div className="flex gap-3 lg:hidden mt-6">
+                    <div className="flex w-full gap-3 md:hidden mt-6">
                         {/* Left Column */}
                         <div className="flex flex-col gap-3 flex-1">
                             {/* Image 1 - Tall (1:1.3 aspect ratio) */}
                             <div className="rounded-lg overflow-hidden shadow-lg" style={{ aspectRatio: '1 / 1.3' }}>
-                                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover" alt="Interior" />
+                                <img src={hero1} className="w-full h-full object-cover" alt="Interior" />
                             </div>
                             {/* Image 3 - Short (1:0.8 aspect ratio) */}
                             <div className="rounded-lg overflow-hidden shadow-lg" style={{ aspectRatio: '1 / 0.8' }}>
-                                <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover" alt="Car" />
+                                <img src={hero2} className="w-full h-full object-cover" alt="Car" />
                             </div>
                         </div>
                         {/* Right Column - offset down */}
                         <div className="flex flex-col gap-3 flex-1 mt-10">
                             {/* Image 2 - Short (1:0.8 aspect ratio) */}
                             <div className="rounded-lg overflow-hidden shadow-lg" style={{ aspectRatio: '1 / 0.8' }}>
-                                <img src="https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover" alt="Office" />
+                                <img src={hero3} className="w-full h-full object-cover" alt="Office" />
                             </div>
                             {/* Image 4 - Tall (1:1.3 aspect ratio) */}
                             <div className="rounded-lg overflow-hidden shadow-lg" style={{ aspectRatio: '1 / 1.3' }}>
-                                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover" alt="Event" />
+                                <img src={hero4} className="w-full h-full object-cover" alt="Event" />
                             </div>
                         </div>
                     </div>

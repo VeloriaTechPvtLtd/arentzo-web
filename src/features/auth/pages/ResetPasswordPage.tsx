@@ -4,6 +4,16 @@ import { CheckCircle2, Circle } from 'lucide-react';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthInput } from '../components/AuthInput';
 
+const LockIcon = () => (
+    <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center">
+        {/* Same lock icon as forgot password, but static */}
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+    </div>
+);
+
 export const ResetPasswordPage: React.FC = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
@@ -23,16 +33,6 @@ export const ResetPasswordPage: React.FC = () => {
             navigate('/password-reset-success');
         }
     };
-
-    const LockIcon = () => (
-        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center">
-            {/* Same lock icon as forgot password, but static */}
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-        </div>
-    );
 
     return (
         <AuthLayout

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Globe, Sun, Moon, Laptop } from 'lucide-react';
+import { useTheme } from '../../../shared/context/ThemeContext';
+import type { Theme } from '../../../shared/types/theme';
 
 interface LanguageThemeSettingsProps {
     onSave: () => void;
@@ -20,7 +22,7 @@ const themes = [
 
 export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = ({ onSave }) => {
     const [selectedLang, setSelectedLang] = useState('fr');
-    const [selectedTheme, setSelectedTheme] = useState('light');
+    const { theme: selectedTheme, setTheme } = useTheme();
 
     return (
         <div className="settings-view">
@@ -57,7 +59,7 @@ export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = ({ on
                         <button
                             key={theme.id}
                             className={`theme-card ${selectedTheme === theme.id ? 'theme-card--active' : ''}`}
-                            onClick={() => setSelectedTheme(theme.id)}
+                            onClick={() => setTheme(theme.id as Theme)}
                         >
                             <div className={`theme-preview theme-preview--${theme.id}`}>
                                 <div className="theme-preview__bars">
@@ -78,7 +80,7 @@ export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = ({ on
 
                 <button
                     className={`theme-card theme-card--full ${selectedTheme === 'system' ? 'theme-card--active' : ''}`}
-                    onClick={() => setSelectedTheme('system')}
+                    onClick={() => setTheme('system')}
                 >
                     <div className="theme-preview theme-preview--system">
                         <div className="theme-preview__split">

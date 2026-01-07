@@ -5,12 +5,14 @@ interface CheckoutFooterProps {
     address: string;
     totalAmount: number;
     onPlaceOrder: () => void;
+    onAddressChange?: () => void;
 }
 
 export const CheckoutFooter: React.FC<CheckoutFooterProps> = ({
     address,
     totalAmount,
     onPlaceOrder,
+    onAddressChange,
 }) => {
     return (
         <footer className="checkout-footer">
@@ -20,7 +22,7 @@ export const CheckoutFooter: React.FC<CheckoutFooterProps> = ({
                     <span className="delivery-to__label">Delivering to</span>
                     <span className="delivery-to__address-type">Home</span>
                 </div>
-                <button className="delivery-to__change">Change</button>
+                <button className="delivery-to__change" onClick={onAddressChange}>Change</button>
             </div>
             <p className="delivery-to__full-address">{address}</p>
 

@@ -37,7 +37,7 @@
     bottom: 0;
     width: 100%;
     max-width: 420px;
-    background: #ffffff;
+    background: var(--card);
     box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,7 +61,7 @@
     flex-shrink: 0;
     position: relative;
     z-index: 10;
-    background: white;
+    background: var(--card);
     padding: 10px 16px;
     display: flex;
     align-items: center;
@@ -73,18 +73,18 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: white;
-    color: #333;
+    background: var(--card);
+    color: var(--foreground);
 }
 
 .checkout-header__title {
     font-size: 1.1rem;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--foreground);
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -94,7 +94,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    color: #ff4d4f;
+    color: var(--primary);
     font-size: 0.85rem;
     font-weight: 700;
     background: none;
@@ -106,7 +106,7 @@
 .delivery-alert {
     margin: 12px 16px;
     padding: 12px 16px;
-    background: #fff1f0;
+    background: var(--muted);
     border-radius: 16px;
     display: flex;
     gap: 12px;
@@ -116,20 +116,20 @@
 .delivery-alert__title {
     font-size: 0.85rem;
     font-weight: 800;
-    color: #ff4d4f;
+    color: var(--destructive);
     margin-bottom: 2px;
 }
 
 .delivery-alert__text {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--muted-foreground);
     font-weight: 500;
 }
 
 /* Sections */
 .checkout-section {
     margin: 16px;
-    background: white;
+    background: var(--card);
     border-radius: 24px;
     padding: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -148,13 +148,13 @@
     gap: 8px;
     font-weight: 800;
     font-size: 0.95rem;
-    color: #1a1a1a;
+    color: var(--foreground);
     text-transform: capitalize;
 }
 
 .section-header__change,
 .delivery-to__change {
-    color: #ff4d4f;
+    color: var(--primary);
     font-size: 0.85rem;
     font-weight: 700;
     background: none;
@@ -174,7 +174,7 @@
     width: 64px;
     height: 64px;
     border-radius: 12px;
-    background: #f8f9fa;
+    background: var(--muted);
     object-fit: contain;
 }
 
@@ -185,20 +185,20 @@
 .cart-item__name {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--foreground);
     margin-bottom: 4px;
     line-height: 1.3;
 }
 
 .cart-item__unit {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--muted-foreground);
     margin-bottom: 4px;
 }
 
 .cart-item__dates {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--muted-foreground);
     font-weight: 600;
 }
 
@@ -213,7 +213,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #ff4d4f;
+    background: var(--primary);
     color: white;
     padding: 4px 8px;
     border-radius: 10px;
@@ -232,7 +232,7 @@
 
 .price-original {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--muted-foreground);
     text-decoration: line-through;
     margin-right: 4px;
 }
@@ -240,12 +240,12 @@
 .price-current {
     font-size: 0.95rem;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--foreground);
 }
 
 .change-dates {
     font-size: 0.75rem;
-    color: #ff4d4f;
+    color: var(--primary);
     font-weight: 700;
     background: none;
     border: none;
@@ -257,7 +257,7 @@
 /* Pickup Location Card */
 .pickup-location {
     margin-top: 12px;
-    background: #fdf2f0;
+    background: var(--muted);
     padding: 16px;
     border-radius: 20px;
     position: relative;
@@ -273,13 +273,13 @@
 .pickup-location__title {
     font-size: 0.9rem;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--foreground);
 }
 
 .pickup-pin-container {
     width: 32px;
     height: 32px;
-    background: #ff7a5c;
+    background: var(--primary);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -290,13 +290,13 @@
 .pickup-location__name {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--foreground);
     margin-bottom: 4px;
 }
 
 .pickup-location__address {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--muted-foreground);
     line-height: 1.4;
     font-weight: 500;
 }
@@ -308,9 +308,9 @@
     gap: 8px;
     font-size: 0.8rem;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--foreground);
     margin-bottom: 12px;
-    background: #f0f0f0;
+    background: var(--muted);
     padding: 10px 16px;
     border-radius: 12px;
 }
@@ -318,7 +318,7 @@
 /* Coupon */
 .coupon-section {
     margin: 16px;
-    background: white;
+    background: var(--card);
     border-radius: 20px;
     padding: 12px 16px;
     display: flex;
@@ -336,7 +336,7 @@
 .coupon-icon {
     width: 40px;
     height: 40px;
-    background: #ff4d4f;
+    background: var(--primary);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -347,7 +347,7 @@
 .coupon-text__title {
     font-size: 0.85rem;
     font-weight: 800;
-    color: #ff4d4f;
+    color: var(--primary);
 }
 
 .coupon-text__subtitle {
@@ -357,7 +357,7 @@
 }
 
 .coupon-remove {
-    background: #ff4d4f;
+    background: var(--primary);
     color: white;
     border: none;
     padding: 8px 16px;
@@ -370,7 +370,7 @@
     display: block;
     width: fit-content;
     margin: 8px auto 16px;
-    color: #666;
+    color: var(--muted-foreground);
     font-weight: 700;
     font-size: 0.85rem;
     background: none;
@@ -380,7 +380,7 @@
 /* Bill Details */
 .bill-details {
     margin: 16px;
-    background: white;
+    background: var(--card);
     border-radius: 24px;
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -389,7 +389,7 @@
 .bill-details__title {
     font-size: 1rem;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--foreground);
     margin-bottom: 20px;
 }
 
@@ -405,13 +405,13 @@
     align-items: center;
     gap: 8px;
     font-size: 0.85rem;
-    color: #666;
+    color: var(--muted-foreground);
     font-weight: 600;
 }
 
 .badge-saved {
-    background: #fff1f0;
-    color: #ff4d4f;
+    background: var(--muted);
+    color: var(--destructive);
     padding: 2px 8px;
     border-radius: 6px;
     font-size: 0.7rem;
@@ -421,25 +421,25 @@
 .bill-value {
     font-size: 0.9rem;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--foreground);
 }
 
 .price-struck {
-    color: #999;
+    color: var(--muted-foreground);
     text-decoration: line-through;
     margin-right: 8px;
     font-size: 0.8rem;
 }
 
 .bill-value--free {
-    color: #ff4d4f;
+    color: var(--primary);
     font-weight: 800;
 }
 
 .bill-total-row {
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px dashed #eee;
+    border-top: 1px dashed var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -461,14 +461,14 @@
 }
 
 .savings-total {
-    color: #ff4d4f;
+    color: var(--primary);
     font-weight: 800;
     font-size: 0.9rem;
 }
 
 .savings-subtext {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--muted-foreground);
     font-weight: 500;
 }
 
@@ -476,7 +476,7 @@
 .cancellation-policy {
     margin: 16px;
     padding: 20px;
-    background: white;
+    background: var(--card);
     border-radius: 24px;
 }
 
@@ -488,7 +488,7 @@
 
 .cancellation-policy__text {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--muted-foreground);
     line-height: 1.6;
     font-weight: 500;
 }
@@ -500,7 +500,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: white;
+    background: var(--card);
     padding: 16px 16px 30px;
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.08);
     display: flex;
@@ -523,25 +523,25 @@
 
 .delivery-to__label {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--muted-foreground);
     font-weight: 500;
 }
 
 .delivery-to__address-type {
     font-size: 0.85rem;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--foreground);
 }
 
 .delivery-to__full-address {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--muted-foreground);
     margin-left: 24px;
     font-weight: 500;
 }
 
 .payment-bar {
-    background: #ff7a5c;
+    background: var(--primary);
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -586,7 +586,100 @@
 .total-label {
     font-size: 0.75rem;
     font-weight: 600;
-    opacity: 0.9;
+    opacity: 0.8;
+}
+
+/* Address Action Modal */
+.address-action-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1001;
+    /* Above panel */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    /* Bottom sheet style like iOS */
+    padding: 16px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.address-action-modal {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.address-action-modal__content {
+    background: var(--card);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.address-action-modal__btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    background: transparent;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--primary);
+    /* iOS Blue */
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.address-action-modal__btn:active {
+    background-color: var(--muted);
+}
+
+.address-action-modal__btn--delete {
+    color: #ff3b30;
+    /* iOS Red */
+}
+
+.address-action-modal__divider {
+    height: 1px;
+    background-color: var(--border);
+    width: 100%;
+}
+
+.address-action-modal__cancel {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    background: var(--card);
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
 }
 
 .payment-bar__right {
@@ -605,7 +698,208 @@
 
 @media (min-width: 768px) {
     .checkout-panel {
-        border-left: 1px solid #eee;
+        border-left: 1px solid var(--border);
         box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
     }
+}
+
+/* Select Delivery Location Styles */
+.select-location-panel {
+    padding: 20px 16px;
+    background: var(--background);
+    /* Light gray background for contrast */
+    min-height: 100%;
+}
+
+.select-location__title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--foreground);
+}
+
+.location-search {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.location-search__icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--foreground);
+}
+
+.location-search__input {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    /* Smooth rounded corners */
+    font-size: 0.95rem;
+    outline: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    color: var(--foreground);
+    font-weight: 500;
+}
+
+.location-search__input::placeholder {
+    color: var(--muted-foreground);
+}
+
+.location-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.location-action-item {
+    display: flex;
+    align-items: center;
+    background: var(--card);
+    padding: 16px;
+    border-radius: 16px;
+    /* consistent border radius */
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.location-action-item__icon {
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.location-action-item__icon--red {
+    color: var(--primary);
+}
+
+.location-action-item__icon--green {
+    color: #52c41a;
+}
+
+.location-action-item__text {
+    flex: 1;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--foreground);
+}
+
+.location-action-item__text--red {
+    color: var(--primary);
+}
+
+.location-action-item__arrow {
+    color: var(--muted-foreground);
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.saved-addresses__title {
+    font-size: 0.95rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.saved-addresses__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.saved-address-card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.saved-address-card--selected {
+    background: var(--muted);
+    /* Very light pink/red implementation */
+    border-color: var(--primary);
+}
+
+.saved-address-card__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.saved-address-card__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.saved-address-card__icon--selected {
+    background: var(--background);
+    /* Slightly darker pink for icon bg when selected */
+}
+
+.saved-address-card__label {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--foreground);
+}
+
+.saved-address-card__text {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 8px;
+    padding-left: 48px;
+    /* Indent to align with text not icon */
+}
+
+.saved-address-card__phone {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+    padding-left: 48px;
+}
+
+.phone-value {
+    color: var(--foreground);
+    font-weight: 600;
+}
+
+.saved-address-card__actions {
+    display: flex;
+    gap: 12px;
+    padding-left: 48px;
+    margin-top: 12px;
+}
+
+.address-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.address-action-btn:hover {
+    background: var(--muted);
 }

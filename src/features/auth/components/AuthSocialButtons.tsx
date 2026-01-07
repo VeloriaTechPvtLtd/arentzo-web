@@ -30,12 +30,12 @@ export const AuthSocialButtons: React.FC<AuthSocialButtonsProps> = ({
 }) => {
     return (
         <div className="space-y-6">
-            <div className="relative py-2">
+            <div className="relative py-4">
                 <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-[#f2f2f2]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                    <span className="bg-background px-4 font-medium text-muted-foreground/60">{dividerText}</span>
+                    <span className="bg-white px-4 font-semibold text-muted-foreground/50 tracking-wide uppercase text-[11px]">{dividerText}</span>
                 </div>
             </div>
 

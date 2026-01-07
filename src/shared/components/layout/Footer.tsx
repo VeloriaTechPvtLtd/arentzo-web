@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Instagram, Twitter, Facebook, Linkedin, Github } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 
 export const Footer: React.FC = () => {
     const categories = [

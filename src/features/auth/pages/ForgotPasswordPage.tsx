@@ -3,6 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthInput } from '../components/AuthInput';
 
+// LockIcon component defined outside
+const LockIcon = () => (
+    <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center relative">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <div className="absolute inset-0 border-4 border-white/20 rounded-full border-t-white animate-spin-slow"></div>
+    </div>
+);
+
 export const ForgotPasswordPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -20,15 +31,6 @@ export const ForgotPasswordPage: React.FC = () => {
         }, 1500);
     };
 
-    const LockIcon = () => (
-        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center relative">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            <div className="absolute inset-0 border-4 border-white/20 rounded-full border-t-white animate-spin-slow"></div>
-        </div>
-    );
 
     return (
         <AuthLayout

@@ -47,9 +47,9 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({ onSa
                             <div className="settings-item__content">
                                 <span
                                     className="settings-item__icon-wrapper"
-                                    style={{ backgroundColor: item.color ? `${item.color}15` : '#f3f4f6' }}
+                                    style={{ backgroundColor: item.color ? `${item.color}15` : 'var(--muted)' }}
                                 >
-                                    <span style={{ color: item.color || '#374151' }}>
+                                    <span style={{ color: item.color || 'var(--foreground)' }}>
                                         {item.icon}
                                     </span>
                                 </span>
@@ -71,9 +71,9 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({ onSa
                             <div className="settings-item__content">
                                 <span
                                     className="settings-item__icon-wrapper"
-                                    style={{ backgroundColor: item.color ? `${item.color}15` : '#f3f4f6' }}
+                                    style={{ backgroundColor: item.color ? `${item.color}15` : 'var(--muted)' }}
                                 >
-                                    <span style={{ color: item.color || '#374151' }}>
+                                    <span style={{ color: item.color || 'var(--foreground)' }}>
                                         {item.icon}
                                     </span>
                                 </span>
@@ -95,9 +95,9 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({ onSa
                             <div className="settings-item__content">
                                 <span
                                     className="settings-item__icon-wrapper"
-                                    style={{ backgroundColor: item.color ? `${item.color}15` : '#f3f4f6' }}
+                                    style={{ backgroundColor: item.color ? `${item.color}15` : 'var(--muted)' }}
                                 >
-                                    <span style={{ color: item.color || '#374151' }}>
+                                    <span style={{ color: item.color || 'var(--foreground)' }}>
                                         {item.icon}
                                     </span>
                                 </span>

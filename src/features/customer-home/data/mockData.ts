@@ -1,6 +1,6 @@
 // Mock data for Customer Home Feature
 
-import { Product, TopSelection, CategoryTheme } from '../types';
+import type { Product, TopSelection, CategoryTheme } from '../types';
 
 export const categoryThemes: Record<string, CategoryTheme> = {
     all: {

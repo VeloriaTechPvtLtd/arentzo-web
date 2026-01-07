@@ -44,7 +44,7 @@
     width: 100%;
     max-width: 420px;
     height: 100%;
-    background: #ffffff;
+    background: var(--card);
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
@@ -62,14 +62,14 @@
     justify-content: center;
     position: relative;
     padding: 16px 20px;
-    background: linear-gradient(135deg, #ffedea 0%, #ffe0d6 100%);
+    background: var(--muted);
     min-height: 56px;
 }
 
 .profile-panel__title {
     font-size: 18px;
     font-weight: 600;
-    color: #3d3436;
+    color: var(--foreground);
     margin: 0;
 }
 
@@ -81,19 +81,19 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--card);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #3d3436;
+    color: var(--foreground);
     transition: all 0.2s;
 }
 
 .profile-panel__close:hover {
-    background: #ffffff;
-    color: #ff7e5f;
+    background: var(--card);
+    color: var(--primary);
 }
 
 .profile-panel__content {
@@ -108,7 +108,7 @@
 
 .profile-user {
     padding: 20px;
-    background: linear-gradient(135deg, #ffedea 0%, #ffe0d6 100%);
+    background: var(--muted);
 }
 
 .profile-user__card {
@@ -116,12 +116,13 @@
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: #ffffff;
+    background: var(--card);
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
+    border: 1px solid var(--border);
 }
 
 .profile-user__card:hover {
@@ -134,7 +135,7 @@
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    border: 3px solid #ffedea;
+    border: 3px solid var(--muted);
 }
 
 .profile-user__avatar-image {
@@ -146,11 +147,11 @@
 .profile-user__avatar-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--primary-foreground);
     font-size: 24px;
     font-weight: 600;
 }
@@ -164,7 +165,7 @@
     display: inline-block;
     font-size: 11px;
     font-weight: 500;
-    color: #78716c;
+    color: var(--muted-foreground);
     margin-bottom: 4px;
     text-transform: capitalize;
 }
@@ -172,7 +173,7 @@
 .profile-user__name {
     font-size: 17px;
     font-weight: 600;
-    color: #3d3436;
+    color: var(--foreground);
     margin: 0 0 2px;
     white-space: nowrap;
     overflow: hidden;
@@ -181,7 +182,7 @@
 
 .profile-user__email {
     font-size: 13px;
-    color: #78716c;
+    color: var(--muted-foreground);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -196,7 +197,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #ffedea;
+    background: var(--muted);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,7 +217,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: #f8f8f8;
+    background: var(--muted);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
@@ -224,13 +225,13 @@
 }
 
 .profile-user__role-card--active {
-    background: #ffffff;
-    border-color: #ff7e5f;
+    background: var(--card);
+    border-color: var(--primary);
     box-shadow: 0 2px 8px rgba(255, 126, 95, 0.15);
 }
 
 .profile-user__role-card:hover:not(.profile-user__role-card--active) {
-    background: #ffffff;
+    background: var(--card);
 }
 
 .profile-user__role-avatar {
@@ -254,21 +255,21 @@
 
 .profile-user__role-label {
     font-size: 11px;
-    color: #78716c;
+    color: var(--muted-foreground);
     display: block;
 }
 
 .profile-user__role-name {
     font-size: 15px;
     font-weight: 600;
-    color: #3d3436;
+    color: var(--foreground);
     display: block;
     margin-top: 2px;
 }
 
 .profile-user__role-email {
     font-size: 12px;
-    color: #78716c;
+    color: var(--muted-foreground);
     display: block;
     margin-top: 1px;
 }
@@ -277,7 +278,7 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: #ffedea;
+    background: var(--muted);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -305,7 +306,7 @@
     align-items: center;
     gap: 8px;
     padding: 20px 12px;
-    background: #f8f8f8;
+    background: var(--muted);
     border-radius: 16px;
     border: none;
     cursor: pointer;
@@ -317,7 +318,7 @@
 }
 
 .profile-quick-action:hover {
-    background: #ffedea;
+    background: var(--secondary);
     transform: translateY(-2px);
 }
 
@@ -344,11 +345,11 @@
     width: 60px;
     height: 60px;
     border-radius: 16px;
-    background: linear-gradient(135deg, #ff7e5f20 0%, #feb47b20 100%);
+    background: var(--secondary);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ff7e5f;
+    color: var(--primary);
 }
 
 .profile-quick-actions--three .profile-quick-action__icon-placeholder {
@@ -359,7 +360,7 @@
 .profile-quick-action__label {
     font-size: 14px;
     font-weight: 500;
-    color: #3d3436;
+    color: var(--foreground);
     text-align: center;
 }
 
@@ -377,7 +378,7 @@
     gap: 16px;
     padding: 16px;
     margin: 0 20px 20px;
-    background: #f8f8f8;
+    background: var(--muted);
     border-radius: 16px;
     border: none;
     cursor: pointer;
@@ -386,7 +387,7 @@
 }
 
 .profile-provider-cta:hover {
-    background: #ffedea;
+    background: var(--secondary);
 }
 
 .profile-provider-cta__icon {
@@ -408,7 +409,7 @@
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -422,13 +423,13 @@
 .profile-provider-cta__title {
     font-size: 15px;
     font-weight: 600;
-    color: #3d3436;
+    color: var(--foreground);
     margin: 0 0 4px;
 }
 
 .profile-provider-cta__subtitle {
     font-size: 13px;
-    color: #78716c;
+    color: var(--muted-foreground);
     margin: 0;
     line-height: 1.4;
 }
@@ -444,13 +445,13 @@
 .profile-menu-section__title {
     font-size: 15px;
     font-weight: 600;
-    color: #3d3436;
+    color: var(--foreground);
     margin: 0 0 12px;
     padding-left: 4px;
 }
 
 .profile-menu-section__items {
-    background: #f8f8f8;
+    background: var(--muted);
     border-radius: 16px;
     overflow: hidden;
 }
@@ -469,11 +470,11 @@
 }
 
 .profile-menu-item:not(:last-child) {
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid var(--border);
 }
 
 .profile-menu-item:hover {
-    background: rgba(255, 126, 95, 0.08);
+    background: var(--secondary);
 }
 
 .profile-menu-item__icon {
@@ -482,17 +483,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #78716c;
+    color: var(--muted-foreground);
 }
 
 .profile-menu-item__label {
     flex: 1;
     font-size: 15px;
-    color: #3d3436;
+    color: var(--foreground);
 }
 
 .profile-menu-item__arrow {
-    color: #c0c0c0;
+    color: var(--muted-foreground);
 }
 
 /* ==========================================
@@ -511,20 +512,20 @@
 .settings-section__title {
     font-size: 18px;
     font-weight: 700;
-    color: #111827;
+    color: var(--foreground);
     margin: 0 0 4px;
 }
 
 .settings-section__subtitle {
     font-size: 14px;
-    color: #6b7280;
+    color: var(--muted-foreground);
     margin: 0 0 16px;
 }
 
 .settings-list {
-    background: #fdfdfd;
+    background: var(--card);
     border-radius: 16px;
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--border);
     overflow: hidden;
 }
 
@@ -541,11 +542,11 @@
 }
 
 .settings-item--selectable:active {
-    background: #f9fafb;
+    background: var(--muted);
 }
 
 .settings-item:not(:last-child) {
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--border);
 }
 
 .settings-item__content {
@@ -560,7 +561,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ff7e5f;
+    color: var(--primary);
 }
 
 .settings-item__icon-wrapper {
@@ -575,7 +576,7 @@
 .settings-item__label {
     font-size: 16px;
     font-weight: 500;
-    color: #374151;
+    color: var(--foreground);
 }
 
 /* Radio Button Mockup */
@@ -583,7 +584,7 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--input);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -591,7 +592,7 @@
 }
 
 .settings-item--active .settings-radio {
-    border-color: #ff7e5f;
+    border-color: var(--primary);
 }
 
 .settings-radio__circle {
@@ -603,18 +604,18 @@
 }
 
 .settings-radio__circle--checked {
-    background: #ff7e5f;
-    box-shadow: 0 0 0 2px #ffffff inset;
+    background: var(--primary);
+    box-shadow: 0 0 0 2px var(--card) inset;
 }
 
 .settings-radio__circle--small {
     width: 18px;
     height: 18px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--input);
 }
 
 .theme-card--active .settings-radio__circle--small {
-    border-color: #ff7e5f;
+    border-color: var(--primary);
 }
 
 /* Toggle Switch */
@@ -622,7 +623,7 @@
     width: 44px;
     height: 24px;
     border-radius: 12px;
-    background: #e5e7eb;
+    background: var(--input);
     position: relative;
     border: none;
     cursor: pointer;
@@ -630,7 +631,7 @@
 }
 
 .settings-toggle--active {
-    background: #ff7e5f;
+    background: var(--primary);
 }
 
 .settings-toggle__handle {
@@ -658,9 +659,9 @@
 }
 
 .theme-card {
-    background: #ffffff;
+    background: var(--card);
     border-radius: 16px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border);
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -671,7 +672,7 @@
 }
 
 .theme-card--active {
-    border-color: #ff7e5f;
+    border-color: var(--primary);
     box-shadow: 0 4px 12px rgba(255, 126, 95, 0.1);
 }
 
@@ -681,7 +682,7 @@
 
 .theme-preview {
     height: 120px;
-    background: #f9fafb;
+    background: var(--muted);
     border-radius: 12px;
     position: relative;
     overflow: hidden;
@@ -709,7 +710,7 @@
 }
 
 .theme-preview__side--light {
-    background: #f9fafb;
+    background: var(--muted);
 }
 
 .theme-preview__side--dark {
@@ -727,7 +728,7 @@
 
 .theme-preview__bar {
     height: 8px;
-    background: #e5e7eb;
+    background: var(--border);
     border-radius: 4px;
 }
 
@@ -752,13 +753,13 @@
 }
 
 .theme-card__icon {
-    color: #6b7280;
+    color: var(--muted-foreground);
 }
 
 .theme-card__label {
     font-size: 14px;
     font-weight: 600;
-    color: #374151;
+    color: var(--foreground);
 }
 
 /* Settings Footer */
@@ -769,15 +770,15 @@
     width: 100%;
     max-width: 420px;
     padding: 20px;
-    background: #ffffff;
-    border-top: 1px solid #f3f4f6;
+    background: var(--card);
+    border-top: 1px solid var(--border);
     z-index: 20;
 }
 
 .settings-save-btn {
     width: 100%;
     padding: 16px;
-    background: #ff7e5f;
+    background: var(--primary);
     color: white;
     border: none;
     border-radius: 16px;
@@ -811,7 +812,7 @@
 }
 
 .logout-modal {
-    background: #ffffff;
+    background: var(--card);
     border-radius: 24px;
     width: 100%;
     max-width: 340px;
@@ -830,25 +831,25 @@
 .logout-modal__icon-inner {
     width: 64px;
     height: 64px;
-    background: #fff5f5;
+    background: var(--muted);
     color: #ef4444;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #fee2e2;
+    border: 1px solid var(--border);
 }
 
 .logout-modal__title {
     font-size: 20px;
     font-weight: 700;
-    color: #111827;
+    color: var(--foreground);
     margin: 0 0 8px;
 }
 
 .logout-modal__message {
     font-size: 15px;
-    color: #6b7280;
+    color: var(--muted-foreground);
     margin: 0 0 24px;
 }
 
@@ -869,16 +870,16 @@
 }
 
 .logout-modal__btn--cancel {
-    background: #f3f4f6;
-    color: #4b5563;
+    background: var(--muted);
+    color: var(--muted-foreground);
 }
 
 .logout-modal__btn--cancel:hover {
-    background: #e5e7eb;
+    background: var(--border);
 }
 
 .logout-modal__btn--confirm {
-    background: #ff7e5f;
+    background: var(--primary);
     color: white;
 }
 
@@ -920,21 +921,21 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #ffffff;
-    border: 1px solid #f3f4f6;
+    background: var(--card);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #111827;
+    color: var(--foreground);
     transition: all 0.2s;
     z-index: 10;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .profile-panel__back:hover {
-    background: #f9fafb;
-    border-color: #e5e7eb;
+    background: var(--muted);
+    border-color: var(--border);
 }
 
 
@@ -956,7 +957,7 @@
     gap: 10px;
     width: 100%;
     padding: 16px;
-    background: #ffedea;
+    background: var(--muted);
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -964,7 +965,7 @@
 }
 
 .profile-logout__button:hover {
-    background: #ffe0d6;
+    background: var(--secondary);
 }
 
 .profile-logout__icon {
@@ -981,7 +982,7 @@
     text-align: center;
     padding: 16px;
     font-size: 13px;
-    color: #a0a0a0;
+    color: var(--muted-foreground);
 }
 
 /* ==========================================

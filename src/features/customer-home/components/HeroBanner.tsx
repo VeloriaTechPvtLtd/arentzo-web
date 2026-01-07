@@ -1,5 +1,5 @@
 import React from 'react';
-import { CategoryTheme } from '../types';
+import type { CategoryTheme } from '../types';
 
 interface HeroBannerProps {
     theme: CategoryTheme;

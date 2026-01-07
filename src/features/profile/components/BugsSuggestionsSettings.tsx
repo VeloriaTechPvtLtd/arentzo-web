@@ -124,7 +124,7 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                 }
                 .bugs-toggle-bg {
                     display: flex;
-                    background: #f3f4f6;
+                    background: var(--muted);
                     border-radius: 100px;
                     padding: 4px;
                     position: relative;
@@ -137,7 +137,7 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                     background: transparent;
                     font-size: 14px;
                     font-weight: 600;
-                    color: #6b7280;
+                    color: var(--muted-foreground);
                     cursor: pointer;
                     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
                 }
@@ -155,42 +155,42 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                 .form-label {
                     font-size: 15px;
                     font-weight: 700;
-                    color: #111827;
+                    color: var(--foreground);
                 }
                 .form-input {
                     width: 100%;
                     padding: 16px;
-                    background: #ffffff;
-                    border: 1px solid #f3f4f6;
+                    background: var(--card);
+                    border: 1px solid var(--border);
                     border-radius: 16px;
                     font-size: 14px;
-                    color: #111827;
+                    color: var(--foreground);
                     transition: all 0.2s;
                 }
                 .form-input::placeholder {
-                    color: #9ca3af;
+                    color: var(--muted-foreground);
                 }
                 .form-input:focus {
                     outline: none;
                     border-color: #ff7e5f;
-                    background: #ffffff;
+                    background: var(--card);
                     box-shadow: 0 0 0 4px rgba(255, 126, 95, 0.05);
                 }
                 .form-textarea {
                     width: 100%;
                     padding: 16px;
-                    background: #ffffff;
-                    border: 1px solid #f3f4f6;
+                    background: var(--card);
+                    border: 1px solid var(--border);
                     border-radius: 16px;
                     font-size: 14px;
-                    color: #111827;
+                    color: var(--foreground);
                     resize: none;
                     transition: all 0.2s;
                 }
                 .form-textarea:focus {
                     outline: none;
                     border-color: #ff7e5f;
-                    background: #ffffff;
+                    background: var(--card);
                     box-shadow: 0 0 0 4px rgba(255, 126, 95, 0.05);
                 }
                 
@@ -198,7 +198,7 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                     border: 1px dashed #ff7e5f;
                     border-radius: 16px;
                     padding: 32px;
-                    background: #fffafa;
+                    background: var(--muted);
                     cursor: pointer;
                     transition: all 0.2s;
                     display: flex;
@@ -214,7 +214,7 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                     width: 48px;
                     height: 48px;
                     border-radius: 12px;
-                    background: white;
+                    background: var(--card);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -224,16 +224,16 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                 .upload-text {
                     font-size: 14px;
                     font-weight: 600;
-                    color: #4b5563;
+                    color: var(--muted-foreground);
                 }
                 .upload-hint {
                     font-size: 12px;
-                    color: #9ca3af;
+                    color: var(--muted-foreground);
                 }
                 
                 .attachment-preview {
-                    background: white;
-                    border: 1px solid #f3f4f6;
+                    background: var(--card);
+                    border: 1px solid var(--border);
                     border-radius: 16px;
                     padding: 16px;
                     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
@@ -251,22 +251,22 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                 .attachment-name {
                     font-size: 14px;
                     font-weight: 600;
-                    color: #111827;
+                    color: var(--foreground);
                 }
                 .attachment-id {
                     font-size: 11px;
-                    color: #9ca3af;
+                    color: var(--muted-foreground);
                 }
                 .attachment-remove {
                     width: 32px;
                     height: 32px;
                     border-radius: 50%;
-                    background: #f3f4f6;
+                    background: var(--muted);
                     border: none;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    color: #9ca3af;
+                    color: var(--muted-foreground);
                     cursor: pointer;
                 }
             `}} />

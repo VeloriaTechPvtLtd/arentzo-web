@@ -3,18 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { AuthLayout } from '../layouts/AuthLayout';
 
+// SuccessIcon component defined outside
+const SuccessIcon = () => (
+    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center relative">
+        <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+            <Check className="w-10 h-10 text-white stroke-[4px]" />
+        </div>
+        {/* Pulsing effect */}
+        <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping"></div>
+    </div>
+);
+
 export const PasswordResetSuccessPage: React.FC = () => {
     const navigate = useNavigate();
 
-    const SuccessIcon = () => (
-        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center relative">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-                <Check className="w-10 h-10 text-white stroke-[4px]" />
-            </div>
-            {/* Pulsing effect */}
-            <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping"></div>
-        </div>
-    );
 
     return (
         <AuthLayout

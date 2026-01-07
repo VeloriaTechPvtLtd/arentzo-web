@@ -1,6 +1,5 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import carImage from '../../../../assets/uploaded_image_2_1767436507070.png'; // Placeholder image, ideally dynamic
 
 interface TypeFilterProps {
     selected: string[];
@@ -47,11 +46,11 @@ export const TypeFilter: React.FC<TypeFilterProps> = ({ selected, onChange }) =>
                             </div>
                         </div>
 
-                        <div className={`w-6 h-6 rounded border flex items-center justify-center transition-all
+                        <div className={`w - 6 h - 6 rounded border flex items - center justify - center transition - all
                             ${isSelected
                                 ? 'bg-primary border-primary text-primary-foreground'
                                 : 'border-gray-300 group-hover:border-primary'
-                            }`}
+                            } `}
                         >
                             {isSelected && <Check className="w-4 h-4" />}
                         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilterCategory, FilterState } from '../hooks/useFilters';
+import type { FilterCategory, FilterState } from '../hooks/useFilters';
 import { TypeFilter } from './sections/TypeFilter';
 import { RadiusFilter } from './sections/RadiusFilter';
 import { RatingsFilter } from './sections/RatingsFilter';

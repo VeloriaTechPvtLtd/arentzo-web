@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { SearchHeader } from './components/SearchHeader';
 import { RecentSearches } from './components/RecentSearches';
 import { ContinueBrowsing } from './components/ContinueBrowsing';
@@ -118,7 +118,7 @@ export const SearchPage = () => {
         setShowResults(false);
     };
 
-    const handleRecentSearchSelect = (search: typeof MOCK_RECENT_SEARCHES[0]) => {
+    const handleRecentSearchSelect = (search: { label: string }) => {
         setSearchQuery(search.label);
         setShowResults(true);
     };
@@ -128,7 +128,7 @@ export const SearchPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white pb-safe">
+        <div className="min-h-screen pb-safe" style={{ background: 'var(--background)' }}>
             <SearchHeader
                 value={searchQuery}
                 onChange={handleSearch}

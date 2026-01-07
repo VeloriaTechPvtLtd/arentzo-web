@@ -29,6 +29,7 @@ export interface Product {
     isAvailable?: boolean;
     isFavorite?: boolean;
     quantity?: number;
+    features?: string[];
 }
 
 export interface CategoryTheme {

@@ -23,7 +23,7 @@ export const AuthInput: React.FC<AuthInputProps> = ({
     const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
     return (
-        <div className="space-y-2 w-full">
+        <div className="space-y-3 w-full">
             <label className="text-base font-bold text-[#2d2d2d] ml-1">
                 {label}
             </label>

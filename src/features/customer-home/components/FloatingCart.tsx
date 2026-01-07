@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, ShoppingCart } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 interface CartItem {
     id: string;
@@ -31,7 +31,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                         className="floating-cart__item"
                         style={{
                             zIndex: displayItems.length - index,
-                            transform: `translateX(${index * -12}px)`,
+                            marginLeft: index === 0 ? 0 : -20,
                         }}
                     >
                         <img
@@ -45,7 +45,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                     <div
                         className="floating-cart__more"
                         style={{
-                            transform: `translateX(${displayItems.length * -12}px)`,
+                            marginLeft: -20,
                         }}
                     >
                         +{totalItems - 3}

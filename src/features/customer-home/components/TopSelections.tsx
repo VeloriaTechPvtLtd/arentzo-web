@@ -1,5 +1,5 @@
 import React from 'react';
-import { TopSelection } from '../types';
+import type { TopSelection } from '../types';
 
 interface TopSelectionsProps {
     title: string;

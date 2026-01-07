@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navbar } from '../../../shared/components/layout/Navbar';
 import { Footer } from '../../../shared/components/layout/Footer';
-import { Link } from 'react-router-dom';
 
 export const PrivacyPolicyPage: React.FC = () => {
     return (

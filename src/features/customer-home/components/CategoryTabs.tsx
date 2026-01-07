@@ -52,8 +52,6 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
         if (activeTabRef.current && tabsRef.current) {
             const container = tabsRef.current;
             const activeTab = activeTabRef.current;
-            const containerRect = container.getBoundingClientRect();
-            const activeTabRect = activeTab.getBoundingClientRect();
 
             const scrollLeft =
                 activeTab.offsetLeft -

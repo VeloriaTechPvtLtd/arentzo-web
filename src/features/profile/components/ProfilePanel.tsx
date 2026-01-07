@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, ArrowLeft, Edit3, Wallet, CreditCard, Tag, MapPin, Shield, Globe, Bell, Lightbulb, MessageCircle } from 'lucide-react';
 import { ProfileUserInfo } from './ProfileUserInfo';
 import { ProfileQuickActions } from './ProfileQuickActions';
@@ -9,6 +10,11 @@ import { LanguageThemeSettings } from './LanguageThemeSettings';
 import { NotificationSettings } from './NotificationSettings';
 import { BugsSuggestionsSettings } from './BugsSuggestionsSettings';
 import { LogoutModal } from './LogoutModal';
+import { SelectDeliveryLocation } from '../../checkout/components/SelectDeliveryLocation';
+import { LoginForm } from '../../auth/components/LoginForm';
+import { SignupForm } from '../../auth/components/SignupForm';
+import { ForgotPasswordForm } from '../../auth/components/ForgotPasswordForm';
+import { useAuth } from '../../auth/context/AuthContext';
 import type { UserProfile, UserRole, MenuSection, ProfileView } from '../types';
 import { mockUserProfile } from '../data/mockData';
 import '../Profile.css';
@@ -16,11 +22,14 @@ import '../Profile.css';
 interface ProfilePanelProps {
     isOpen: boolean;
     onClose: () => void;
+    onOpenProviderOnboarding?: () => void;
 }
 
-export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => {
-    const [view, setView] = useState<ProfileView>('profile');
-    const [user, setUser] = useState<UserProfile>(mockUserProfile);
+export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onOpenProviderOnboarding }) => {
+    const navigate = useNavigate();
+    const { user: authUser, signOut } = useAuth();
+    const [view, setView] = useState<ProfileView>(authUser ? 'profile' : 'login');
+    const [profileUser, setProfileUser] = useState<UserProfile>(mockUserProfile);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
     // Close on escape key
@@ -54,13 +63,18 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) =
     // Reset view when panel closes
     useEffect(() => {
         if (!isOpen) {
-            const timer = setTimeout(() => setView('profile'), 300);
+            const timer = setTimeout(() => {
+                setView(authUser ? 'profile' : 'login');
+            }, 300);
             return () => clearTimeout(timer);
+        } else {
+            // If panel opens and auth state changed, sync view
+            setView(authUser ? 'profile' : 'login');
         }
-    }, [isOpen]);
+    }, [isOpen, !!authUser]);
 
     const handleRoleSwitch = useCallback((role: UserRole) => {
-        setUser((prev) => ({ ...prev, activeRole: role }));
+        setProfileUser((prev) => ({ ...prev, activeRole: role }));
     }, []);
 
     const handleBackdropClick = useCallback((e: React.MouseEvent) => {
@@ -101,7 +115,7 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) =
                     id: 'addresses',
                     icon: <MapPin size={20} />,
                     label: 'Saved Addresses',
-                    onClick: () => console.log('Addresses'),
+                    onClick: () => setView('saved-addresses'),
                 },
                 {
                     id: 'kyc',
@@ -147,13 +161,17 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) =
         },
     ];
 
-    const isProvider = user.roles.includes('service_provider');
+    const isProvider = profileUser.roles.includes('service_provider');
 
     const renderHeaderTitle = () => {
         switch (view) {
             case 'language-theme': return 'Language & Theme';
             case 'notifications': return 'Notification Preferences';
             case 'bugs': return 'Bugs & Suggestions';
+            case 'saved-addresses': return 'Select Delivery Location';
+            case 'login': return 'Log in';
+            case 'signup': return 'Create an account';
+            case 'forgot-password': return 'Forgot Password';
             default: return 'Profile';
         }
     };
@@ -183,12 +201,12 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) =
                     </button>
                 </header>
 
-                <div className="profile-panel__content">
+                <div className={`profile-panel__content ${view === 'saved-addresses' ? 'profile-panel__content--full' : ''}`} style={view === 'saved-addresses' ? { padding: 0 } : {}}>
                     {view === 'profile' && (
                         <>
                             <ProfileUserInfo
-                                user={user}
-                                showRoleSwitcher={user.roles.length > 1}
+                                user={profileUser}
+                                showRoleSwitcher={profileUser.roles.length > 1}
                                 onRoleSwitch={handleRoleSwitch}
                             />
 
@@ -200,7 +218,14 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) =
 
                             <BecomeProviderCta
                                 isAlreadyProvider={isProvider}
-                                onClick={() => console.log('Become Provider')}
+                                onClick={() => {
+                                    onClose();
+                                    if (onOpenProviderOnboarding) {
+                                        onOpenProviderOnboarding();
+                                    } else {
+                                        navigate('/provider-onboarding');
+                                    }
+                                }}
                             />
 
                             {menuSections.map((section) => (
@@ -222,6 +247,48 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) =
                     {view === 'bugs' && (
                         <BugsSuggestionsSettings onSave={() => setView('profile')} />
                     )}
+
+                    {view === 'saved-addresses' && (
+                        <SelectDeliveryLocation
+                            showActions={false}
+                            onSelect={(addr) => {
+                                console.log('Selected address in profile:', addr);
+                                // Optional: navigate back or show success feedback
+                            }}
+                        />
+                    )}
+
+                    {view === 'login' && (
+                        <LoginForm
+                            onSwitchToSignup={() => setView('signup')}
+                            onSwitchToForgotPassword={() => setView('forgot-password')}
+                            onSuccess={() => {
+                                setView('profile');
+                                // onClose();
+                            }}
+                        />
+                    )}
+
+                    {view === 'signup' && (
+                        <SignupForm
+                            onSwitchToLogin={() => setView('login')}
+                            onSuccess={() => {
+                                setView('profile');
+                                // onClose();
+                            }}
+                        />
+                    )}
+
+                    {view === 'forgot-password' && (
+                        <ForgotPasswordForm
+                            onSwitchToLogin={() => setView('login')}
+                            onSuccess={(email) => {
+                                console.log('OTP sent to', email);
+                                // Stay on login or show OTP view (not implemented in drawer yet)
+                                setView('login');
+                            }}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -229,9 +296,10 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) =
                 isOpen={isLogoutModalOpen}
                 onClose={() => setIsLogoutModalOpen(false)}
                 onConfirm={() => {
-                    console.log('Logging out...');
+                    signOut();
                     setIsLogoutModalOpen(false);
                     onClose();
+                    navigate('/'); // Go back to landing page if on home
                 }}
             />
         </div>

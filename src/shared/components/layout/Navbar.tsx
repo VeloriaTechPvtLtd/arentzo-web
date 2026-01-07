@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Menu, X, User as UserIcon, LogOut, Box } from 'lucide-react';
 import { useAuth } from '../../../features/auth/context/AuthContext';
+import { useDrawer } from '../../context/DrawerContext';
 
 export const Navbar: React.FC = () => {
-    const navigate = useNavigate();
     const { user, signOut } = useAuth();
+    const { openProfile } = useDrawer();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
@@ -31,14 +32,15 @@ export const Navbar: React.FC = () => {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-10">
+                    <div className="flex max-md:hidden items-center space-x-10">
+                        <Link to="/browse" className="text-[#3d3436] font-bold text-[#ff7e5f] hover:underline transition-colors">Browse Marketplace</Link>
                         <Link to="/" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">Programs</Link>
                         <Link to="/#how-it-works" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">How It Works</Link>
                         <Link to="/contact-us" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">Support</Link>
                     </div>
 
                     {/* Auth Actions */}
-                    <div className="hidden md:flex items-center space-x-6">
+                    <div className="flex max-md:hidden items-center space-x-6">
                         {user ? (
                             <div className="flex items-center space-x-4">
                                 <div className="flex items-center space-x-3 px-4 py-2 bg-[#ffedea] rounded-xl border border-[#ff7e5f]/20">
@@ -54,25 +56,25 @@ export const Navbar: React.FC = () => {
                                 </button>
                             </div>
                         ) : (
-                            <>
-                                <button
-                                    onClick={() => navigate('/login')}
-                                    className="text-[#3d3436] font-bold hover:text-[#ff7e5f] transition-colors"
-                                >
-                                    Log In
-                                </button>
-                                <button
-                                    onClick={() => navigate('/signup')}
-                                    className="bg-[#ff7e5f] text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#ff7e5f]/20 hover:scale-105 active:scale-95 transition-all"
-                                >
-                                    Get Started
-                                </button>
-                            </>
+                            <button
+                                onClick={openProfile}
+                                className="bg-[#ff7e5f] text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#ff7e5f]/20 hover:scale-105 active:scale-95 transition-all"
+                            >
+                                Login / Signup
+                            </button>
                         )}
                     </div>
 
-                    {/* Mobile Menu Button */}
-                    <div className="md:hidden flex items-center">
+                    {/* Mobile Actions */}
+                    <div className="md:hidden flex items-center gap-3">
+                        {!user && (
+                            <button
+                                onClick={openProfile}
+                                className="text-sm font-bold text-[#ff7e5f] px-3 py-1.5 bg-[#ffedea] rounded-lg"
+                            >
+                                Login / Signup
+                            </button>
+                        )}
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="p-2 text-[#3d3436] bg-white rounded-xl shadow-sm border border-gray-100"
@@ -109,13 +111,13 @@ export const Navbar: React.FC = () => {
                         ) : (
                             <div className="grid grid-cols-2 gap-4">
                                 <button
-                                    onClick={() => { navigate('/login'); setIsMenuOpen(false); }}
+                                    onClick={() => { openProfile(); setIsMenuOpen(false); }}
                                     className="py-4 text-[#3d3436] font-bold"
                                 >
                                     Log In
                                 </button>
                                 <button
-                                    onClick={() => { navigate('/signup'); setIsMenuOpen(false); }}
+                                    onClick={() => { openProfile(); setIsMenuOpen(false); }}
                                     className="bg-[#ff7e5f] text-white py-4 rounded-2xl font-bold shadow-lg shadow-[#ff7e5f]/20"
                                 >
                                     Sign Up

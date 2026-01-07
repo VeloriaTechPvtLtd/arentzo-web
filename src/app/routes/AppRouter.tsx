@@ -1,7 +1,7 @@
-import { createBrowserRouter, Outlet, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { LandingPage } from '../../features/landing/LandingPage';
 import { CustomerHomePage } from '../../features/customer-home/CustomerHomePage';
+import { ProductDetailsPage } from '../../features/customer-home/ProductDetailsPage';
 import { LoginPage } from '../../features/auth/pages/LoginPage';
 import { SignupPage } from '../../features/auth/pages/SignupPage';
 import { ForgotPasswordPage } from '../../features/auth/pages/ForgotPasswordPage';
@@ -10,6 +10,7 @@ import { ResetPasswordPage } from '../../features/auth/pages/ResetPasswordPage';
 import { PasswordResetSuccessPage } from '../../features/auth/pages/PasswordResetSuccessPage';
 import { SearchResultsPage } from '../../features/search/SearchResultsPage';
 import { FilterTestPage } from '../../features/filters/FilterTestPage';
+import { ProviderOnboardingPage } from '../../features/provider-onboarding';
 
 import { AboutUsPage } from '../../features/info/pages/AboutUsPage';
 import { ContactUsPage } from '../../features/info/pages/ContactUsPage';
@@ -17,15 +18,12 @@ import { PrivacyPolicyPage } from '../../features/info/pages/PrivacyPolicyPage';
 import { TermsConditionsPage } from '../../features/info/pages/TermsConditionsPage';
 import { FaqPage } from '../../features/info/pages/FaqPage';
 
-// Root layout component that handles scroll-to-top on route change
-const RootLayout = () => {
-    const { pathname } = useLocation();
+import { RootLayout } from '../../shared/components/layout/RootLayout';
+import { useAuth } from '../../features/auth/context/AuthContext';
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [pathname]);
-
-    return <Outlet />;
+const HomeRoute = () => {
+    const { user } = useAuth();
+    return user ? <CustomerHomePage /> : <LandingPage />;
 };
 
 export const router = createBrowserRouter([
@@ -34,11 +32,19 @@ export const router = createBrowserRouter([
         children: [
             {
                 path: '/',
-                element: <LandingPage />,
+                element: <HomeRoute />,
+            },
+            {
+                path: '/browse',
+                element: <CustomerHomePage />,
             },
             {
                 path: '/home',
-                element: <CustomerHomePage />,
+                element: <Navigate to="/" replace />,
+            },
+            {
+                path: '/product/:id',
+                element: <ProductDetailsPage />,
             },
             {
                 path: '/about-us',
@@ -91,6 +97,10 @@ export const router = createBrowserRouter([
             {
                 path: '/filters-test',
                 element: <FilterTestPage />,
+            },
+            {
+                path: '/provider-onboarding',
+                element: <ProviderOnboardingPage />,
             },
             {
                 path: '*',

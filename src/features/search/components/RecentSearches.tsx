@@ -18,10 +18,10 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ searches, onSele
     return (
         <div className="px-4 py-4">
             <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold text-gray-900">Recent Searches</h3>
+                <h3 className="text-lg font-semibold text-[var(--foreground)]">Recent Searches</h3>
                 <button
                     onClick={onClear}
-                    className="text-sm font-medium text-orange-500 hover:text-orange-600"
+                    className="text-sm font-medium text-[var(--primary)] hover:opacity-80"
                 >
                     Clear
                 </button>
@@ -32,9 +32,9 @@ export const RecentSearches: React.FC<RecentSearchesProps> = ({ searches, onSele
                     <button
                         key={search.id}
                         onClick={() => onSelect(search)}
-                        className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:border-gray-300 active:bg-gray-50 transition-colors"
+                        className="flex items-center gap-2 px-3 py-2 bg-[var(--card)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] hover:border-[var(--muted-foreground)] active:bg-[var(--muted)] transition-colors"
                     >
-                        {search.icon && <span className="text-gray-400">{search.icon}</span>}
+                        {search.icon && <span className="text-[var(--muted-foreground)]">{search.icon}</span>}
                         <span>{search.label}</span>
                     </button>
                 ))}

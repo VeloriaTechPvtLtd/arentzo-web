@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Search } from 'lucide-react';
-import { useFilters, FilterCategory } from './hooks/useFilters';
+import { useFilters } from './hooks/useFilters';
 import { FilterSidebar } from './components/FilterSidebar';
 import { FilterContent } from './components/FilterContent';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilterCategory } from '../hooks/useFilters';
+import type { FilterCategory } from '../hooks/useFilters';
 
 
 interface FilterSidebarProps {

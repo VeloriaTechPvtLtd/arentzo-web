@@ -2,6 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../layouts/AuthLayout';
 
+// ClockIcon component defined outside
+const ClockIcon = () => (
+    <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center relative">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+    </div>
+);
+
 export const VerifyOtpPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -51,14 +61,6 @@ export const VerifyOtpPage: React.FC = () => {
         }
     };
 
-    const ClockIcon = () => (
-        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center relative">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-        </div>
-    );
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);

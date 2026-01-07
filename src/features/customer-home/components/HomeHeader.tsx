@@ -5,20 +5,24 @@ interface HomeHeaderProps {
     userName?: string;
     location?: string;
     messageCount?: number;
+    isLoggedIn?: boolean;
     onSearchClick?: () => void;
     onProfileClick?: () => void;
     onLocationClick?: () => void;
     onMessageClick?: () => void;
+    onLoginClick?: () => void;
 }
 
 export const HomeHeader: React.FC<HomeHeaderProps> = ({
     userName = 'Hello, User',
     location = 'BEML Layout, Brookefield',
     messageCount = 0,
+    isLoggedIn = true,
     onSearchClick,
     onProfileClick,
     onLocationClick,
     onMessageClick,
+    onLoginClick,
 }) => {
     return (
         <header className="home-header">
@@ -46,18 +50,29 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
             </div>
 
             <div className="home-header__actions">
-                <button
-                    className="home-header__action-btn home-header__action-btn--message"
-                    onClick={onMessageClick}
-                    aria-label="Messages"
-                >
-                    <MessageSquare size={22} />
-                    {messageCount > 0 && (
-                        <span className="home-header__badge">
-                            {messageCount > 99 ? '99+' : messageCount}
-                        </span>
-                    )}
-                </button>
+                {!isLoggedIn && (
+                    <button
+                        className="home-header__login-btn"
+                        onClick={onLoginClick || onProfileClick}
+                    >
+                        Login
+                    </button>
+                )}
+
+                {isLoggedIn && (
+                    <button
+                        className="home-header__action-btn home-header__action-btn--message"
+                        onClick={onMessageClick}
+                        aria-label="Messages"
+                    >
+                        <MessageSquare size={22} />
+                        {messageCount > 0 && (
+                            <span className="home-header__badge">
+                                {messageCount > 99 ? '99+' : messageCount}
+                            </span>
+                        )}
+                    </button>
+                )}
 
                 <button
                     className="home-header__action-btn"
