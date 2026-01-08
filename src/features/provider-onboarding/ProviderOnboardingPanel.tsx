@@ -1,16 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
 import { X, ArrowLeft } from 'lucide-react';
 import { ProviderOnboardingProvider, useProviderOnboarding } from './context/ProviderOnboardingContext';
-import { ProviderTypeSelection } from './components/ProviderTypeSelection';
-import { ProviderBasicInfo } from './components/ProviderBasicInfo';
-import { IdentityVerification } from './components/IdentityVerification';
-import { BankDetails } from './components/BankDetails';
+import { OnboardingStepper } from './components/OnboardingStepper';
 import './ProviderOnboarding.css';
-
-interface ProviderOnboardingPanelProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
 
 const OnboardingContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { currentStep, prevStep } = useProviderOnboarding();
@@ -29,23 +21,23 @@ const OnboardingContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             case 2: return 'Basic Info';
             case 3: return 'Identity Verification';
             case 4: return 'Bank Details';
-            default: return 'Provider Registration';
+            default: return 'Become a Provider';
         }
     };
 
     return (
-        <div className="provider-panel">
-            <header className="provider-panel__header">
+        <div className="profile-panel">
+            <header className="profile-panel__header">
                 <button
-                    className="provider-panel__back"
+                    className="profile-panel__back"
                     onClick={handleBack}
                     aria-label="Back"
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <h2 className="provider-panel__title">{getTitle()}</h2>
+                <h2 className="profile-panel__title">{getTitle()}</h2>
                 <button
-                    className="provider-panel__close"
+                    className="profile-panel__close"
                     onClick={onClose}
                     aria-label="Close"
                 >
@@ -53,17 +45,14 @@ const OnboardingContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 </button>
             </header>
 
-            <div className="provider-panel__content">
-                {currentStep === 1 && <ProviderTypeSelection />}
-                {currentStep === 2 && <ProviderBasicInfo />}
-                {currentStep === 3 && <IdentityVerification />}
-                {currentStep === 4 && <BankDetails />}
+            <div className="profile-panel__content">
+                <OnboardingStepper />
             </div>
         </div>
     );
 };
 
-export const ProviderOnboardingPanel: React.FC<ProviderOnboardingPanelProps> = ({ isOpen, onClose }) => {
+export const ProviderOnboardingPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
     // Lock body scroll when open
     useEffect(() => {
         if (isOpen) {

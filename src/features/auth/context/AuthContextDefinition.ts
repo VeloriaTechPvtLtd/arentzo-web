@@ -12,12 +12,16 @@ export interface Session {
     [key: string]: unknown;
 }
 
+export type UserRole = 'customer' | 'service_provider';
+
 export interface AuthContextType {
     user: User | null;
     session: Session | null;
     loading: boolean;
+    activeRole: UserRole;
     signIn: () => Promise<void>;
     signOut: () => Promise<void>;
+    switchRole: (role: UserRole) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

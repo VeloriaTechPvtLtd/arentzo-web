@@ -10,11 +10,13 @@ import { LanguageThemeSettings } from './LanguageThemeSettings';
 import { NotificationSettings } from './NotificationSettings';
 import { BugsSuggestionsSettings } from './BugsSuggestionsSettings';
 import { LogoutModal } from './LogoutModal';
+import { ProviderProfileContent } from './ProviderProfileContent';
 import { SelectDeliveryLocation } from '../../checkout/components/SelectDeliveryLocation';
 import { LoginForm } from '../../auth/components/LoginForm';
 import { SignupForm } from '../../auth/components/SignupForm';
 import { ForgotPasswordForm } from '../../auth/components/ForgotPasswordForm';
 import { useAuth } from '../../auth/context/AuthContext';
+import { OnboardingStepper, ProviderOnboardingProvider, useProviderOnboarding } from '../../provider-onboarding';
 import type { UserProfile, UserRole, MenuSection, ProfileView } from '../types';
 import { mockUserProfile } from '../data/mockData';
 import '../Profile.css';
@@ -22,15 +24,45 @@ import '../Profile.css';
 interface ProfilePanelProps {
     isOpen: boolean;
     onClose: () => void;
-    onOpenProviderOnboarding?: () => void;
 }
 
-export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onOpenProviderOnboarding }) => {
+const OnboardingHeader: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+    const { currentStep, prevStep } = useProviderOnboarding();
+
+    const handleBack = () => {
+        if (currentStep === 1) {
+            onBack();
+        } else {
+            prevStep();
+        }
+    };
+
+    return (
+        <button
+            className="profile-panel__back"
+            onClick={handleBack}
+            aria-label="Back"
+        >
+            <ArrowLeft size={20} />
+        </button>
+    );
+};
+
+const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
-    const { user: authUser, signOut } = useAuth();
+    const { user: authUser, signOut, activeRole, switchRole } = useAuth();
+    const { currentStep, providerType } = useProviderOnboarding();
     const [view, setView] = useState<ProfileView>(authUser ? 'profile' : 'login');
-    const [profileUser, setProfileUser] = useState<UserProfile>(mockUserProfile);
+    const [profileUser, setProfileUser] = useState<UserProfile>({
+        ...mockUserProfile,
+        activeRole: activeRole || 'customer'
+    });
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+    // Sync local profileUser if global activeRole changes
+    useEffect(() => {
+        setProfileUser(prev => ({ ...prev, activeRole: activeRole || 'customer' }));
+    }, [activeRole]);
 
     // Close on escape key
     useEffect(() => {
@@ -68,14 +100,19 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
             }, 300);
             return () => clearTimeout(timer);
         } else {
-            // If panel opens and auth state changed, sync view
             setView(authUser ? 'profile' : 'login');
         }
     }, [isOpen, !!authUser]);
 
     const handleRoleSwitch = useCallback((role: UserRole) => {
-        setProfileUser((prev) => ({ ...prev, activeRole: role }));
-    }, []);
+        switchRole(role);
+        if (role === 'service_provider') {
+            navigate('/provider-dashboard');
+        } else {
+            navigate('/');
+        }
+        onClose();
+    }, [navigate, onClose, switchRole]);
 
     const handleBackdropClick = useCallback((e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
@@ -172,6 +209,26 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
             case 'login': return 'Log in';
             case 'signup': return 'Create an account';
             case 'forgot-password': return 'Forgot Password';
+            case 'provider-onboarding': {
+                if (providerType === 'business') {
+                    switch (currentStep) {
+                        case 1: return 'Provider Type';
+                        case 2: return 'Business Onboarding';
+                        case 3: return 'Business Profile';
+                        case 4: return 'Address Details';
+                        case 5: return 'Onboarding';
+                        case 6: return 'Onboarding';
+                        default: return 'Become a Provider';
+                    }
+                }
+                switch (currentStep) {
+                    case 1: return 'Provider Type';
+                    case 2: return 'Basic Info';
+                    case 3: return 'Identity Verification';
+                    case 4: return 'Bank Details';
+                    default: return 'Become a Provider';
+                }
+            }
             default: return 'Profile';
         }
     };
@@ -182,7 +239,7 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
 
             <div className="profile-panel">
                 <header className="profile-panel__header">
-                    {view !== 'profile' && (
+                    {(view !== 'profile' && view !== 'provider-onboarding') && (
                         <button
                             className="profile-panel__back"
                             onClick={() => setView('profile')}
@@ -190,6 +247,9 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
                         >
                             <ArrowLeft size={20} />
                         </button>
+                    )}
+                    {view === 'provider-onboarding' && (
+                        <OnboardingHeader onBack={() => setView('profile')} />
                     )}
                     <h2 className="profile-panel__title">{renderHeaderTitle()}</h2>
                     <button
@@ -203,37 +263,58 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
 
                 <div className={`profile-panel__content ${view === 'saved-addresses' ? 'profile-panel__content--full' : ''}`} style={view === 'saved-addresses' ? { padding: 0 } : {}}>
                     {view === 'profile' && (
-                        <>
-                            <ProfileUserInfo
-                                user={profileUser}
-                                showRoleSwitcher={profileUser.roles.length > 1}
-                                onRoleSwitch={handleRoleSwitch}
-                            />
+                        <div className="profile-panel__scroll-content">
+                            <div className="profile-panel__switcher-section">
+                                {profileUser.activeRole === 'service_provider' ? (
+                                    <ProfileUserInfo
+                                        user={profileUser}
+                                        showRoleSwitcher={true}
+                                        onRoleSwitch={handleRoleSwitch}
+                                    />
+                                ) : (
+                                    <ProfileUserInfo
+                                        user={profileUser}
+                                        showRoleSwitcher={isProvider}
+                                        onRoleSwitch={handleRoleSwitch}
+                                    />
+                                )}
+                            </div>
 
-                            <ProfileQuickActions
-                                onNotificationsClick={() => console.log('Notifications')}
-                                onFavouritesClick={() => console.log('Favourites')}
-                                onRentalsClick={() => console.log('My Rentals')}
-                            />
+                            <div className="profile-panel__main-section">
+                                {profileUser.activeRole === 'service_provider' ? (
+                                    <ProviderProfileContent
+                                        user={profileUser}
+                                        onViewChange={(v: ProfileView) => setView(v)}
+                                        onRoleSwitch={handleRoleSwitch}
+                                        onLogout={() => setIsLogoutModalOpen(true)}
+                                        hideSwitcher={true}
+                                    />
+                                ) : (
+                                    <>
+                                        <ProfileQuickActions
+                                            onNotificationsClick={() => setView('notifications')}
+                                            onFavouritesClick={() => console.log('Favourites')}
+                                            onRentalsClick={() => console.log('My Rentals')}
+                                        />
 
-                            <BecomeProviderCta
-                                isAlreadyProvider={isProvider}
-                                onClick={() => {
-                                    onClose();
-                                    if (onOpenProviderOnboarding) {
-                                        onOpenProviderOnboarding();
-                                    } else {
-                                        navigate('/provider-onboarding');
-                                    }
-                                }}
-                            />
+                                        {!isProvider && (
+                                            <BecomeProviderCta
+                                                isAlreadyProvider={isProvider}
+                                                onClick={() => setView('provider-onboarding')}
+                                            />
+                                        )}
 
-                            {menuSections.map((section) => (
-                                <ProfileMenuSection key={section.title} section={section} />
-                            ))}
+                                        <div className="profile-menu-container">
+                                            {menuSections.map((section) => (
+                                                <ProfileMenuSection key={section.title} section={section} />
+                                            ))}
+                                        </div>
 
-                            <ProfileLogout onLogout={() => setIsLogoutModalOpen(true)} />
-                        </>
+                                        <ProfileLogout onLogout={() => setIsLogoutModalOpen(true)} />
+                                    </>
+                                )}
+                            </div>
+                        </div>
                     )}
 
                     {view === 'language-theme' && (
@@ -253,7 +334,6 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
                             showActions={false}
                             onSelect={(addr) => {
                                 console.log('Selected address in profile:', addr);
-                                // Optional: navigate back or show success feedback
                             }}
                         />
                     )}
@@ -262,20 +342,14 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
                         <LoginForm
                             onSwitchToSignup={() => setView('signup')}
                             onSwitchToForgotPassword={() => setView('forgot-password')}
-                            onSuccess={() => {
-                                setView('profile');
-                                // onClose();
-                            }}
+                            onSuccess={() => setView('profile')}
                         />
                     )}
 
                     {view === 'signup' && (
                         <SignupForm
                             onSwitchToLogin={() => setView('login')}
-                            onSuccess={() => {
-                                setView('profile');
-                                // onClose();
-                            }}
+                            onSuccess={() => setView('profile')}
                         />
                     )}
 
@@ -284,10 +358,13 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
                             onSwitchToLogin={() => setView('login')}
                             onSuccess={(email) => {
                                 console.log('OTP sent to', email);
-                                // Stay on login or show OTP view (not implemented in drawer yet)
                                 setView('login');
                             }}
                         />
+                    )}
+
+                    {view === 'provider-onboarding' && (
+                        <OnboardingStepper />
                     )}
                 </div>
             </div>
@@ -299,13 +376,15 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ isOpen, onClose, onO
                     signOut();
                     setIsLogoutModalOpen(false);
                     onClose();
-                    navigate('/'); // Go back to landing page if on home
+                    navigate('/');
                 }}
             />
         </div>
     );
 };
 
-
-
-
+export const ProfilePanel: React.FC<ProfilePanelProps> = (props) => (
+    <ProviderOnboardingProvider>
+        <ProfilePanelInner {...props} />
+    </ProviderOnboardingProvider>
+);

@@ -26,7 +26,7 @@ export interface MenuSection {
     items: MenuItem[];
 }
 
-export type ProfileView = 'profile' | 'language-theme' | 'notifications' | 'bugs' | 'saved-addresses' | 'login' | 'signup' | 'forgot-password';
+export type ProfileView = 'profile' | 'language-theme' | 'notifications' | 'bugs' | 'saved-addresses' | 'login' | 'signup' | 'forgot-password' | 'provider-onboarding';
 
 
 

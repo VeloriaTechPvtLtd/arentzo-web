@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle } from 'lucide-react';
+import { Check } from 'lucide-react';
 import type { UserProfile, UserRole } from '../types';
 
 interface ProfileUserInfoProps {
@@ -33,11 +33,19 @@ export const ProfileUserInfo: React.FC<ProfileUserInfoProps> = ({
             .slice(0, 2);
     };
 
+    // If role switcher is requested and user has both roles
     if (showRoleSwitcher && user.roles.length > 1) {
+        // Sort roles so Service Provider is at top as in mockup
+        const sortedRoles = [...user.roles].sort((a, b) => {
+            if (a === 'service_provider') return -1;
+            if (b === 'service_provider') return 1;
+            return 0;
+        });
+
         return (
             <div className="profile-user">
                 <div className="profile-user__roles">
-                    {user.roles.map((role) => (
+                    {sortedRoles.map((role) => (
                         <button
                             key={role}
                             className={`profile-user__role-card ${user.activeRole === role ? 'profile-user__role-card--active' : ''
@@ -60,9 +68,9 @@ export const ProfileUserInfo: React.FC<ProfileUserInfoProps> = ({
                                 <span className="profile-user__role-name">{user.name}</span>
                                 <span className="profile-user__role-email">{user.email}</span>
                             </div>
-                            {user.isVerified && (
+                            {user.activeRole === role && (
                                 <div className="profile-user__role-check">
-                                    <CheckCircle size={18} />
+                                    <Check size={14} strokeWidth={4} />
                                 </div>
                             )}
                         </button>
@@ -72,6 +80,7 @@ export const ProfileUserInfo: React.FC<ProfileUserInfoProps> = ({
         );
     }
 
+    // Default single role view
     return (
         <div className="profile-user">
             <div className="profile-user__card">
@@ -96,8 +105,8 @@ export const ProfileUserInfo: React.FC<ProfileUserInfoProps> = ({
                     <p className="profile-user__email">{user.email}</p>
                 </div>
                 {user.isVerified && (
-                    <div className="profile-user__verified">
-                        <CheckCircle size={20} />
+                    <div className="profile-user__role-check">
+                        <Check size={14} strokeWidth={4} />
                     </div>
                 )}
             </div>

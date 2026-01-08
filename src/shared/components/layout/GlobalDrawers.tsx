@@ -12,8 +12,7 @@ export const GlobalDrawers: React.FC = () => {
         isCheckoutOpen, closeCheckout,
         isMessagesOpen, closeMessages,
         isProviderOnboardingOpen, closeProviderOnboarding,
-        isLocationModalOpen, closeLocation,
-        openProviderOnboarding
+        isLocationModalOpen, closeLocation
     } = useDrawer();
 
     return (
@@ -21,7 +20,6 @@ export const GlobalDrawers: React.FC = () => {
             <ProfilePanel
                 isOpen={isProfileOpen}
                 onClose={closeProfile}
-                onOpenProviderOnboarding={openProviderOnboarding}
             />
             <CheckoutPanel isOpen={isCheckoutOpen} onClose={closeCheckout} />
             <MessagesPanel isOpen={isMessagesOpen} onClose={closeMessages} />

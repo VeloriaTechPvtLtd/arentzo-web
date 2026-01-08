@@ -25,15 +25,17 @@ export const ProviderTypeSelection: React.FC = () => {
             </div>
 
             <div
-                className={`provider-type-card ${providerType === 'individual' ? 'selected' : ''}`}
+                className="provider-type-card"
                 onClick={() => handleSelect('individual')}
             >
-                <div className="provider-type-icon">
-                    <User size={24} />
-                </div>
-                <div className="provider-type-info">
-                    <h3>Individual Provider</h3>
-                    <p>You are a single service provider.</p>
+                <div className="provider-type-card__header">
+                    <div className="provider-type-icon">
+                        <User size={24} />
+                    </div>
+                    <div className="provider-type-info">
+                        <h3>Individual Provider</h3>
+                        <p>You are a single service provider.</p>
+                    </div>
                 </div>
                 {providerType === 'individual' && (
                     <button className="provider-type-btn" onClick={(e) => {
@@ -46,15 +48,17 @@ export const ProviderTypeSelection: React.FC = () => {
             </div>
 
             <div
-                className={`provider-type-card ${providerType === 'business' ? 'selected' : ''}`}
+                className="provider-type-card"
                 onClick={() => handleSelect('business')}
             >
-                <div className="provider-type-icon">
-                    <Briefcase size={24} />
-                </div>
-                <div className="provider-type-info">
-                    <h3>Business Provider</h3>
-                    <p>You are a business with multiple service providers.</p>
+                <div className="provider-type-card__header">
+                    <div className="provider-type-icon">
+                        <Briefcase size={24} />
+                    </div>
+                    <div className="provider-type-info">
+                        <h3>Business Provider</h3>
+                        <p>You are a business with multiple service providers.</p>
+                    </div>
                 </div>
                 {providerType === 'business' && (
                     <button className="provider-type-btn" onClick={(e) => {
@@ -65,6 +69,10 @@ export const ProviderTypeSelection: React.FC = () => {
                     </button>
                 )}
             </div>
+
+            <p className="provider-onboarding-note">
+                Please Note: Your selection will affect the types of items you can list and verification process you'll need to complete
+            </p>
         </div>
     );
 };

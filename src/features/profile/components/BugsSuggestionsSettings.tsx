@@ -143,7 +143,7 @@ export const BugsSuggestionsSettings: React.FC<BugsSuggestionsSettingsProps> = (
                 }
                 .bugs-toggle-btn--active {
                     background: #ff7e5f;
-                    color: white;
+                    color: var(--primary-foreground);
                     box-shadow: 0 4px 12px rgba(255, 126, 95, 0.2);
                 }
                 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navbar } from '../../shared/components/layout/Navbar';
 import { Footer } from '../../shared/components/layout/Footer';
 import { HeroSection } from './components/HeroSection';
 import { CategorySection } from './components/CategorySection';
@@ -10,8 +9,6 @@ import { CTASection } from './components/CTASection';
 export const LandingPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-[#3d3436] selection:bg-[#ff7e5f]/30">
-            <Navbar />
-
             <main>
                 {/* Hero Section */}
                 <HeroSection />

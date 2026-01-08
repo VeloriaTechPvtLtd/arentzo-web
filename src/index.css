@@ -61,6 +61,7 @@
   --popover: #ffffff;
   --popover-foreground: #3d3436;
   --primary: #ff7e5f;
+  --primary-gradient: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
   --primary-foreground: #ffffff;
   --secondary: #ffedea;
   --secondary-foreground: #b35340;

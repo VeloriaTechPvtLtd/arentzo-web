@@ -11,6 +11,9 @@ import { PasswordResetSuccessPage } from '../../features/auth/pages/PasswordRese
 import { SearchResultsPage } from '../../features/search/SearchResultsPage';
 import { FilterTestPage } from '../../features/filters/FilterTestPage';
 import { ProviderOnboardingPage } from '../../features/provider-onboarding';
+import { ProviderDashboard } from '../../features/provider-dashboard/ProviderDashboard';
+import { ProviderProductsPage } from '../../features/provider-dashboard/components/ProviderProductsPage';
+import { ProviderOffersPage } from '../../features/provider-dashboard/components/ProviderOffersPage';
 
 import { AboutUsPage } from '../../features/info/pages/AboutUsPage';
 import { ContactUsPage } from '../../features/info/pages/ContactUsPage';
@@ -101,6 +104,18 @@ export const router = createBrowserRouter([
             {
                 path: '/provider-onboarding',
                 element: <ProviderOnboardingPage />,
+            },
+            {
+                path: '/provider-dashboard',
+                element: <ProviderDashboard />,
+            },
+            {
+                path: '/provider-dashboard/products',
+                element: <ProviderProductsPage />,
+            },
+            {
+                path: '/provider-dashboard/offers',
+                element: <ProviderOffersPage />,
             },
             {
                 path: '*',
