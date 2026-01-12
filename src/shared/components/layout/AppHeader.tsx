@@ -21,11 +21,12 @@ export const AppHeader: React.FC = () => {
     const {
         openProfile,
         openMessages,
+        openNotifications,
         openLocation
     } = useDrawer();
 
-    const isProvider = activeRole === 'service_provider';
     const isAuthPage = ['/login', '/signup', '/forgot-password', '/verify-otp', '/reset-password'].includes(location.pathname);
+    const isHomePage = location.pathname === '/' || location.pathname === '/home';
 
     if (isAuthPage) return null;
 
@@ -33,19 +34,19 @@ export const AppHeader: React.FC = () => {
     const greeting = user ? `Hello, ${userName}` : 'Welcome to Arentzo';
 
     return (
-        <header className={`app-header ${isProvider ? 'app-header--provider' : ''}`}>
+        <header className={`app-header ${activeRole ? `app-header--${activeRole.replace('_', '-')}` : ''}`}>
             <div className="app-header__container">
                 {/* Left Section: User Info or Logo */}
                 <div className="app-header__left">
-                    {isProvider ? (
-                        <Link to="/provider-dashboard" className="app-header__logo">
+                    {!user || isHomePage ? (
+                        <Link to="/" className="app-header__logo">
                             <div className="app-header__logo-icon">
                                 <Box size={24} />
                             </div>
-                            <span className="app-header__logo-text">Provider Hub</span>
+                            <span className="app-header__logo-text">Arentzo</span>
                         </Link>
                     ) : (
-                        <div className="app-header__user-info" onClick={openLocation}>
+                        <div className="app-header__user-info" onClick={openLocation} title="Change Location">
                             <h2 className="app-header__greeting">{greeting}</h2>
                             <div className="app-header__location">
                                 <MapPin size={14} />
@@ -56,29 +57,32 @@ export const AppHeader: React.FC = () => {
                     )}
                 </div>
 
-                {/* Middle Section: Search or Navigation */}
+                {/* Middle Section: Role-based Navigation or Search */}
                 <div className="app-header__center">
-                    {!isProvider ? (
-                        <>
-                            {location.pathname === '/' || location.pathname === '/home' ? (
-                                <nav className="app-header__nav">
-                                    <Link to="/browse" className="app-header__nav-link">Marketplace</Link>
-                                    <Link to="/#how-it-works" className="app-header__nav-link">How it Works</Link>
-                                    <Link to="/contact-us" className="app-header__nav-link">Support</Link>
-                                </nav>
-                            ) : location.pathname !== '/search' ? (
+                    {user ? (
+                        activeRole === 'service_provider' ? (
+                            <nav className="app-header__nav">
+                                <Link to="/provider-dashboard" className="app-header__nav-link">Dashboard</Link>
+                                <Link to="/provider-dashboard/products" className="app-header__nav-link">Products</Link>
+                                <Link to="/provider-dashboard/offers" className="app-header__nav-link">Offers</Link>
+                                <Link to="/provider-dashboard/orders" className="app-header__nav-link">Orders</Link>
+                            </nav>
+                        ) : (
+                            // Customer/General Signed-in User
+                            location.pathname !== '/search' && (
                                 <button className="app-header__search" onClick={() => navigate('/search')}>
                                     <Search size={18} className="app-header__search-icon" />
                                     <span className="app-header__search-placeholder">Search products...</span>
                                     <Mic size={18} className="app-header__mic-icon" />
                                 </button>
-                            ) : null}
-                        </>
+                            )
+                        )
                     ) : (
+                        // Guest User
                         <nav className="app-header__nav">
-                            <Link to="/provider-dashboard" className={`app-header__nav-link ${location.pathname === '/provider-dashboard' ? 'app-header__nav-link--active' : ''}`}>Dashboard</Link>
-                            <Link to="/provider-dashboard/products" className={`app-header__nav-link ${location.pathname === '/provider-dashboard/products' ? 'app-header__nav-link--active' : ''}`}>Products</Link>
-                            <Link to="/provider-dashboard/offers" className={`app-header__nav-link ${location.pathname === '/provider-dashboard/offers' ? 'app-header__nav-link--active' : ''}`}>Offers</Link>
+                            <Link to="/browse" className="app-header__nav-link">Marketplace</Link>
+                            <Link to="/#how-it-works" className="app-header__nav-link">How it Works</Link>
+                            <Link to="/contact-us" className="app-header__nav-link">Support</Link>
                         </nav>
                     )}
                 </div>
@@ -91,11 +95,9 @@ export const AppHeader: React.FC = () => {
                                 <MessageSquare size={22} />
                                 <span className="app-header__badge">3</span>
                             </button>
-                            {!isProvider && (
-                                <button className="app-header__action-btn" aria-label="Notifications">
-                                    <Bell size={22} />
-                                </button>
-                            )}
+                            <button className="app-header__action-btn" onClick={openNotifications} aria-label="Notifications">
+                                <Bell size={22} />
+                            </button>
                             <button className="app-header__profile-btn" onClick={openProfile} aria-label="Profile">
                                 <div className="app-header__avatar">
                                     <User size={20} />
@@ -104,12 +106,18 @@ export const AppHeader: React.FC = () => {
                             </button>
                         </>
                     ) : (
-                        <button className="app-header__login-btn" onClick={openProfile}>
-                            Login
-                        </button>
+                        <div className="app-header__auth-btns">
+                            <button className="app-header__login-btn" onClick={openProfile}>
+                                Login
+                            </button>
+                            <button className="app-header__signup-btn" onClick={openProfile}>
+                                Sign Up
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
         </header>
     );
 };
+

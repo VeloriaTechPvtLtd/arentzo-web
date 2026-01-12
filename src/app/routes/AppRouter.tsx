@@ -14,6 +14,8 @@ import { ProviderOnboardingPage } from '../../features/provider-onboarding';
 import { ProviderDashboard } from '../../features/provider-dashboard/ProviderDashboard';
 import { ProviderProductsPage } from '../../features/provider-dashboard/components/ProviderProductsPage';
 import { ProviderOffersPage } from '../../features/provider-dashboard/components/ProviderOffersPage';
+import { ProviderOrdersPage } from '../../features/provider-dashboard/components/ProviderOrdersPage';
+import { ProviderLayout } from '../../features/provider-dashboard/layouts/ProviderLayout';
 
 import { AboutUsPage } from '../../features/info/pages/AboutUsPage';
 import { ContactUsPage } from '../../features/info/pages/ContactUsPage';
@@ -106,20 +108,30 @@ export const router = createBrowserRouter([
                 element: <ProviderOnboardingPage />,
             },
             {
-                path: '/provider-dashboard',
+                path: '*',
+                element: <div>404 Not Found</div>,
+            }
+        ]
+    },
+    {
+        path: '/provider-dashboard',
+        element: <ProviderLayout />,
+        children: [
+            {
+                index: true,
                 element: <ProviderDashboard />,
             },
             {
-                path: '/provider-dashboard/products',
+                path: 'products',
                 element: <ProviderProductsPage />,
             },
             {
-                path: '/provider-dashboard/offers',
+                path: 'offers',
                 element: <ProviderOffersPage />,
             },
             {
-                path: '*',
-                element: <div>404 Not Found</div>,
+                path: 'orders',
+                element: <ProviderOrdersPage />,
             }
         ]
     }

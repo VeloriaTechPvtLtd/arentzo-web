@@ -1,85 +1,189 @@
 import React, { useState } from 'react';
 import {
-    Plus,
     Search,
     Filter,
-    MoreHorizontal,
-    Box,
-    ArrowUpRight,
-    ArrowDownRight
+    MoreVertical,
+    Plus,
+    CheckCircle2,
+    AlertCircle,
+    Edit,
+    Trash2,
+    Eye,
+    Star,
+    Box
 } from 'lucide-react';
-import { mockProductAnalytics } from '../mockData';
-import { ProductAnalyticsTable } from './ProductAnalyticsTable';
+import { mockProducts } from '../data/productsMockData';
+import type { Product } from '../data/productsMockData';
 import { AddProductForm } from './AddProductForm';
-import '../ProviderDashboard.css';
+import './ProviderProductsPage.css';
 
 export const ProviderProductsPage: React.FC = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState<string>('all');
     const [showAddProduct, setShowAddProduct] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredProducts = mockProducts.filter(product => {
+        const matchesSearch =
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
+
+        return matchesSearch && matchesStatus;
+    });
+
+    const getStatusIcon = (status: Product['status']) => {
+        switch (status) {
+            case 'active': return <CheckCircle2 size={16} className="text-green-500" />;
+            case 'out_of_stock': return <AlertCircle size={16} className="text-red-500" />;
+            case 'draft': return <Edit size={16} className="text-gray-500" />;
+            case 'archived': return <Box size={16} className="text-orange-500" />;
+            default: return null;
+        }
+    };
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            maximumFractionDigits: 0
+        }).format(amount);
+    };
 
     return (
-        <div className="provider-dashboard">
-            <header className="dashboard-header">
-                <div className="dashboard-title">
-                    <h1>My Products</h1>
-                    <p>Manage your inventory and track performance per item.</p>
+        <div className="provider-products-page">
+            <header className="page-header">
+                <div className="header-title">
+                    <h1>Product Management</h1>
+                    <p>Add, edit and track your inventory performance.</p>
                 </div>
 
-                <button className="quick-btn-main !w-auto !px-8 shadow-primary/20" onClick={() => setShowAddProduct(true)}>
-                    <Plus size={20} /> Add New Product
-                </button>
+                <div className="header-actions">
+                    <div className="header-stats">
+                        <div className="mini-stat">
+                            <span className="stat-label">Total Listings</span>
+                            <span className="stat-value">{mockProducts.length}</span>
+                        </div>
+                        <div className="mini-stat">
+                            <span className="stat-label">Out of Stock</span>
+                            <span className="stat-value text-red-500">
+                                {mockProducts.filter(p => p.status === 'out_of_stock').length}
+                            </span>
+                        </div>
+                    </div>
+                    <button className="create-product-btn" onClick={() => setShowAddProduct(true)}>
+                        <Plus size={20} />
+                        <span>Add Product</span>
+                    </button>
+                </div>
             </header>
 
-            {/* Product Stats Row */}
-            <div className="stats-grid">
-                <div className="stat-card">
-                    <div className="stat-icon"><Box size={24} /></div>
-                    <span className="stat-label">Active Listings</span>
-                    <div className="stat-value-container">
-                        <span className="stat-value">12</span>
-                        <span className="stat-change stat-change--up">
-                            <ArrowUpRight size={14} style={{ marginRight: 4 }} /> 2
-                        </span>
-                    </div>
+            <div className="products-toolbar">
+                <div className="search-wrapper">
+                    <Search size={20} className="search-icon" />
+                    <input
+                        type="text"
+                        placeholder="Search products, ID or category..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
-                <div className="stat-card">
-                    <div className="stat-icon" style={{ background: '#fffbeb', color: '#f59e0b' }}><Box size={24} /></div>
-                    <span className="stat-label">Out of Stock</span>
-                    <div className="stat-value-container">
-                        <span className="stat-value">03</span>
-                        <span className="stat-change stat-change--down">
-                            <ArrowDownRight size={14} style={{ marginRight: 4 }} /> 1
-                        </span>
+
+                <div className="filters-wrapper">
+                    <div className="filter-select">
+                        <Filter size={18} />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="out_of_stock">Out of Stock</option>
+                            <option value="draft">Draft</option>
+                            <option value="archived">Archived</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <main className="bg-card border border-border rounded-[32px] overflow-hidden shadow-sm">
-                <div className="p-8 border-b border-border flex flex-wrap gap-4 justify-between items-center bg-secondary/10">
-                    <div className="flex-1 min-w-[300px] relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                        <input
-                            type="text"
-                            placeholder="Search by name, ID or category..."
-                            className="w-full pl-12 pr-4 py-4 bg-background border border-border rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium text-sm"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex gap-3">
-                        <button className="flex items-center gap-2 bg-card hover:bg-secondary/50 px-6 py-4 rounded-2xl border border-border text-sm font-bold transition-all">
-                            <Filter size={18} /> Filters
-                        </button>
-                        <button className="flex items-center gap-2 bg-card hover:bg-secondary/50 px-6 py-4 rounded-2xl border border-border text-sm font-bold transition-all">
-                            Sort by <MoreHorizontal size={18} />
-                        </button>
-                    </div>
-                </div>
+            <div className="products-table-container">
+                <table className="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product Info</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Stats</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredProducts.map((product) => (
+                            <tr key={product.id}>
+                                <td className="product-cell">
+                                    <div className="product-info">
+                                        <img src={product.image} alt={product.name} />
+                                        <div className="product-text">
+                                            <span className="product-name">{product.name}</span>
+                                            <span className="product-id">{product.id}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span className="category-badge">{product.category}</span>
+                                </td>
+                                <td>
+                                    <div className={`stock-info ${product.stock === 0 ? 'text-red-500 font-bold' : ''}`}>
+                                        {product.stock} units
+                                    </div>
+                                </td>
+                                <td className="price-cell">
+                                    <span className="price-value">{formatCurrency(product.price)}</span>
+                                    <span className="price-period">/ day</span>
+                                </td>
+                                <td className="stats-cell">
+                                    <div className="performance-stats">
+                                        <div className="stat-item" title="Rating">
+                                            <Star size={14} className="text-yellow-400" />
+                                            <span>{product.rating > 0 ? product.rating : 'N/A'}</span>
+                                        </div>
+                                        <div className="stat-item" title="Views">
+                                            <Eye size={14} className="text-blue-400" />
+                                            <span>{product.views}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span className={`status-badge status--${product.status}`}>
+                                        {getStatusIcon(product.status)}
+                                        {product.status.replace('_', ' ').charAt(0).toUpperCase() + product.status.replace('_', ' ').slice(1)}
+                                    </span>
+                                </td>
+                                <td className="actions-cell">
+                                    <button className="icon-btn" title="Edit">
+                                        <Edit size={18} />
+                                    </button>
+                                    <button className="icon-btn text-red-400" title="Delete">
+                                        <Trash2 size={18} />
+                                    </button>
+                                    <button className="icon-btn" title="More">
+                                        <MoreVertical size={18} />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
 
-                <div className="p-4">
-                    <ProductAnalyticsTable products={mockProductAnalytics} />
-                </div>
-            </main>
+                {filteredProducts.length === 0 && (
+                    <div className="no-results">
+                        <p>No products found matching your criteria.</p>
+                    </div>
+                )}
+            </div>
 
             {showAddProduct && (
                 <AddProductForm

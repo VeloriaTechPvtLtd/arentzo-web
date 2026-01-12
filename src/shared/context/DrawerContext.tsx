@@ -4,6 +4,7 @@ interface DrawerContextType {
     isProfileOpen: boolean;
     isCheckoutOpen: boolean;
     isMessagesOpen: boolean;
+    isNotificationsOpen: boolean;
     isLocationModalOpen: boolean;
     isProviderOnboardingOpen: boolean;
     openProfile: () => void;
@@ -12,6 +13,8 @@ interface DrawerContextType {
     closeCheckout: () => void;
     openMessages: () => void;
     closeMessages: () => void;
+    openNotifications: () => void;
+    closeNotifications: () => void;
     openLocation: () => void;
     closeLocation: () => void;
     openProviderOnboarding: () => void;
@@ -24,6 +27,7 @@ export const DrawerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [isMessagesOpen, setIsMessagesOpen] = useState(false);
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
     const [isProviderOnboardingOpen, setIsProviderOnboardingOpen] = useState(false);
 
@@ -35,6 +39,8 @@ export const DrawerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     const openMessages = useCallback(() => setIsMessagesOpen(true), []);
     const closeMessages = useCallback(() => setIsMessagesOpen(false), []);
+    const openNotifications = useCallback(() => setIsNotificationsOpen(true), []);
+    const closeNotifications = useCallback(() => setIsNotificationsOpen(false), []);
 
     const openLocation = useCallback(() => setIsLocationModalOpen(true), []);
     const closeLocation = useCallback(() => setIsLocationModalOpen(false), []);
@@ -51,10 +57,11 @@ export const DrawerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     return (
         <DrawerContext.Provider value={{
-            isProfileOpen, isCheckoutOpen, isMessagesOpen, isLocationModalOpen, isProviderOnboardingOpen,
+            isProfileOpen, isCheckoutOpen, isMessagesOpen, isNotificationsOpen, isLocationModalOpen, isProviderOnboardingOpen,
             openProfile, closeProfile,
             openCheckout, closeCheckout,
             openMessages, closeMessages,
+            openNotifications, closeNotifications,
             openLocation, closeLocation,
             openProviderOnboarding, closeProviderOnboarding
         }}>

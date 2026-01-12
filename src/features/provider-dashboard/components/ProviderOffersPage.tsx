@@ -1,117 +1,183 @@
 import React, { useState } from 'react';
 import {
+    Search,
+    Filter,
+    MoreVertical,
     Plus,
-    Tag,
+    CheckCircle2,
+    Clock,
     Calendar,
-    Trash2,
+    XCircle,
+    Tag,
     Edit,
-    CheckCircle2
+    Trash2
 } from 'lucide-react';
-import { AddOfferForm } from './AddOfferForm';
-import '../ProviderDashboard.css';
-
-interface MockOffer {
-    id: string;
-    title: string;
-    discount: string;
-    status: 'active' | 'scheduled' | 'expired';
-    expiryDate: string;
-    usageCount: number;
-}
-
-const MOCK_OFFERS: MockOffer[] = [
-    { id: '1', title: 'Weekend Special', discount: '20% OFF', status: 'active', expiryDate: '2024-05-30', usageCount: 45 },
-    { id: '2', title: 'Early Bird Rental', discount: '₹500 OFF', status: 'scheduled', expiryDate: '2024-06-15', usageCount: 0 },
-    { id: '3', title: 'Summer Bonanza', discount: '15% OFF', status: 'expired', expiryDate: '2024-04-01', usageCount: 120 },
-];
+import { mockOffers } from '../data/offersMockData';
+import type { Offer } from '../data/offersMockData';
+import './ProviderOffersPage.css';
 
 export const ProviderOffersPage: React.FC = () => {
-    const [showAddOffer, setShowAddOffer] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState<string>('all');
+
+    const filteredOffers = mockOffers.filter(offer => {
+        const matchesSearch =
+            offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            offer.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            offer.id.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesStatus = statusFilter === 'all' || offer.status === statusFilter;
+
+        return matchesSearch && matchesStatus;
+    });
+
+    const getStatusIcon = (status: Offer['status']) => {
+        switch (status) {
+            case 'active': return <CheckCircle2 size={16} className="text-green-500" />;
+            case 'scheduled': return <Clock size={16} className="text-blue-500" />;
+            case 'expired': return <XCircle size={16} className="text-red-500" />;
+            case 'draft': return <Edit size={16} className="text-gray-500" />;
+            default: return null;
+        }
+    };
+
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    };
 
     return (
-        <div className="provider-dashboard">
-            <header className="dashboard-header">
-                <div className="dashboard-title">
+        <div className="provider-offers-page">
+            <header className="page-header">
+                <div className="header-title">
                     <h1>Offers & Promotions</h1>
                     <p>Drive more sales with targeted discounts and limited time deals.</p>
                 </div>
 
-                <button className="quick-btn-main !w-auto !px-10 !bg-emerald-600 shadow-emerald-200" onClick={() => setShowAddOffer(true)}>
-                    <Tag size={20} /> New Promotion
-                </button>
-            </header>
-
-            <main className="grid gap-6">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {MOCK_OFFERS.map((offer) => (
-                        <div key={offer.id} className="bg-card border border-border rounded-[40px] p-8 relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
-                            <div className={`absolute top-6 right-6 px-4 py-1.5 rounded-full text-[10px] font-900 uppercase tracking-widest ${offer.status === 'active' ? 'bg-green-100 text-green-700 border border-green-200' :
-                                    offer.status === 'scheduled' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
-                                        'bg-gray-100 text-gray-700 border border-gray-200'
-                                }`}>
-                                {offer.status}
-                            </div>
-
-                            <div className="mb-8">
-                                <div className="w-16 h-16 rounded-[22px] bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                                    <Tag size={32} />
-                                </div>
-                                <h3 className="text-xl font-900 text-foreground mb-2 group-hover:text-primary transition-colors">{offer.title}</h3>
-                                <div className="flex items-baseline gap-1">
-                                    <p className="text-4xl font-900 text-foreground">{offer.discount}</p>
-                                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Saving</span>
-                                </div>
-                            </div>
-
-                            <div className="bg-secondary/30 rounded-3xl p-5 space-y-3 mb-8">
-                                <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2 text-muted-foreground font-bold">
-                                        <Calendar size={16} />
-                                        <span>Expiry</span>
-                                    </div>
-                                    <span className="font-900 text-foreground">{new Date(offer.expiryDate).toLocaleDateString()}</span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2 text-muted-foreground font-bold">
-                                        <CheckCircle2 size={16} />
-                                        <span>Redemptions</span>
-                                    </div>
-                                    <span className="font-900 text-foreground">{offer.usageCount}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <button className="flex-1 py-4 rounded-2xl bg-foreground text-background font-bold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2">
-                                    <Edit size={16} /> Manage
-                                </button>
-                                <button className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center">
-                                    <Trash2 size={20} />
-                                </button>
-                            </div>
+                <div className="header-actions">
+                    <div className="header-stats">
+                        <div className="mini-stat">
+                            <span className="stat-label">Active Offers</span>
+                            <span className="stat-value text-green-500">
+                                {mockOffers.filter(o => o.status === 'active').length}
+                            </span>
                         </div>
-                    ))}
-
-                    <button
-                        className="border-2 border-dashed border-border rounded-[40px] p-10 flex flex-col items-center justify-center gap-6 text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-500 group"
-                        onClick={() => setShowAddOffer(true)}
-                    >
-                        <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:rotate-90 transition-all duration-500">
-                            <Plus size={40} />
+                        <div className="mini-stat">
+                            <span className="stat-label">Total Used</span>
+                            <span className="stat-value">
+                                {mockOffers.reduce((acc, curr) => acc + curr.usageCount, 0)}
+                            </span>
                         </div>
-                        <div className="text-center">
-                            <span className="block font-900 text-lg mb-1">Create Promotion</span>
-                            <span className="text-sm font-medium opacity-60">Boost your visibility today</span>
-                        </div>
+                    </div>
+                    <button className="create-offer-btn">
+                        <Plus size={20} />
+                        <span>Create Offer</span>
                     </button>
                 </div>
-            </main>
+            </header>
 
-            {showAddOffer && (
-                <AddOfferForm
-                    onClose={() => setShowAddOffer(false)}
-                    onSuccess={() => setShowAddOffer(false)}
-                />
-            )}
+            <div className="offers-toolbar">
+                <div className="search-wrapper">
+                    <Search size={20} className="search-icon" />
+                    <input
+                        type="text"
+                        placeholder="Search by title, code, or ID..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+
+                <div className="filters-wrapper">
+                    <div className="filter-select">
+                        <Filter size={18} />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="expired">Expired</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div className="offers-table-container">
+                <table className="offers-table">
+                    <thead>
+                        <tr>
+                            <th>Promotion</th>
+                            <th>Code</th>
+                            <th>Discount</th>
+                            <th>Validity</th>
+                            <th>Usage</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredOffers.map((offer) => (
+                            <tr key={offer.id}>
+                                <td className="promotion-cell">
+                                    <div className="promotion-info">
+                                        <div className="promo-icon">
+                                            <Tag size={18} />
+                                        </div>
+                                        <div className="promo-text">
+                                            <span className="promo-title">{offer.title}</span>
+                                            <span className="promo-id">{offer.id}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <code className="promo-code">{offer.code}</code>
+                                </td>
+                                <td className="discount-cell">
+                                    <span className="discount-value">
+                                        {offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' OFF'}
+                                    </span>
+                                    <span className="discount-type">{offer.discountType}</span>
+                                </td>
+                                <td className="validity-cell">
+                                    <div className="date-info">
+                                        <Calendar size={14} />
+                                        <span>{formatDate(offer.startDate)} - {formatDate(offer.endDate)}</span>
+                                    </div>
+                                </td>
+                                <td className="usage-count">{offer.usageCount}</td>
+                                <td>
+                                    <span className={`status-badge status--${offer.status}`}>
+                                        {getStatusIcon(offer.status)}
+                                        {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
+                                    </span>
+                                </td>
+                                <td className="actions-cell">
+                                    <button className="icon-btn" title="Edit">
+                                        <Edit size={18} />
+                                    </button>
+                                    <button className="icon-btn text-red-400" title="Delete">
+                                        <Trash2 size={18} />
+                                    </button>
+                                    <button className="icon-btn" title="More">
+                                        <MoreVertical size={18} />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                {filteredOffers.length === 0 && (
+                    <div className="no-results">
+                        <p>No offers found matching your criteria.</p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
