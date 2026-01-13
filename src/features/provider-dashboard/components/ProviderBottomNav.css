@@ -3,45 +3,36 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 70px;
-    background: white;
+    height: 72px;
+    background: var(--card);
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.03);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
     z-index: 1000;
-    padding: 0 10px;
+    padding: 0 calc(var(--spacing) * 4);
     display: none;
-    /* Hidden by default, shown in media query */
+    font-family: var(--font-sans);
 }
 
 .provider-bottom-nav__item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: calc(var(--spacing) * 1);
     text-decoration: none;
-    color: #9ca3af;
-    font-size: 0.7rem;
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
     font-weight: 700;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s;
     flex: 1;
-    padding: 8px 0;
-}
-
-.provider-bottom-nav__item span {
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
 }
 
 .provider-bottom-nav__item.active {
-    color: #ff7e5f;
+    color: var(--primary);
 }
 
-.provider-bottom-nav__item:active {
-    transform: scale(0.9);
-}
 
 @media (max-width: 768px) {
     .provider-bottom-nav {

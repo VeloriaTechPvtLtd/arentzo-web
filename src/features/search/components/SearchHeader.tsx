@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ChevronLeft, X } from 'lucide-react';
+import { Search as SearchIcon, ChevronLeft, X } from 'lucide-react';
+import '../Search.css';
 
 interface SearchHeaderProps {
     value: string;
@@ -10,38 +11,50 @@ interface SearchHeaderProps {
 
 export const SearchHeader: React.FC<SearchHeaderProps> = ({ value, onChange, onClear }) => {
     const navigate = useNavigate();
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 10);
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
-        <div className="flex items-center gap-3 px-4 py-3 bg-[var(--card)] sticky top-0 z-10 transition-colors duration-200">
-            <button
-                onClick={() => navigate(-1)}
-                className="p-1 hover:bg-[var(--muted)] rounded-full transition-colors"
-                aria-label="Go back"
-            >
-                <ChevronLeft className="w-6 h-6 text-[var(--foreground)]" />
-            </button>
+        <header className={`search-header-container ${isScrolled ? 'scrolled' : ''}`}>
+            <div className="search-bar-wrapper">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="icon-button"
+                    aria-label="Go back"
+                >
+                    <ChevronLeft className="w-5 h-5" />
+                </button>
 
-            <div className="flex-1 relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]">
-                    <Search className="w-5 h-5" />
+                <div className="flex-1 flex items-center gap-3">
+                    {!value && <SearchIcon className="w-4 h-4 text-[var(--muted-foreground)] opacity-70" />}
+                    <input
+                        type="text"
+                        value={value}
+                        onChange={(e) => onChange(e.target.value)}
+                        placeholder="Search for furniture, mattresses..."
+                        className="search-input"
+                        autoFocus
+                    />
                 </div>
-                <input
-                    type="text"
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    placeholder="Search for sofa, table, and more"
-                    className="w-full pl-10 pr-10 py-3 bg-[var(--background)] border border-[var(--border)] rounded-xl text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-all shadow-sm"
-                    autoFocus
-                />
+
                 {value && (
                     <button
                         onClick={onClear}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 bg-[var(--muted)] rounded-full hover:bg-[var(--border)] transition-colors"
+                        className="icon-button text-[var(--muted-foreground)] hover:text-[var(--destructive)]"
+                        aria-label="Clear search"
                     >
-                        <X className="w-3.5 h-3.5 text-[var(--muted-foreground)]" />
+                        <X className="w-5 h-5" />
                     </button>
                 )}
             </div>
-        </div>
+        </header>
     );
 };
+

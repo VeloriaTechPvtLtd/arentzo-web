@@ -4,16 +4,9 @@ import {
     Filter,
     MoreVertical,
     Plus,
-    CheckCircle2,
-    Clock,
-    Calendar,
-    XCircle,
-    Tag,
-    Edit,
-    Trash2
+    Tag
 } from 'lucide-react';
 import { mockOffers } from '../data/offersMockData';
-import type { Offer } from '../data/offersMockData';
 import './ProviderOffersPage.css';
 
 export const ProviderOffersPage: React.FC = () => {
@@ -31,16 +24,6 @@ export const ProviderOffersPage: React.FC = () => {
         return matchesSearch && matchesStatus;
     });
 
-    const getStatusIcon = (status: Offer['status']) => {
-        switch (status) {
-            case 'active': return <CheckCircle2 size={16} className="text-green-500" />;
-            case 'scheduled': return <Clock size={16} className="text-blue-500" />;
-            case 'expired': return <XCircle size={16} className="text-red-500" />;
-            case 'draft': return <Edit size={16} className="text-gray-500" />;
-            default: return null;
-        }
-    };
-
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-IN', {
             day: '2-digit',
@@ -51,34 +34,6 @@ export const ProviderOffersPage: React.FC = () => {
 
     return (
         <div className="provider-offers-page">
-            <header className="page-header">
-                <div className="header-title">
-                    <h1>Offers & Promotions</h1>
-                    <p>Drive more sales with targeted discounts and limited time deals.</p>
-                </div>
-
-                <div className="header-actions">
-                    <div className="header-stats">
-                        <div className="mini-stat">
-                            <span className="stat-label">Active Offers</span>
-                            <span className="stat-value text-green-500">
-                                {mockOffers.filter(o => o.status === 'active').length}
-                            </span>
-                        </div>
-                        <div className="mini-stat">
-                            <span className="stat-label">Total Used</span>
-                            <span className="stat-value">
-                                {mockOffers.reduce((acc, curr) => acc + curr.usageCount, 0)}
-                            </span>
-                        </div>
-                    </div>
-                    <button className="create-offer-btn">
-                        <Plus size={20} />
-                        <span>Create Offer</span>
-                    </button>
-                </div>
-            </header>
-
             <div className="offers-toolbar">
                 <div className="search-wrapper">
                     <Search size={20} className="search-icon" />
@@ -104,6 +59,11 @@ export const ProviderOffersPage: React.FC = () => {
                             <option value="draft">Draft</option>
                         </select>
                     </div>
+
+                    <button className="create-offer-btn">
+                        <Plus size={20} />
+                        <span>Create Offer</span>
+                    </button>
                 </div>
             </div>
 
@@ -113,11 +73,10 @@ export const ProviderOffersPage: React.FC = () => {
                         <tr>
                             <th>Promotion</th>
                             <th>Code</th>
-                            <th>Discount</th>
+                            <th>Value</th>
                             <th>Validity</th>
-                            <th>Usage</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th className="actions-cell"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,32 +96,22 @@ export const ProviderOffersPage: React.FC = () => {
                                 <td>
                                     <code className="promo-code">{offer.code}</code>
                                 </td>
-                                <td className="discount-cell">
-                                    <span className="discount-value">
+                                <td>
+                                    <div className="value-box">
                                         {offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' OFF'}
-                                    </span>
-                                    <span className="discount-type">{offer.discountType}</span>
-                                </td>
-                                <td className="validity-cell">
-                                    <div className="date-info">
-                                        <Calendar size={14} />
-                                        <span>{formatDate(offer.startDate)} - {formatDate(offer.endDate)}</span>
                                     </div>
                                 </td>
-                                <td className="usage-count">{offer.usageCount}</td>
+                                <td className="validity-cell">
+                                    <div className="date-badge">
+                                        {formatDate(offer.startDate)} - {formatDate(offer.endDate)}
+                                    </div>
+                                </td>
                                 <td>
-                                    <span className={`status-badge status--${offer.status}`}>
-                                        {getStatusIcon(offer.status)}
+                                    <span className={`status-pill ${offer.status}`}>
                                         {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
                                     </span>
                                 </td>
                                 <td className="actions-cell">
-                                    <button className="icon-btn" title="Edit">
-                                        <Edit size={18} />
-                                    </button>
-                                    <button className="icon-btn text-red-400" title="Delete">
-                                        <Trash2 size={18} />
-                                    </button>
                                     <button className="icon-btn" title="More">
                                         <MoreVertical size={18} />
                                     </button>

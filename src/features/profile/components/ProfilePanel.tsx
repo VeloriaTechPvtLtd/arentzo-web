@@ -10,6 +10,7 @@ import { LanguageThemeSettings } from './LanguageThemeSettings';
 import { NotificationSettings } from './NotificationSettings';
 import { BugsSuggestionsSettings } from './BugsSuggestionsSettings';
 import { LogoutModal } from './LogoutModal';
+import { MyNotifications } from './MyNotifications';
 import { ProviderProfileContent } from './ProviderProfileContent';
 import { SelectDeliveryLocation } from '../../checkout/components/SelectDeliveryLocation';
 import { LoginForm } from '../../auth/components/LoginForm';
@@ -105,14 +106,20 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
     }, [isOpen, !!authUser]);
 
     const handleRoleSwitch = useCallback((role: UserRole) => {
+        if (role === activeRole) return;
+
         switchRole(role);
-        if (role === 'service_provider') {
-            navigate('/provider-dashboard');
-        } else {
-            navigate('/');
-        }
-        onClose();
-    }, [navigate, onClose, switchRole]);
+
+        // Brief delay so user sees the checkmark change before navigating/closing
+        setTimeout(() => {
+            if (role === 'service_provider') {
+                navigate('/provider-dashboard');
+            } else {
+                navigate('/');
+            }
+            onClose();
+        }, 400);
+    }, [activeRole, navigate, onClose, switchRole]);
 
     const handleBackdropClick = useCallback((e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
@@ -175,7 +182,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'notification-prefs',
                     icon: <Bell size={20} />,
                     label: 'Notification Preferences',
-                    onClick: () => setView('notifications'),
+                    onClick: () => setView('notification-settings'),
                 },
             ],
         },
@@ -202,34 +209,35 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
 
     const renderHeaderTitle = () => {
         switch (view) {
-            case 'language-theme': return 'Language & Theme';
-            case 'notifications': return 'Notification Preferences';
-            case 'bugs': return 'Bugs & Suggestions';
-            case 'saved-addresses': return 'Select Delivery Location';
-            case 'login': return 'Log in';
-            case 'signup': return 'Create an account';
-            case 'forgot-password': return 'Forgot Password';
+            case 'language-theme': return 'Appearance';
+            case 'notification-settings': return 'Appearance';
+            case 'notifications': return 'Notifications';
+            case 'bugs': return 'Feedback';
+            case 'saved-addresses': return 'My Addresses';
+            case 'login': return 'Welcome Back';
+            case 'signup': return 'Join Arentzo';
+            case 'forgot-password': return 'Reset Password';
             case 'provider-onboarding': {
                 if (providerType === 'business') {
                     switch (currentStep) {
                         case 1: return 'Provider Type';
-                        case 2: return 'Business Onboarding';
-                        case 3: return 'Business Profile';
-                        case 4: return 'Address Details';
-                        case 5: return 'Onboarding';
-                        case 6: return 'Onboarding';
-                        default: return 'Become a Provider';
+                        case 2: return 'Business Account';
+                        case 3: return 'Business Identity';
+                        case 4: return 'Business Location';
+                        case 5: return 'Summary';
+                        case 6: return 'Complete';
+                        default: return 'Join as Provider';
                     }
                 }
                 switch (currentStep) {
                     case 1: return 'Provider Type';
-                    case 2: return 'Basic Info';
-                    case 3: return 'Identity Verification';
-                    case 4: return 'Bank Details';
-                    default: return 'Become a Provider';
+                    case 2: return 'Basic Information';
+                    case 3: return 'Identity Check';
+                    case 4: return 'Financial Details';
+                    default: return 'Join as Provider';
                 }
             }
-            default: return 'Profile';
+            default: return authUser ? 'My Account' : 'Account';
         }
     };
 
@@ -291,11 +299,19 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                                     />
                                 ) : (
                                     <>
-                                        <ProfileQuickActions
-                                            onNotificationsClick={() => setView('notifications')}
-                                            onFavouritesClick={() => console.log('Favourites')}
-                                            onRentalsClick={() => console.log('My Rentals')}
-                                        />
+                                        <div className="profile-quick-actions-container">
+                                            <ProfileQuickActions
+                                                onNotificationsClick={() => setView('notifications')}
+                                                onFavouritesClick={() => {
+                                                    navigate('/favorites');
+                                                    onClose();
+                                                }}
+                                                onRentalsClick={() => {
+                                                    navigate('/my-rentals');
+                                                    onClose();
+                                                }}
+                                            />
+                                        </div>
 
                                         {!isProvider && (
                                             <BecomeProviderCta
@@ -321,8 +337,12 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                         <LanguageThemeSettings onSave={() => setView('profile')} />
                     )}
 
-                    {view === 'notifications' && (
+                    {view === 'notification-settings' && (
                         <NotificationSettings onSave={() => setView('profile')} />
+                    )}
+
+                    {view === 'notifications' && (
+                        <MyNotifications />
                     )}
 
                     {view === 'bugs' && (

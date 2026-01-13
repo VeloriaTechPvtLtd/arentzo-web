@@ -1,24 +1,27 @@
 .app-header {
-    position: sticky;
-    top: 0;
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
     z-index: 1000;
     background: var(--card);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
     transition: all 0.3s ease;
     height: 72px;
     display: flex;
     align-items: center;
 }
 
+
 .app-header__container {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 calc(var(--spacing) * 6);
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 32px;
+    gap: calc(var(--spacing) * 8);
 }
 
 /* Left Section */
@@ -32,7 +35,7 @@
 }
 
 .app-header__greeting {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--foreground);
     margin: 0;
@@ -42,16 +45,16 @@
 .app-header__location {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 13px;
+    gap: calc(var(--spacing) * 1);
+    font-size: 0.8125rem;
     color: var(--muted-foreground);
-    margin-top: 2px;
+    margin-top: calc(var(--spacing) * 0.5);
 }
 
 .app-header__logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: calc(var(--spacing) * 3);
     text-decoration: none;
     color: var(--foreground);
 }
@@ -61,15 +64,15 @@
     height: 40px;
     background: var(--primary);
     color: white;
-    border-radius: 12px;
+    border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(255, 126, 95, 0.2);
+    box-shadow: var(--shadow-sm);
 }
 
 .app-header__logo-text {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 800;
     letter-spacing: -0.5px;
 }
@@ -84,12 +87,12 @@
 .app-header__nav {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: calc(var(--spacing) * 8);
 }
 
 .app-header__nav-link {
     text-decoration: none;
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 600;
     color: var(--foreground);
     transition: color 0.2s;
@@ -120,8 +123,8 @@
     max-width: 600px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 20px;
+    gap: calc(var(--spacing) * 3);
+    padding: calc(var(--spacing) * 2.5) calc(var(--spacing) * 5);
     background: var(--background);
     border: 1px solid var(--border);
     border-radius: 100px;
@@ -131,13 +134,13 @@
 
 .app-header__search:hover {
     border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 .app-header__search-placeholder {
     flex: 1;
     text-align: left;
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--muted-foreground);
 }
 
@@ -150,13 +153,13 @@
 .app-header__right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: calc(var(--spacing) * 2);
 }
 
 .app-header__action-btn {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: var(--radius);
     border: none;
     background: transparent;
     color: var(--foreground);
@@ -179,7 +182,7 @@
     right: 6px;
     background: var(--primary);
     color: white;
-    font-size: 10px;
+    font-size: 0.625rem;
     font-weight: 800;
     min-width: 16px;
     height: 16px;
@@ -191,7 +194,7 @@
 }
 
 .app-header__profile-btn {
-    margin-left: 8px;
+    margin-left: calc(var(--spacing) * 2);
     background: none;
     border: none;
     padding: 0;
@@ -201,7 +204,7 @@
 .app-header__avatar {
     width: 44px;
     height: 44px;
-    border-radius: 14px;
+    border-radius: var(--radius);
     background: var(--primary-gradient);
     color: white;
     display: flex;
@@ -211,7 +214,7 @@
     transition: all 0.2s;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .app-header__avatar::after {
@@ -239,58 +242,19 @@
     z-index: 2;
 }
 
-.app-header__auth-btns {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.app-header__login-btn {
-    padding: 10px 24px;
-    background: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.app-header__login-btn:hover {
-    background: var(--secondary);
-}
-
-.app-header__signup-btn {
-    padding: 10px 24px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(255, 126, 95, 0.2);
-    transition: all 0.2s;
-}
-
-.app-header__signup-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 126, 95, 0.3);
-}
-
 /* Mobile Adjustments */
 @media (max-width: 768px) {
     .app-header {
         height: auto;
-        padding: 12px 0;
+        min-height: 72px;
+        padding: calc(var(--spacing) * 3) 0;
     }
 
     .app-header__container {
         grid-template-columns: 1fr auto;
         grid-template-rows: auto auto;
-        gap: 16px;
-        padding: 0 16px;
+        gap: calc(var(--spacing) * 4);
+        padding: 0 calc(var(--spacing) * 4);
     }
 
     .app-header__left {
@@ -314,7 +278,6 @@
     .app-header__avatar {
         width: 36px;
         height: 36px;
-        border-radius: 10px;
     }
 
     .app-header__action-btn {
@@ -322,7 +285,6 @@
         height: 36px;
     }
 
-    /* Hide redundant provider nav in top header when bottom nav is present */
     .app-header--service-provider .app-header__nav {
         display: none;
     }

@@ -60,7 +60,7 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
         title: 'Account Preferences',
         items: [
             { id: 'language-theme', icon: <Globe size={20} />, label: 'Language & Theme', onClick: () => onViewChange('language-theme') },
-            { id: 'notification-prefs', icon: <Bell size={20} />, label: 'Notification Preferences', onClick: () => onViewChange('notifications') },
+            { id: 'notification-prefs', icon: <Bell size={20} />, label: 'Notification Preferences', onClick: () => onViewChange('notification-settings') },
         ]
     };
 
@@ -86,61 +86,63 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
             )}
 
             {/* Quick Actions / Stats Row (3 columns) */}
-            <div className="profile-quick-actions profile-quick-actions--three">
-                <button className="profile-quick-action">
-                    <div className="profile-quick-action__icon">
-                        {!listingImgError ? (
-                            <img
-                                src="https://img.icons8.com/3d-fluency/94/box.png"
-                                alt="Active Listing"
-                                onError={() => setListingImgError(true)}
-                            />
-                        ) : (
-                            <div className="profile-quick-action__icon-placeholder">
-                                <Package size={32} />
-                            </div>
-                        )}
-                    </div>
-                    <span className="profile-quick-action__label">Active Listing</span>
-                </button>
+            <div className="profile-quick-actions-container">
+                <div className="profile-quick-actions profile-quick-actions--three">
+                    <button className="profile-quick-action">
+                        <div className="profile-quick-action__icon">
+                            {!listingImgError ? (
+                                <img
+                                    src="https://img.icons8.com/3d-fluency/94/box.png"
+                                    alt="Active Listing"
+                                    onError={() => setListingImgError(true)}
+                                />
+                            ) : (
+                                <div className="profile-quick-action__icon-placeholder">
+                                    <Package size={32} />
+                                </div>
+                            )}
+                        </div>
+                        <span className="profile-quick-action__label">Active Listing</span>
+                    </button>
 
-                <button className="profile-quick-action">
-                    <div className="profile-quick-action__icon">
-                        {!bookingImgError ? (
-                            <img
-                                src="https://img.icons8.com/3d-fluency/94/calendar.png"
-                                alt="Active Bookings"
-                                onError={() => setBookingImgError(true)}
-                            />
-                        ) : (
-                            <div className="profile-quick-action__icon-placeholder">
-                                <Calendar size={32} />
-                            </div>
-                        )}
-                    </div>
-                    <span className="profile-quick-action__label">Active Bookings</span>
-                </button>
+                    <button className="profile-quick-action">
+                        <div className="profile-quick-action__icon">
+                            {!bookingImgError ? (
+                                <img
+                                    src="https://img.icons8.com/3d-fluency/94/calendar.png"
+                                    alt="Active Bookings"
+                                    onError={() => setBookingImgError(true)}
+                                />
+                            ) : (
+                                <div className="profile-quick-action__icon-placeholder">
+                                    <Calendar size={32} />
+                                </div>
+                            )}
+                        </div>
+                        <span className="profile-quick-action__label">Active Bookings</span>
+                    </button>
 
-                <button className="profile-quick-action" onClick={() => onViewChange('notifications')}>
-                    <div className="profile-quick-action__icon">
-                        {!notifImgError ? (
-                            <img
-                                src="https://img.icons8.com/3d-fluency/94/appointment-reminders.png"
-                                alt="Notifications"
-                                onError={() => setNotifImgError(true)}
-                            />
-                        ) : (
-                            <div className="profile-quick-action__icon-placeholder">
-                                <Bell size={32} />
-                            </div>
-                        )}
-                    </div>
-                    <span className="profile-quick-action__label">Notifications</span>
-                </button>
+                    <button className="profile-quick-action" onClick={() => onViewChange('notifications')}>
+                        <div className="profile-quick-action__icon">
+                            {!notifImgError ? (
+                                <img
+                                    src="https://img.icons8.com/3d-fluency/94/appointment-reminders.png"
+                                    alt="Notifications"
+                                    onError={() => setNotifImgError(true)}
+                                />
+                            ) : (
+                                <div className="profile-quick-action__icon-placeholder">
+                                    <Bell size={32} />
+                                </div>
+                            )}
+                        </div>
+                        <span className="profile-quick-action__label">Notifications</span>
+                    </button>
+                </div>
             </div>
 
             {/* Menu Sections */}
-            <div className="provider-profile__sections">
+            <div className="profile-menu-container">
                 <ProfileMenuSection section={rentalOverview} />
                 <ProfileMenuSection section={paymentsOthers} />
                 <ProfileMenuSection section={accountPreferences} />

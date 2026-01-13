@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Eye } from 'lucide-react';
+import { X, Eye, ChevronRight } from 'lucide-react';
 
 interface BrowsingItem {
     id: string;
@@ -17,31 +17,41 @@ export const ContinueBrowsing: React.FC<ContinueBrowsingProps> = ({ items }) => 
     if (items.length === 0) return null;
 
     return (
-        <div className="py-4">
-            <h3 className="px-4 text-lg font-semibold text-gray-900 mb-3">Continue browsing for</h3>
-            <div className="flex overflow-x-auto px-4 gap-4 pb-4 scrollbar-hide">
-                {items.map((item) => (
-                    <div key={item.id} className="min-w-[160px] max-w-[160px] flex-shrink-0 bg-orange-50/50 rounded-xl overflow-hidden border border-orange-100 flex flex-col">
-                        <div className="relative h-32 w-full p-4 flex items-center justify-center">
-                            <img src={item.image} alt={item.title} className="max-h-full max-w-full object-contain mix-blend-multiply" />
+        <section className="search-section">
+            <div className="search-section-header">
+                <h3 className="search-section-title">Continue Browsing</h3>
+                <button className="search-section-action flex items-center gap-1">
+                    View All <ChevronRight size={14} />
+                </button>
+            </div>
 
-                            <div className="absolute top-2 left-2 bg-white/80 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] text-gray-600 flex items-center gap-1 border border-white/50">
-                                <Eye className="w-3 h-3" />
+            <div className="horizontal-scroll-container">
+                {items.map((item) => (
+                    <div key={item.id} className="continue-browsing-card flex-shrink-0">
+                        <div className="relative group overflow-hidden">
+                            <img
+                                src={item.image}
+                                alt={item.title}
+                                className="continue-browsing-img transition-transform duration-500 group-hover:scale-110"
+                            />
+
+                            <div className="absolute top-2 left-2 bg-[var(--card)]/90 backdrop-blur-md px-2 py-0.5 rounded-full text-[9px] font-bold text-[var(--muted-foreground)] flex items-center gap-1 border border-[var(--border)] shadow-sm">
+                                <Eye className="w-2.5 h-2.5" />
                                 <span>{item.viewedAt}</span>
                             </div>
 
-                            <button className="absolute top-2 right-2 p-1 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white text-gray-400 hover:text-gray-600 border border-white/50">
+                            <button className="absolute top-2 right-2 p-1.5 bg-[var(--card)]/90 backdrop-blur-md rounded-full hover:bg-[var(--destructive)] hover:text-white text-[var(--muted-foreground)] border border-[var(--border)] shadow-sm transition-colors active:scale-90">
                                 <X className="w-3 h-3" />
                             </button>
                         </div>
 
-                        <div className="p-3 bg-white border-t border-orange-50 flex-1">
-                            <h4 className="font-semibold text-gray-900 mb-0.5">{item.title}</h4>
-                            <p className="text-xs text-gray-500">{item.productCount} Products</p>
+                        <div className="continue-browsing-content">
+                            <h4 className="font-bold text-[var(--foreground)] text-sm mb-0.5 truncate">{item.title}</h4>
+                            <p className="text-[10px] text-[var(--muted-foreground)] font-medium uppercase tracking-wider">{item.productCount} Products</p>
                         </div>
                     </div>
                 ))}
             </div>
-        </div>
+        </section>
     );
 };

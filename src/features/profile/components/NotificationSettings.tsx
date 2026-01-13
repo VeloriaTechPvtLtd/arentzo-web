@@ -21,7 +21,7 @@ const notificationItems: NotificationItem[] = [
     { id: 'rentals', label: 'Rental Reminders', icon: <Calendar size={20} /> },
 ];
 
-export const NotificationSettings: React.FC<NotificationSettingsProps> = ({ onSave }) => {
+export const NotificationSettings: React.FC<NotificationSettingsProps> = () => {
     const [preferences, setPreferences] = useState({
         push: false,
         email: false,
@@ -115,11 +115,6 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({ onSa
 
             </div>
 
-            <div className="settings-footer">
-                <button className="settings-save-btn" onClick={onSave}>
-                    Save Preferences
-                </button>
-            </div>
         </div>
     );
 };

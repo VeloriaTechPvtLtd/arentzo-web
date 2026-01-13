@@ -4,7 +4,6 @@ import { ProfilePanel } from '../../../features/profile';
 import { CheckoutPanel } from '../../../features/checkout';
 import { MessagesPanel } from '../../../features/messages';
 import { ProviderOnboardingPanel } from '../../../features/provider-onboarding';
-import { NotificationsPanel } from './NotificationsPanel';
 import { SelectDeliveryLocation, type AddressItem } from '../../../features/checkout/components/SelectDeliveryLocation';
 
 export const GlobalDrawers: React.FC = () => {
@@ -12,7 +11,6 @@ export const GlobalDrawers: React.FC = () => {
         isProfileOpen, closeProfile,
         isCheckoutOpen, closeCheckout,
         isMessagesOpen, closeMessages,
-        isNotificationsOpen, closeNotifications,
         isProviderOnboardingOpen, closeProviderOnboarding,
         isLocationModalOpen, closeLocation
     } = useDrawer();
@@ -25,7 +23,6 @@ export const GlobalDrawers: React.FC = () => {
             />
             <CheckoutPanel isOpen={isCheckoutOpen} onClose={closeCheckout} />
             <MessagesPanel isOpen={isMessagesOpen} onClose={closeMessages} />
-            <NotificationsPanel isOpen={isNotificationsOpen} onClose={closeNotifications} />
             <ProviderOnboardingPanel isOpen={isProviderOnboardingOpen} onClose={closeProviderOnboarding} />
 
             {/* Location Selection Overlay */}

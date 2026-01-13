@@ -9,6 +9,7 @@ import { VerifyOtpPage } from '../../features/auth/pages/VerifyOtpPage';
 import { ResetPasswordPage } from '../../features/auth/pages/ResetPasswordPage';
 import { PasswordResetSuccessPage } from '../../features/auth/pages/PasswordResetSuccessPage';
 import { SearchResultsPage } from '../../features/search/SearchResultsPage';
+import { MyRentalsPage } from '../../features/rentals/MyRentalsPage';
 import { FilterTestPage } from '../../features/filters/FilterTestPage';
 import { ProviderOnboardingPage } from '../../features/provider-onboarding';
 import { ProviderDashboard } from '../../features/provider-dashboard/ProviderDashboard';
@@ -25,6 +26,9 @@ import { FaqPage } from '../../features/info/pages/FaqPage';
 
 import { RootLayout } from '../../shared/components/layout/RootLayout';
 import { useAuth } from '../../features/auth/context/AuthContext';
+import { StandardErrorBoundary } from '../../shared/components/error/StandardErrorBoundary';
+import { FavoritesPage } from '../../features/favorites/FavoritesPage';
+
 
 const HomeRoute = () => {
     const { user } = useAuth();
@@ -34,6 +38,7 @@ const HomeRoute = () => {
 export const router = createBrowserRouter([
     {
         element: <RootLayout />,
+        errorElement: <StandardErrorBoundary />,
         children: [
             {
                 path: '/',
@@ -100,12 +105,20 @@ export const router = createBrowserRouter([
                 element: <SearchResultsPage />,
             },
             {
+                path: '/my-rentals',
+                element: <MyRentalsPage />,
+            },
+            {
                 path: '/filters-test',
                 element: <FilterTestPage />,
             },
             {
                 path: '/provider-onboarding',
                 element: <ProviderOnboardingPage />,
+            },
+            {
+                path: '/favorites',
+                element: <FavoritesPage />,
             },
             {
                 path: '*',
@@ -116,6 +129,7 @@ export const router = createBrowserRouter([
     {
         path: '/provider-dashboard',
         element: <ProviderLayout />,
+        errorElement: <StandardErrorBoundary />,
         children: [
             {
                 index: true,

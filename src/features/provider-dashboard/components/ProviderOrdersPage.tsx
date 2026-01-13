@@ -2,15 +2,9 @@ import React, { useState } from 'react';
 import {
     Search,
     Filter,
-    MoreVertical,
-    Eye,
-    CheckCircle2,
-    Clock,
-    Truck,
-    XCircle
+    MoreVertical
 } from 'lucide-react';
 import { mockOrders } from '../data/ordersMockData';
-import type { Order } from '../data/ordersMockData';
 import './ProviderOrdersPage.css';
 
 export const ProviderOrdersPage: React.FC = () => {
@@ -27,17 +21,6 @@ export const ProviderOrdersPage: React.FC = () => {
 
         return matchesSearch && matchesStatus;
     });
-
-    const getStatusIcon = (status: Order['status']) => {
-        switch (status) {
-            case 'delivered': return <CheckCircle2 size={16} className="text-green-500" />;
-            case 'processing': return <Clock size={16} className="text-blue-500" />;
-            case 'shipped': return <Truck size={16} className="text-purple-500" />;
-            case 'pending': return <Clock size={16} className="text-orange-500" />;
-            case 'cancelled': return <XCircle size={16} className="text-red-500" />;
-            default: return null;
-        }
-    };
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-IN', {
@@ -57,26 +40,6 @@ export const ProviderOrdersPage: React.FC = () => {
 
     return (
         <div className="provider-orders-page">
-            <header className="page-header">
-                <div className="header-title">
-                    <h1>Orders Management</h1>
-                    <p>Track and manage your customer orders here.</p>
-                </div>
-
-                <div className="header-stats">
-                    <div className="mini-stat">
-                        <span className="stat-label">Total Orders</span>
-                        <span className="stat-value">{mockOrders.length}</span>
-                    </div>
-                    <div className="mini-stat">
-                        <span className="stat-label">Pending</span>
-                        <span className="stat-value text-orange-500">
-                            {mockOrders.filter(o => o.status === 'pending').length}
-                        </span>
-                    </div>
-                </div>
-            </header>
-
             <div className="orders-toolbar">
                 <div className="search-wrapper">
                     <Search size={20} className="search-icon" />
@@ -110,24 +73,36 @@ export const ProviderOrdersPage: React.FC = () => {
                 <table className="orders-table">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
                             <th>Product</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Amount</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th>Order Date</th>
+                            <th>Amount</th>
+                            <th>Customer</th>
+                            <th className="actions-cell"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredOrders.map((order) => (
                             <tr key={order.id}>
-                                <td className="order-id">{order.id}</td>
                                 <td className="product-cell">
                                     <div className="product-info">
                                         <img src={order.image} alt={order.productName} />
-                                        <span>{order.productName}</span>
+                                        <div className="product-text">
+                                            <span className="product-name">{order.productName}</span>
+                                            <span className="product-id">{order.id}</span>
+                                        </div>
                                     </div>
+                                </td>
+                                <td>
+                                    <span className={`status-pill ${order.status}`}>
+                                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div className="date-box">{formatDate(order.date)}</div>
+                                </td>
+                                <td>
+                                    <div className="amount-box">{formatCurrency(order.totalAmount)}</div>
                                 </td>
                                 <td className="customer-cell">
                                     <div className="customer-info">
@@ -135,19 +110,8 @@ export const ProviderOrdersPage: React.FC = () => {
                                         <span className="customer-email">{order.customerEmail}</span>
                                     </div>
                                 </td>
-                                <td>{formatDate(order.date)}</td>
-                                <td className="amount">{formatCurrency(order.totalAmount)}</td>
-                                <td>
-                                    <span className={`status-badge status--${order.status}`}>
-                                        {getStatusIcon(order.status)}
-                                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                                    </span>
-                                </td>
                                 <td className="actions-cell">
-                                    <button className="icon-btn" title="View Details">
-                                        <Eye size={18} />
-                                    </button>
-                                    <button className="icon-btn" title="More Actions">
+                                    <button className="icon-btn" title="More">
                                         <MoreVertical size={18} />
                                     </button>
                                 </td>

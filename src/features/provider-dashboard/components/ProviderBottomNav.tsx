@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Box, Tag, ClipboardList } from 'lucide-react';
+import { Home, LayoutGrid, ClipboardList, Ticket } from 'lucide-react';
 import './ProviderBottomNav.css';
 
 export const ProviderBottomNav: React.FC = () => {
@@ -11,24 +11,16 @@ export const ProviderBottomNav: React.FC = () => {
                 end
                 className={({ isActive }) => `provider-bottom-nav__item ${isActive ? 'active' : ''}`}
             >
-                <LayoutDashboard size={22} />
-                <span>Dashboard</span>
+                <Home size={22} />
+                <span>Home</span>
             </NavLink>
 
             <NavLink
                 to="/provider-dashboard/products"
                 className={({ isActive }) => `provider-bottom-nav__item ${isActive ? 'active' : ''}`}
             >
-                <Box size={22} />
-                <span>Products</span>
-            </NavLink>
-
-            <NavLink
-                to="/provider-dashboard/offers"
-                className={({ isActive }) => `provider-bottom-nav__item ${isActive ? 'active' : ''}`}
-            >
-                <Tag size={22} />
-                <span>Offers</span>
+                <LayoutGrid size={22} />
+                <span>Listing</span>
             </NavLink>
 
             <NavLink
@@ -37,6 +29,14 @@ export const ProviderBottomNav: React.FC = () => {
             >
                 <ClipboardList size={22} />
                 <span>Orders</span>
+            </NavLink>
+
+            <NavLink
+                to="/provider-dashboard/offers"
+                className={({ isActive }) => `provider-bottom-nav__item ${isActive ? 'active' : ''}`}
+            >
+                <Ticket size={22} />
+                <span>Offers</span>
             </NavLink>
         </nav>
     );

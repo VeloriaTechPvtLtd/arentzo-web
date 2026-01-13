@@ -154,12 +154,15 @@ export const CustomerHomePage: React.FC = () => {
                     />
                 </div>
 
-                {showFeaturedBrand ? (
-                    <TopSelections
-                        title={selectionsTitle}
-                        selections={currentSelections}
-                    />
-                ) : (
+                {/* Main Action Section */}
+                <div className="flex flex-col gap-2">
+                    {showFeaturedBrand && (
+                        <TopSelections
+                            title={selectionsTitle}
+                            selections={currentSelections}
+                        />
+                    )}
+
                     <ProductsGrid
                         title={sectionTitle}
                         products={products}
@@ -167,30 +170,18 @@ export const CustomerHomePage: React.FC = () => {
                         onAddToCart={handleAddToCart}
                         onQuantityChange={handleQuantityChange}
                     />
-                )}
 
-                {/* Additional Products Section */}
-                {!showFeaturedBrand && (
-                    <ProductsGrid
-                        title="You May Also Like"
-                        products={[...products].reverse()}
-                        onFavoriteToggle={handleFavoriteToggle}
-                        onAddToCart={handleAddToCart}
-                        onQuantityChange={handleQuantityChange}
-                    />
-                )}
-
-                {showFeaturedBrand && (
-                    <>
+                    {/* Discovery Section - only show if not in a specific brand focus */}
+                    {!showFeaturedBrand && (
                         <ProductsGrid
-                            title={sectionTitle}
-                            products={products}
+                            title="You May Also Like"
+                            products={[...products].reverse()}
                             onFavoriteToggle={handleFavoriteToggle}
                             onAddToCart={handleAddToCart}
                             onQuantityChange={handleQuantityChange}
                         />
-                    </>
-                )}
+                    )}
+                </div>
             </div>
         </CustomerLayout>
     );

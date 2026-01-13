@@ -4,10 +4,7 @@ import {
     User,
     Search,
     Mic,
-    MapPin,
-    ChevronDown,
     MessageSquare,
-    Bell,
     Box
 } from 'lucide-react';
 import { useAuth } from '../../../features/auth/context/AuthContext';
@@ -21,8 +18,6 @@ export const AppHeader: React.FC = () => {
     const {
         openProfile,
         openMessages,
-        openNotifications,
-        openLocation
     } = useDrawer();
 
     const isAuthPage = ['/login', '/signup', '/forgot-password', '/verify-otp', '/reset-password'].includes(location.pathname);
@@ -30,31 +25,27 @@ export const AppHeader: React.FC = () => {
 
     if (isAuthPage) return null;
 
-    const userName = user ? (user.email?.split('@')[0] || 'User') : 'Friend';
-    const greeting = user ? `Hello, ${userName}` : 'Welcome to Arentzo';
+    const getPageTitle = () => {
+        if (isHomePage) return 'Arentzo';
+        if (activeRole === 'service_provider') return 'Provider Console';
+        if (location.pathname.startsWith('/search')) return 'Search';
+        if (location.pathname.startsWith('/browse')) return 'Marketplace';
+        if (location.pathname.startsWith('/favorites')) return 'Favorites';
+        if (location.pathname.startsWith('/my-rentals')) return 'My Rentals';
+        return 'Arentzo';
+    };
 
     return (
         <header className={`app-header ${activeRole ? `app-header--${activeRole.replace('_', '-')}` : ''}`}>
             <div className="app-header__container">
-                {/* Left Section: User Info or Logo */}
+                {/* Left Section: Contextual Title */}
                 <div className="app-header__left">
-                    {!user || isHomePage ? (
-                        <Link to="/" className="app-header__logo">
-                            <div className="app-header__logo-icon">
-                                <Box size={24} />
-                            </div>
-                            <span className="app-header__logo-text">Arentzo</span>
-                        </Link>
-                    ) : (
-                        <div className="app-header__user-info" onClick={openLocation} title="Change Location">
-                            <h2 className="app-header__greeting">{greeting}</h2>
-                            <div className="app-header__location">
-                                <MapPin size={14} />
-                                <span>BEML Layout, Brookefield</span>
-                                <ChevronDown size={14} />
-                            </div>
+                    <Link to={activeRole === 'service_provider' ? '/provider-dashboard' : '/'} className="app-header__logo">
+                        <div className="app-header__logo-icon">
+                            <Box size={24} />
                         </div>
-                    )}
+                        <span className="app-header__logo-text">{getPageTitle()}</span>
+                    </Link>
                 </div>
 
                 {/* Middle Section: Role-based Navigation or Search */}
@@ -94,9 +85,6 @@ export const AppHeader: React.FC = () => {
                             <button className="app-header__action-btn" onClick={openMessages} aria-label="Messages">
                                 <MessageSquare size={22} />
                                 <span className="app-header__badge">3</span>
-                            </button>
-                            <button className="app-header__action-btn" onClick={openNotifications} aria-label="Notifications">
-                                <Bell size={22} />
                             </button>
                             <button className="app-header__profile-btn" onClick={openProfile} aria-label="Profile">
                                 <div className="app-header__avatar">

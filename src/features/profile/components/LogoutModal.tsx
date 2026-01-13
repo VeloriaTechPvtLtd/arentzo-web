@@ -11,7 +11,7 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onCon
     if (!isOpen) return null;
 
     return (
-        <div className="logout-modal-overlay">
+        <div className="logout-modal-overlay" onClick={onClose}>
             <div className="logout-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="logout-modal__icon">
                     <div className="logout-modal__icon-inner">

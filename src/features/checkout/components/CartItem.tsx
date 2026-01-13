@@ -12,6 +12,7 @@ interface CartItemProps {
     isWishlistMode?: boolean;
     onQuantityChange: (id: string, delta: number) => void;
     onMoveToWishlist?: () => void;
+    onChangeDates?: () => void;
 }
 
 export const CartItem: React.FC<CartItemProps> = ({
@@ -24,37 +25,52 @@ export const CartItem: React.FC<CartItemProps> = ({
     dates,
     isWishlistMode,
     onQuantityChange,
-    onMoveToWishlist
+    onMoveToWishlist,
+    onChangeDates
 }) => {
     return (
         <div className="cart-item">
             <img src={image} alt={name} className="cart-item__image" />
             <div className="cart-item__details">
-                <h3 className="cart-item__name">{name}</h3>
-                <div className="cart-item__unit">1 Unit</div>
-                {dates && <div className="cart-item__dates">{dates}</div>}
+                <div className="cart-item__header-row">
+                    <h3 className="cart-item__name">{name}</h3>
+                    <div className="quantity-control">
+                        <button onClick={() => onQuantityChange(id, -1)} tabIndex={-1}>
+                            <Minus size={14} />
+                        </button>
+                        <span>{quantity}</span>
+                        <button onClick={() => onQuantityChange(id, 1)} tabIndex={-1}>
+                            <Plus size={14} />
+                        </button>
+                    </div>
+                </div>
+
+                <div className="cart-item__meta-row">
+                    <span className="cart-item__unit">1 Unit</span>
+                    <div className="cart-item__price-group">
+                        {originalPrice && (
+                            <span className="price-original">₹{originalPrice}</span>
+                        )}
+                        <span className="price-current">₹{price}</span>
+                    </div>
+                </div>
+
+                {dates && (
+                    <div className="cart-item__dates-row">
+                        <span className="cart-item__dates-text">{dates}</span>
+                        {onChangeDates && (
+                            <button className="cart-item__change-date-btn" onClick={onChangeDates}>
+                                Change
+                            </button>
+                        )}
+                    </div>
+                )}
+
                 {isWishlistMode && (
                     <button className="move-to-wishlist" onClick={onMoveToWishlist}>
                         Move to wishlist
                     </button>
                 )}
-            </div>
-            <div className="cart-item__sidebar">
-                <div className="quantity-control">
-                    <button onClick={() => onQuantityChange(id, -1)} tabIndex={-1}>
-                        <Minus size={14} />
-                    </button>
-                    <span>{quantity}</span>
-                    <button onClick={() => onQuantityChange(id, 1)} tabIndex={-1}>
-                        <Plus size={14} />
-                    </button>
-                </div>
-                <div className="cart-item__price">
-                    {originalPrice && (
-                        <span className="price-original">₹{originalPrice}</span>
-                    )}
-                    <span className="price-current">₹{price}</span>
-                </div>
             </div>
         </div>
     );

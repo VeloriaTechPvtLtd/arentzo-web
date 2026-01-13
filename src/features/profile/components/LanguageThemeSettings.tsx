@@ -20,7 +20,7 @@ const themes = [
     { id: 'system', label: 'System Preference', icon: <Laptop size={20} />, description: 'Match device settings' },
 ];
 
-export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = ({ onSave }) => {
+export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = () => {
     const [selectedLang, setSelectedLang] = useState('fr');
     const { theme: selectedTheme, setTheme } = useTheme();
 
@@ -70,9 +70,11 @@ export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = ({ on
                             <div className="theme-card__footer">
                                 <div className="theme-card__info">
                                     <span className="theme-card__icon">{theme.icon}</span>
-                                    <span className="theme-card__label">{theme.label}</span>
+                                    <div className="theme-card__text">
+                                        <span className="theme-card__label">{theme.label}</span>
+                                        <span className="theme-card__desc">{theme.description}</span>
+                                    </div>
                                 </div>
-                                <span className={`settings-radio__circle settings-radio__circle--small ${selectedTheme === theme.id ? 'settings-radio__circle--checked' : ''}`} />
                             </div>
                         </button>
                     ))}
@@ -94,19 +96,16 @@ export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = ({ on
                     </div>
                     <div className="theme-card__footer">
                         <div className="theme-card__info">
-                            <span className="theme-card__icon"><Laptop size={18} /></span>
-                            <span className="theme-card__label">System Preference</span>
+                            <span className="theme-card__icon"><Laptop size={20} /></span>
+                            <div className="theme-card__text">
+                                <span className="theme-card__label">System Preference</span>
+                                <span className="theme-card__desc">Match device settings</span>
+                            </div>
                         </div>
-                        <span className={`settings-radio__circle settings-radio__circle--small ${selectedTheme === 'system' ? 'settings-radio__circle--checked' : ''}`} />
                     </div>
                 </button>
             </div>
 
-            <div className="settings-footer">
-                <button className="settings-save-btn" onClick={onSave}>
-                    Save Changes
-                </button>
-            </div>
         </div>
     );
 };

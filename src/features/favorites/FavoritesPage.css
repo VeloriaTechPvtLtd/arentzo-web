@@ -1,0 +1,122 @@
+.favorites-page {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+    min-height: 100vh;
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+.favorites-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.favorites-header {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.favorites-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    margin: 0;
+}
+
+.favorites-count {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+}
+
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .favorites-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .favorites-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+    }
+}
+
+.empty-favorites {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--border);
+    margin-top: 2rem;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--muted-foreground);
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+}
+
+.empty-subtext {
+    color: var(--muted-foreground);
+    margin-bottom: 2rem;
+    max-width: 300px;
+}
+
+.explore-btn {
+    padding: 0.75rem 2rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.explore-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    opacity: 0.9;
+}
+
+/* Premium card styling overrides for favorites if needed */
+.favorites-page .product-card {
+    height: 100%;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

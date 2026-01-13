@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Product } from '../types';
-import { ProductCard } from './ProductCard';
+import { ProductCard } from '../../../shared/components/ui/ProductCard';
 
 interface ProductsGridProps {
     title: string;
-    products: Product[];
+    products: any[]; // Use any[] temporarily or import correct Product type
     onFavoriteToggle?: (productId: string) => void;
     onAddToCart?: (productId: string) => void;
     onQuantityChange?: (productId: string, quantity: number) => void;
@@ -22,6 +21,8 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
 }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    if (products.length === 0) return null;
+
     const scroll = (direction: 'left' | 'right') => {
         if (scrollRef.current) {
             const scrollAmount = 300;
@@ -33,39 +34,47 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     };
 
     return (
-        <section className="products-grid">
-            <div className="products-grid__header">
-                <h2 className="products-grid__title">{title}</h2>
+        <section className="px-4 py-8 max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl md:text-2xl font-bold text-[var(--foreground)] tracking-tight">{title}</h2>
                 {onSeeAll && (
-                    <button className="products-grid__see-all" onClick={onSeeAll}>
+                    <button
+                        className="text-sm font-semibold text-[var(--primary)] hover:underline underline-offset-4 transition-all"
+                        onClick={onSeeAll}
+                    >
                         See all
                     </button>
                 )}
             </div>
 
-            <div className="products-grid__wrapper">
+            <div className="relative group/row">
                 <button
-                    className="products-grid__nav products-grid__nav--left"
+                    className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-[var(--card)] border border-[var(--border)] rounded-full shadow-lg opacity-0 group-hover/row:opacity-100 transition-opacity hidden md:flex items-center justify-center hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]"
                     onClick={() => scroll('left')}
                     aria-label="Scroll left"
                 >
                     <ChevronLeft size={20} />
                 </button>
 
-                <div className="products-grid__container" ref={scrollRef}>
+                <div
+                    className="flex gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+                    ref={scrollRef}
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
                     {products.map((product) => (
-                        <ProductCard
-                            key={product.id}
-                            product={product}
-                            onFavoriteToggle={onFavoriteToggle}
-                            onAddToCart={onAddToCart}
-                            onQuantityChange={onQuantityChange}
-                        />
+                        <div key={product.id} className="w-[180px] md:w-[220px] flex-shrink-0 snap-start">
+                            <ProductCard
+                                product={product}
+                                onFavoriteToggle={onFavoriteToggle}
+                                onAddToCart={onAddToCart}
+                                onQuantityChange={onQuantityChange}
+                            />
+                        </div>
                     ))}
                 </div>
 
                 <button
-                    className="products-grid__nav products-grid__nav--right"
+                    className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-[var(--card)] border border-[var(--border)] rounded-full shadow-lg opacity-0 group-hover/row:opacity-100 transition-opacity hidden md:flex items-center justify-center hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]"
                     onClick={() => scroll('right')}
                     aria-label="Scroll right"
                 >

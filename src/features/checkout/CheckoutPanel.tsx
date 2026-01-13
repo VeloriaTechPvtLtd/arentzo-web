@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Truck, Store, MapPin, Package, Percent, ChevronRight, Info } from 'lucide-react';
+import { Truck, Store, MapPin, Package, Percent, ChevronRight, Info, Loader2 } from 'lucide-react';
 import { CheckoutHeader } from './components/CheckoutHeader';
 import { CartItem } from './components/CartItem';
 import { BillDetails } from './components/BillDetails';
 import { CheckoutFooter } from './components/CheckoutFooter';
 import { SelectDeliveryLocation, type AddressItem } from './components/SelectDeliveryLocation';
+import { CouponsView } from './components/CouponsView';
 import './Checkout.css';
 
 interface CheckoutPanelProps {
@@ -12,24 +13,40 @@ interface CheckoutPanelProps {
     onClose: () => void;
 }
 
-type CheckoutView = 'cart' | 'address-selection';
+type CheckoutView = 'cart' | 'address-selection' | 'coupons';
 
 export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose }) => {
     const [view, setView] = useState<CheckoutView>('cart');
     const [quantity, setQuantity] = useState<Record<string, number>>({
-        '1': 1,
-        '2': 1,
-        '3': 1,
-        '4': 1,
-        '5': 1,
-        '6': 1,
+        '1': 1, '2': 1, '3': 1, '4': 1, '5': 1, '6': 1,
     });
+    const [selectedAddress, setSelectedAddress] = useState<AddressItem>({
+        id: 'home',
+        type: 'Home',
+        address: 'Kalyani Business Centre, 3rd Floor, Office...'
+    });
+    const [couponApplied, setCouponApplied] = useState(true);
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+    // Demo state for dates
+    const [dates, setDates] = useState("Oct 12 - 14 (3 days)");
+
+    const handleChangeDates = () => {
+        const newDates = window.prompt("Enter new dates:", dates);
+        if (newDates) {
+            setDates(newDates);
+        }
+    };
+
+    const handleChangeMethod = (method: string) => {
+        alert(`Change ${method} clicked. This would open options to select a different delivery provider.`);
+    };
 
     // Close on escape key
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) {
-                if (view === 'address-selection') {
+                if (view !== 'cart') {
                     setView('cart');
                 } else {
                     onClose();
@@ -44,8 +61,10 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
     // Reset view when closed
     useEffect(() => {
         if (!isOpen) {
-            // small delay to allow transition to finish
-            const timer = setTimeout(() => setView('cart'), 300);
+            const timer = setTimeout(() => {
+                setView('cart');
+                setIsPlacingOrder(false);
+            }, 300);
             return () => clearTimeout(timer);
         }
     }, [isOpen]);
@@ -76,7 +95,7 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
     };
 
     const handleBack = () => {
-        if (view === 'address-selection') {
+        if (view !== 'cart') {
             setView('cart');
         } else {
             onClose();
@@ -84,33 +103,69 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
     };
 
     const handleAddressSelect = (addr: AddressItem) => {
-        console.log('Selected address:', addr);
+        setSelectedAddress(addr);
         setView('cart');
-        // logic to update address in footer would go here
     };
 
-    return (
-        <div className={`checkout-overlay ${isOpen ? 'checkout-overlay--open' : ''}`}>
-            <div className="checkout-overlay__backdrop" onClick={handleBackdropClick} />
+    const handlePlaceOrder = () => {
+        setIsPlacingOrder(true);
+        // Simulate API call
+        setTimeout(() => {
+            setIsPlacingOrder(false);
+            alert('Order placed successfully! Thank you for shopping with us.');
+            onClose();
+        }, 2000);
+    };
 
-            <div className="checkout-panel">
-                {view === 'address-selection' ? (
+    const toggleCoupon = () => {
+        setCouponApplied(!couponApplied);
+    };
+
+    const calculateTotal = () => {
+        // Mock calculation
+        let total = 99999;
+        if (!couponApplied) total += 300;
+        return total;
+    };
+
+    const renderContent = () => {
+        switch (view) {
+            case 'address-selection':
+                return (
                     <>
-                        <CheckoutHeader onBack={handleBack} title="Select Location" />
+                        <CheckoutHeader onBack={handleBack} title="Select Location" showShare={false} />
                         <div className="checkout-panel__content" style={{ padding: 0 }}>
-                            <SelectDeliveryLocation
-                                onSelect={handleAddressSelect}
+                            <SelectDeliveryLocation onSelect={handleAddressSelect} />
+                        </div>
+                    </>
+                );
+            case 'coupons':
+                return (
+                    <>
+                        <CheckoutHeader onBack={handleBack} title="Coupons" showShare={false} />
+                        <div className="checkout-panel__content" style={{ padding: 0 }}>
+                            <CouponsView
+                                onApply={() => {
+                                    setCouponApplied(true);
+                                    setView('cart');
+                                }}
+                                onRemove={() => {
+                                    setCouponApplied(false);
+                                    setView('cart');
+                                }}
                             />
                         </div>
                     </>
-                ) : (
+                );
+            default:
+                return (
                     <>
                         <CheckoutHeader onBack={onClose} />
 
                         <div className="checkout-panel__content">
                             <div className="delivery-alert">
                                 <div className="delivery-alert__icon">
-                                    <Percent size={20} color="#ff4d4f" />
+                                    <Percent size={20} color="var(--destructive)" />
                                 </div>
                                 <div className="delivery-alert__content">
                                     <h4 className="delivery-alert__title">Partial delivery or collection alert</h4>
@@ -122,10 +177,10 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
                             <section className="checkout-section">
                                 <div className="section-header">
                                     <div className="section-header__title">
-                                        <Package size={18} />
+                                        <Package size={20} />
                                         <span>Providers Delivery</span>
                                     </div>
-                                    <button className="section-header__change">Change</button>
+                                    <button className="section-header__change" onClick={() => handleChangeMethod("Providers Delivery")}>Change</button>
                                 </div>
                                 <CartItem
                                     id="1"
@@ -134,20 +189,20 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
                                     quantity={quantity['1']}
                                     price={9999}
                                     originalPrice={13636}
-                                    dates="Oct 12 - 14 (3 days)"
+                                    dates={dates}
                                     onQuantityChange={handleQuantityChange}
+                                    onChangeDates={handleChangeDates}
                                 />
-                                <button className="change-dates">Change Dates</button>
                             </section>
 
                             {/* Courier Delivery */}
                             <section className="checkout-section">
                                 <div className="section-header">
                                     <div className="section-header__title">
-                                        <Truck size={18} />
+                                        <Truck size={20} />
                                         <span>Courier Delivery</span>
                                     </div>
-                                    <button className="section-header__change">Change</button>
+                                    <button className="section-header__change" onClick={() => handleChangeMethod("Courier Delivery")}>Change</button>
                                 </div>
                                 <CartItem
                                     id="2"
@@ -156,20 +211,20 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
                                     quantity={quantity['2']}
                                     price={9000}
                                     originalPrice={13636}
-                                    dates="Oct 12 - 14 (3 days)"
+                                    dates={dates}
                                     onQuantityChange={handleQuantityChange}
+                                    onChangeDates={handleChangeDates}
                                 />
-                                <button className="change-dates">Change Dates</button>
                             </section>
 
                             {/* Self-pickup */}
                             <section className="checkout-section">
                                 <div className="section-header">
                                     <div className="section-header__title">
-                                        <Store size={18} />
-                                        <span>self-pickup</span>
+                                        <Store size={20} />
+                                        <span>Self-pickup</span>
                                     </div>
-                                    <button className="section-header__change">Change</button>
+                                    <button className="section-header__change" onClick={() => handleChangeMethod("Pickup Location")}>Change</button>
                                 </div>
                                 <CartItem
                                     id="3"
@@ -178,10 +233,10 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
                                     quantity={quantity['3']}
                                     price={999}
                                     originalPrice={13636}
-                                    dates="Oct 12 - 14 (3 days)"
+                                    dates={dates}
                                     onQuantityChange={handleQuantityChange}
+                                    onChangeDates={handleChangeDates}
                                 />
-                                <button className="change-dates">Change Dates</button>
 
                                 <div className="pickup-location">
                                     <div className="pickup-location__header">
@@ -235,10 +290,10 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
                                     quantity={quantity['6']}
                                     price={9999}
                                     originalPrice={13636}
-                                    dates="Oct 12 - 14 (3 days)"
+                                    dates={dates}
                                     onQuantityChange={handleQuantityChange}
+                                    onChangeDates={handleChangeDates}
                                 />
-                                <button className="change-dates">Change Dates</button>
                                 <div className="pickup-location">
                                     <div className="pickup-location__header">
                                         <span className="pickup-location__title">Pickup Location</span>
@@ -254,28 +309,38 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
                                 </div>
                             </section>
 
-                            {/* Coupon */}
-                            <div className="coupon-section">
-                                <div className="coupon-info">
-                                    <div className="coupon-icon">
-                                        <Percent size={20} />
-                                    </div>
-                                    <div className="coupon-text">
-                                        <h4 className="coupon-text__title">Yay! You saved ₹300</h4>
-                                        <p className="coupon-text__subtitle">Coupon Applied!</p>
-                                    </div>
-                                </div>
-                                <button className="coupon-remove">Remove</button>
+                            {/* Coupon Section */}
+                            <div className="coupon-container">
+                                {couponApplied ? (
+                                    <>
+                                        <div className="coupon-section">
+                                            <div className="coupon-info">
+                                                <div className="coupon-icon-wrapper">
+                                                    <Percent size={28} strokeWidth={3} />
+                                                </div>
+                                                <div className="coupon-text">
+                                                    <h4 className="coupon-text__title">Yay! You saved ₹300</h4>
+                                                    <p className="coupon-text__subtitle">Coupon Applied!</p>
+                                                </div>
+                                            </div>
+                                            <button className="coupon-remove" onClick={toggleCoupon}>Remove</button>
+                                        </div>
+                                        <button className="see-all-coupons" onClick={() => setView('coupons')}>
+                                            See all coupons <ChevronRight size={20} strokeWidth={2.5} />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button className="see-all-coupons" style={{ margin: 0 }} onClick={() => setView('coupons')}>
+                                        Apply Coupon <ChevronRight size={20} strokeWidth={2.5} />
+                                    </button>
+                                )}
                             </div>
-                            <button className="see-all-coupons">
-                                See all coupons <ChevronRight size={16} style={{ verticalAlign: 'middle', marginLeft: 4 }} />
-                            </button>
 
                             <BillDetails
                                 itemsTotal={112345}
                                 deliveryCharge={112}
                                 handlingCharge={12345}
-                                totalSavings={9999}
+                                totalSavings={couponApplied ? 9999 : 9699}
                             />
 
                             <section className="cancellation-policy">
@@ -287,13 +352,29 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
                         </div>
 
                         <CheckoutFooter
-                            address="Kalyani Business Centre, 3rd Floor, Office..."
-                            totalAmount={99999}
-                            onPlaceOrder={() => console.log('Place order clicked')}
+                            address={selectedAddress.address}
+                            totalAmount={calculateTotal()}
+                            onPlaceOrder={handlePlaceOrder}
                             onAddressChange={() => setView('address-selection')}
                         />
+                        {isPlacingOrder && (
+                            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+                                <div className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center gap-4">
+                                    <Loader2 className="animate-spin text-primary" size={48} />
+                                    <p className="font-semibold text-lg">Placing your order...</p>
+                                </div>
+                            </div>
+                        )}
                     </>
-                )}
+                );
+        }
+    };
+
+    return (
+        <div className={`checkout-overlay ${isOpen ? 'checkout-overlay--open' : ''}`}>
+            <div className="checkout-overlay__backdrop" onClick={handleBackdropClick} />
+            <div className="checkout-panel">
+                {renderContent()}
             </div>
         </div>
     );

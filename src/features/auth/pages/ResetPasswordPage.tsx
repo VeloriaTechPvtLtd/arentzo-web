@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircle2, Circle } from 'lucide-react';
+import { CheckCircle2, Circle, KeyRound, ArrowLeft } from 'lucide-react';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthInput } from '../components/AuthInput';
 
-const LockIcon = () => (
-    <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center">
-        {/* Same lock icon as forgot password, but static */}
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
+const HeaderIcon = () => (
+    <div className="relative">
+        <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center">
+            <KeyRound className="w-10 h-10 text-primary" />
+        </div>
+        <div className="absolute -top-2 -right-2 bg-background p-1.5 rounded-full shadow-lg border border-border">
+            <CheckCircle2 className="w-5 h-5 text-primary" />
+        </div>
     </div>
 );
 
@@ -36,40 +37,45 @@ export const ResetPasswordPage: React.FC = () => {
 
     return (
         <AuthLayout
-            showLogo={false}
-            headerIcon={<LockIcon />}
-            title="Create New Password"
-            subtitle="Your new password must be different from the previous password"
+            showLogo={true}
+            headerIcon={<HeaderIcon />}
+            title="Secure password"
+            subtitle="To secure your account, please choose a strong password that you haven't used before."
+            imageSrc="https://images.unsplash.com/photo-1549517045-bc93de075e53?auto=format&fit=crop&q=80&w=2000" // Premium residential neighborhood
         >
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8 mt-6">
                 <div className="space-y-5">
                     <AuthInput
                         label="New Password"
                         type="password"
-                        placeholder="Enter your new password"
+                        placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        showPasswordToggle={true}
+                        autoComplete="new-password"
                     />
 
                     <AuthInput
-                        label="Confirm Password"
+                        label="Confirm New Password"
                         type="password"
-                        placeholder="Confirm your new password"
+                        placeholder="••••••••"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        showPasswordToggle={true}
+                        autoComplete="new-password"
                     />
 
-                    <div className="space-y-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 pt-2">
                         {requirements.map((req, idx) => (
-                            <div key={idx} className="flex items-center gap-3 text-sm font-medium">
+                            <div key={idx} className="flex items-center gap-3">
                                 {req.met ? (
-                                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                                    <div className="bg-primary/10 p-1 rounded-full">
+                                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                                    </div>
                                 ) : (
-                                    <Circle className="w-5 h-5 text-muted-foreground/30" />
+                                    <div className="bg-muted p-1 rounded-full">
+                                        <Circle className="w-4 h-4 text-muted-foreground/30" />
+                                    </div>
                                 )}
-                                <span className={req.met ? 'text-[#2d2d2d]' : 'text-muted-foreground'}>
+                                <span className={`text-xs font-bold transition-colors ${req.met ? 'text-foreground' : 'text-muted-foreground'}`}>
                                     {req.label}
                                 </span>
                             </div>
@@ -81,14 +87,15 @@ export const ResetPasswordPage: React.FC = () => {
                     <button
                         type="submit"
                         disabled={!requirements.every(req => req.met) || password !== confirmPassword}
-                        className="w-full bg-primary text-primary-foreground py-5 rounded-3xl font-bold text-xl hover:bg-primary/90 transition-all flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+                        className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
                     >
-                        Reset Password
+                        Reset password
                     </button>
 
-                    <div className="text-center">
-                        <Link to="/login" className="text-primary font-bold text-lg hover:underline transition-all">
-                            Back to Login
+                    <div className="text-center pt-2">
+                        <Link to="/login" className="inline-flex items-center text-sm font-bold text-muted-foreground hover:text-primary transition-colors group">
+                            <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                            Back to log in
                         </Link>
                     </div>
                 </div>
