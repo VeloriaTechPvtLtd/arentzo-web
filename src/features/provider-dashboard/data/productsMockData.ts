@@ -5,6 +5,7 @@ export interface Product {
     price: number;
     stock: number;
     status: 'active' | 'out_of_stock' | 'draft' | 'archived';
+    condition: 'new' | 'like_new' | 'good' | 'fair';
     rating: number;
     views: number;
     revenue: number;
@@ -19,6 +20,7 @@ export const mockProducts: Product[] = [
         price: 1500,
         stock: 5,
         status: 'active',
+        condition: 'like_new',
         rating: 4.8,
         views: 1240,
         revenue: 45000,
@@ -31,6 +33,7 @@ export const mockProducts: Product[] = [
         price: 80,
         stock: 12,
         status: 'active',
+        condition: 'good',
         rating: 4.5,
         views: 3500,
         revenue: 12000,
@@ -43,6 +46,7 @@ export const mockProducts: Product[] = [
         price: 2400,
         stock: 0,
         status: 'out_of_stock',
+        condition: 'new',
         rating: 4.9,
         views: 890,
         revenue: 28800,
@@ -55,6 +59,7 @@ export const mockProducts: Product[] = [
         price: 1200,
         stock: 3,
         status: 'active',
+        condition: 'fair',
         rating: 4.7,
         views: 2100,
         revenue: 36000,
@@ -67,6 +72,7 @@ export const mockProducts: Product[] = [
         price: 1800,
         stock: 8,
         status: 'active',
+        condition: 'new',
         rating: 5.0,
         views: 4200,
         revenue: 144000,
@@ -79,6 +85,7 @@ export const mockProducts: Product[] = [
         price: 399,
         stock: 25,
         status: 'draft',
+        condition: 'new',
         rating: 0,
         views: 0,
         revenue: 0,

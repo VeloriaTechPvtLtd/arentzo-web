@@ -103,6 +103,55 @@ export const mockProducts: Product[] = [
         isImported: true,
         isAvailable: true,
         isFavorite: true,
+        images: [
+            'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop',
+        ],
+        seller: {
+            id: 's1',
+            name: 'Jack Rayn',
+            avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop',
+            rating: 4.8,
+            reviewCount: 156,
+            isVerified: true
+        },
+        specifications: [
+            { label: 'Condition', value: 'Excellent' },
+            { label: 'Brand', value: 'Land Rover' },
+            { label: 'Model', value: 'Range Rover' },
+            { label: 'Year', value: '2024' },
+            { label: 'Color', value: 'White' }
+        ],
+        overview: 'The Range Rover Sports Special Edition is a luxury SUV that combines elegance, power, and state-of-the-art technology. Perfect for your needs, this product features high-end materials and exceptional durability.',
+        terms: [
+            { id: 't1', icon: 'id', title: 'Valid ID & Verification', description: 'Government-issued ID is mandatory for your security and hassle-free booking.' },
+            { id: 't2', icon: 'shield', title: 'Security Deposit', description: 'Small refundable deposit. Automatically returned within 2-3 days post-return inspection.' },
+            { id: 't3', icon: 'zap', title: 'Flexible Cancellation', description: 'Free cancellation up to 48 hours before your booking starts.' },
+            { id: 't4', icon: 'truck', title: 'Delivery & Pickup', description: 'Delivery options available at your location for a nominal fee.' }
+        ],
+        reviews: [
+            {
+                id: 'r1',
+                userName: 'Jack nayer',
+                userAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop',
+                rating: 5,
+                date: '1 week ago',
+                comment: 'Well maintained and clean Ride. Absolutely elegant and luxury look. Go for it. 🔥',
+                images: [
+                    'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=300&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=300&auto=format&fit=crop'
+                ]
+            },
+            {
+                id: 'r2',
+                userName: 'Tyagi',
+                userAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop',
+                rating: 5,
+                date: '2 weeks ago',
+                comment: 'Well maintained and clean Ride. Absolutely elegant and luxury look. Go for it. 🔥'
+            }
+        ]
     },
     {
         id: '2',
@@ -142,6 +191,11 @@ export const mockProducts: Product[] = [
         isImported: true,
         isAvailable: true,
         isFavorite: true,
+        images: [
+            'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop',
+        ],
     },
     {
         id: '5',

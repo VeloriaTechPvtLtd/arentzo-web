@@ -7,22 +7,97 @@ import {
 } from 'lucide-react';
 import { mockProducts } from '../data/productsMockData';
 import { AddProductForm } from './AddProductForm';
+import { useProviderFilters } from '../hooks/useProviderFilters';
+import { ProviderFilterModal } from './ProviderFilterModal';
 import './ProviderProductsPage.css';
 
 export const ProviderProductsPage: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState<string>('all');
+    const {
+        isOpen,
+        openFilters,
+        closeFilters,
+        filters,
+        updateFilter,
+        resetFilters,
+        searchQuery,
+        setSearchQuery,
+        activeFilterCount
+    } = useProviderFilters({
+        categories: [] as string[],
+        status: [] as string[],
+        condition: [] as string[],
+        priceRange: { min: null, max: null } as { min: number | null; max: number | null },
+        stockRange: { min: null, max: null } as { min: number | null; max: number | null }
+    });
+
     const [showAddProduct, setShowAddProduct] = useState(false);
+
+    const uniqueCategories = Array.from(new Set(mockProducts.map(p => p.category)));
+
+    const filterDefinitions: any[] = [
+        {
+            id: 'categories',
+            label: 'Categories',
+            type: 'checkbox',
+            options: uniqueCategories.map(cat => ({ id: cat, label: cat }))
+        },
+        {
+            id: 'condition',
+            label: 'Condition',
+            type: 'checkbox',
+            options: [
+                { id: 'new', label: 'New' },
+                { id: 'like_new', label: 'Like New' },
+                { id: 'good', label: 'Good' },
+                { id: 'fair', label: 'Fair' }
+            ]
+        },
+        {
+            id: 'status',
+            label: 'Status',
+            type: 'checkbox',
+            options: [
+                { id: 'active', label: 'Active' },
+                { id: 'out_of_stock', label: 'Out of Stock' },
+                { id: 'draft', label: 'Draft' },
+                { id: 'archived', label: 'Archived' }
+            ]
+        },
+        {
+            id: 'priceRange',
+            label: 'Price Range',
+            type: 'range',
+            minLabel: 'Min Price',
+            maxLabel: 'Max Price'
+        },
+        {
+            id: 'stockRange',
+            label: 'Stock Level',
+            type: 'range',
+            minLabel: 'Min Stock',
+            maxLabel: 'Max Stock'
+        }
+    ];
 
     const filteredProducts = mockProducts.filter(product => {
         const matchesSearch =
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.category.toLowerCase().includes(searchTerm.toLowerCase());
+            product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchQuery.toLowerCase());
 
-        const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
+        const matchesCategory = filters.categories.length === 0 || filters.categories.includes(product.category);
+        const matchesStatus = filters.status.length === 0 || filters.status.includes(product.status);
+        const matchesCondition = filters.condition.length === 0 || filters.condition.includes(product.condition);
 
-        return matchesSearch && matchesStatus;
+        const matchesPrice =
+            (filters.priceRange.min === null || product.price >= filters.priceRange.min) &&
+            (filters.priceRange.max === null || product.price <= filters.priceRange.max);
+
+        const matchesStock =
+            (filters.stockRange.min === null || product.stock >= filters.stockRange.min) &&
+            (filters.stockRange.max === null || product.stock <= filters.stockRange.max);
+
+        return matchesSearch && matchesCategory && matchesStatus && matchesCondition && matchesPrice && matchesStock;
     });
 
     const formatCurrency = (amount: number) => {
@@ -41,25 +116,22 @@ export const ProviderProductsPage: React.FC = () => {
                     <input
                         type="text"
                         placeholder="Search products, ID or category..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
 
                 <div className="filters-wrapper">
-                    <div className="filter-select">
+                    <button
+                        className={`filter-btn ${activeFilterCount > 0 ? 'active' : ''}`}
+                        onClick={openFilters}
+                    >
                         <Filter size={18} />
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                        >
-                            <option value="all">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="out_of_stock">Out of Stock</option>
-                            <option value="draft">Draft</option>
-                            <option value="archived">Archived</option>
-                        </select>
-                    </div>
+                        <span>Filter</span>
+                        {activeFilterCount > 0 && (
+                            <span className="filter-badge">{activeFilterCount}</span>
+                        )}
+                    </button>
 
                     <button className="create-product-btn" onClick={() => setShowAddProduct(true)}>
                         <Plus size={20} />
@@ -76,7 +148,7 @@ export const ProviderProductsPage: React.FC = () => {
                             <th>Category</th>
                             <th>Stock</th>
                             <th>Price</th>
-                            <th>Status</th>
+                            <th>Status/Condition</th>
                             <th className="actions-cell"></th>
                         </tr>
                     </thead>
@@ -102,9 +174,16 @@ export const ProviderProductsPage: React.FC = () => {
                                     <div className="price-box">{formatCurrency(product.price)}</div>
                                 </td>
                                 <td>
-                                    <span className={`status-pill ${product.status}`}>
-                                        {product.status.replace('_', ' ').charAt(0).toUpperCase() + product.status.replace('_', ' ').slice(1)}
-                                    </span>
+                                    <div className="flex flex-col gap-1 items-start">
+                                        <span className={`status-pill ${product.status}`}>
+                                            {product.status.replace('_', ' ').charAt(0).toUpperCase() + product.status.replace('_', ' ').slice(1)}
+                                        </span>
+                                        {product.condition && (
+                                            <span className="text-[10px] font-semibold text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-200">
+                                                {product.condition.replace('_', ' ').toUpperCase()}
+                                            </span>
+                                        )}
+                                    </div>
                                 </td>
                                 <td className="actions-cell">
                                     <button className="icon-btn" title="More">
@@ -119,6 +198,9 @@ export const ProviderProductsPage: React.FC = () => {
                 {filteredProducts.length === 0 && (
                     <div className="no-results">
                         <p>No products found matching your criteria.</p>
+                        <button onClick={resetFilters} className="text-primary hover:underline mt-2">
+                            Clear all filters
+                        </button>
                     </div>
                 )}
             </div>
@@ -129,6 +211,15 @@ export const ProviderProductsPage: React.FC = () => {
                     onSuccess={() => setShowAddProduct(false)}
                 />
             )}
+
+            <ProviderFilterModal
+                isOpen={isOpen}
+                onClose={closeFilters}
+                filters={filters}
+                onUpdate={updateFilter as (key: string, value: any) => void}
+                onReset={resetFilters}
+                definitions={filterDefinitions}
+            />
         </div>
     );
 };

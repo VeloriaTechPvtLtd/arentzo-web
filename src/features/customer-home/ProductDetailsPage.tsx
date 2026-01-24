@@ -66,9 +66,10 @@ export const ProductDetailsPage: React.FC = () => {
                     <div className="product-details-container">
                         <div className="product-main-section">
                             <ProductGallery
-                                images={[product.image, product.image, product.image]}
+                                images={product.images || [product.image, product.image, product.image]}
                                 name={product.name}
                                 isImported={product.isImported}
+                                specifications={product.specifications}
                             />
 
                             <ProductInfo

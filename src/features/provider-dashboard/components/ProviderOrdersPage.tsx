@@ -1,25 +1,127 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Search,
     Filter,
     MoreVertical
 } from 'lucide-react';
 import { mockOrders } from '../data/ordersMockData';
+import { useProviderFilters } from '../hooks/useProviderFilters';
+import { ProviderFilterModal } from './ProviderFilterModal';
 import './ProviderOrdersPage.css';
 
 export const ProviderOrdersPage: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState<string>('all');
+    const {
+        isOpen,
+        openFilters,
+        closeFilters,
+        filters,
+        updateFilter,
+        resetFilters,
+        searchQuery,
+        setSearchQuery,
+        activeFilterCount
+    } = useProviderFilters({
+        rentalStatus: [] as string[],
+        paymentStatus: [] as string[],
+        deliveryMethod: [] as string[],
+        depositStatus: [] as string[],
+        returnDateRange: { from: null, to: null } as { from: Date | null; to: Date | null },
+        amountRange: { min: null, max: null } as { min: number | null; max: number | null }
+    });
+
+    const filterDefinitions: any[] = [
+        {
+            id: 'rentalStatus',
+            label: 'Rental Status',
+            type: 'checkbox',
+            options: [
+                { id: 'requested', label: 'Requested' },
+                { id: 'approved', label: 'Approved' },
+                { id: 'booked', label: 'Booked' },
+                { id: 'active', label: 'Active (With Customer)' },
+                { id: 'overdue', label: 'Overdue' },
+                { id: 'returned', label: 'Returned' },
+                { id: 'completed', label: 'Completed' },
+                { id: 'cancelled', label: 'Cancelled' }
+            ]
+        },
+        {
+            id: 'paymentStatus',
+            label: 'Payment Status',
+            type: 'checkbox',
+            options: [
+                { id: 'paid', label: 'Paid' },
+                { id: 'pending', label: 'Pending' },
+                { id: 'refunded', label: 'Refunded' }
+            ]
+        },
+        {
+            id: 'deliveryMethod',
+            label: 'Delivery Method',
+            type: 'checkbox',
+            options: [
+                { id: 'pickup', label: 'Pickup' },
+                { id: 'delivery', label: 'Delivery' }
+            ]
+        },
+        {
+            id: 'depositStatus',
+            label: 'Security Deposit',
+            type: 'checkbox',
+            options: [
+                { id: 'held', label: 'Held' },
+                { id: 'refunded', label: 'Refunded' },
+                { id: 'deducted', label: 'Deducted' },
+                { id: 'n/a', label: 'Not Applicable' }
+            ]
+        },
+        {
+            id: 'returnDateRange',
+            label: 'Return Due Date',
+            type: 'date-range'
+        },
+        {
+            id: 'amountRange',
+            label: 'Rental Amount',
+            type: 'range',
+            minLabel: 'Min',
+            maxLabel: 'Max'
+        }
+    ];
 
     const filteredOrders = mockOrders.filter(order => {
         const matchesSearch =
-            order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.productName.toLowerCase().includes(searchTerm.toLowerCase());
+            order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            order.productName.toLowerCase().includes(searchQuery.toLowerCase());
 
-        const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+        const matchesRentalStatus = filters.rentalStatus.length === 0 || filters.rentalStatus.includes(order.rentalStatus);
+        const matchesPaymentStatus = filters.paymentStatus.length === 0 || filters.paymentStatus.includes(order.paymentStatus);
+        const matchesDelivery = filters.deliveryMethod.length === 0 || filters.deliveryMethod.includes(order.deliveryMethod);
+        const matchesDeposit = filters.depositStatus.length === 0 || filters.depositStatus.includes(order.depositStatus);
 
-        return matchesSearch && matchesStatus;
+        const matchesAmount =
+            (filters.amountRange.min === null || order.totalAmount >= filters.amountRange.min) &&
+            (filters.amountRange.max === null || order.totalAmount <= filters.amountRange.max);
+
+        let matchesReturnDate = true;
+        if (filters.returnDateRange.from || filters.returnDateRange.to) {
+            const returnDate = new Date(order.returnDate);
+            returnDate.setHours(0, 0, 0, 0);
+
+            if (filters.returnDateRange.from) {
+                const fromDate = new Date(filters.returnDateRange.from);
+                fromDate.setHours(0, 0, 0, 0);
+                if (returnDate < fromDate) matchesReturnDate = false;
+            }
+            if (filters.returnDateRange.to) {
+                const toDate = new Date(filters.returnDateRange.to);
+                toDate.setHours(23, 59, 59, 999);
+                if (returnDate > toDate) matchesReturnDate = false;
+            }
+        }
+
+        return matchesSearch && matchesRentalStatus && matchesPaymentStatus && matchesAmount && matchesReturnDate && matchesDelivery && matchesDeposit;
     });
 
     const formatCurrency = (amount: number) => {
@@ -38,6 +140,20 @@ export const ProviderOrdersPage: React.FC = () => {
         });
     };
 
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'requested': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+            case 'approved': return 'bg-blue-50 text-blue-700 border-blue-200';
+            case 'booked': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+            case 'active': return 'bg-green-100 text-green-700 border-green-200';
+            case 'returned': return 'bg-purple-50 text-purple-700 border-purple-200';
+            case 'overdue': return 'bg-red-100 text-red-700 border-red-200';
+            case 'completed': return 'bg-gray-100 text-gray-700 border-gray-200';
+            case 'cancelled': return 'bg-red-50 text-red-600 border-red-100';
+            default: return 'bg-gray-100 text-gray-600';
+        }
+    };
+
     return (
         <div className="provider-orders-page">
             <div className="orders-toolbar">
@@ -45,27 +161,23 @@ export const ProviderOrdersPage: React.FC = () => {
                     <Search size={20} className="search-icon" />
                     <input
                         type="text"
-                        placeholder="Search by Order ID, customer, or product..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search rentals by ID, customer, or product..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
 
                 <div className="filters-wrapper">
-                    <div className="filter-select">
+                    <button
+                        className={`filter-btn ${activeFilterCount > 0 ? 'active' : ''}`}
+                        onClick={openFilters}
+                    >
                         <Filter size={18} />
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                        >
-                            <option value="all">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="shipped">Shipped</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
+                        <span>Filter</span>
+                        {activeFilterCount > 0 && (
+                            <span className="filter-badge">{activeFilterCount}</span>
+                        )}
+                    </button>
                 </div>
             </div>
 
@@ -74,9 +186,10 @@ export const ProviderOrdersPage: React.FC = () => {
                     <thead>
                         <tr>
                             <th>Product</th>
-                            <th>Status</th>
-                            <th>Order Date</th>
-                            <th>Amount</th>
+                            <th>Rental Status</th>
+                            <th>Return Due</th>
+                            <th>Logistics</th>
+                            <th>Financials</th>
                             <th>Customer</th>
                             <th className="actions-cell"></th>
                         </tr>
@@ -94,15 +207,39 @@ export const ProviderOrdersPage: React.FC = () => {
                                     </div>
                                 </td>
                                 <td>
-                                    <span className={`status-pill ${order.status}`}>
-                                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                    <span className={`status-pill ${getStatusColor(order.rentalStatus)}`}>
+                                        {order.rentalStatus.charAt(0).toUpperCase() + order.rentalStatus.slice(1)}
                                     </span>
                                 </td>
                                 <td>
-                                    <div className="date-box">{formatDate(order.date)}</div>
+                                    <div className="date-box">{formatDate(order.returnDate)}</div>
                                 </td>
                                 <td>
-                                    <div className="amount-box">{formatCurrency(order.totalAmount)}</div>
+                                    <span className={`text-xs font-medium px-2 py-1 rounded-md border ${order.deliveryMethod === 'delivery'
+                                        ? 'bg-purple-50 text-purple-700 border-purple-200'
+                                        : 'bg-orange-50 text-orange-700 border-orange-200'
+                                        }`}>
+                                        {order.deliveryMethod.toUpperCase()}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div className="flex flex-col gap-1">
+                                        <div className="amount-box text-xs py-1">{formatCurrency(order.totalAmount)}</div>
+                                        <div className="flex gap-1">
+                                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                                                }`}>
+                                                {order.paymentStatus.toUpperCase()}
+                                            </span>
+                                            {order.depositStatus !== 'n/a' && (
+                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.depositStatus === 'held' ? 'bg-blue-100 text-blue-700' :
+                                                    order.depositStatus === 'deducted' ? 'bg-red-100 text-red-700' :
+                                                        'bg-gray-100 text-gray-700'
+                                                    }`}>
+                                                    DEP: {order.depositStatus.toUpperCase()}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
                                 </td>
                                 <td className="customer-cell">
                                     <div className="customer-info">
@@ -122,10 +259,22 @@ export const ProviderOrdersPage: React.FC = () => {
 
                 {filteredOrders.length === 0 && (
                     <div className="no-results">
-                        <p>No orders found matching your criteria.</p>
+                        <p>No rentals found matching your criteria.</p>
+                        <button onClick={resetFilters} className="text-primary hover:underline mt-2">
+                            Clear all filters
+                        </button>
                     </div>
                 )}
             </div>
+
+            <ProviderFilterModal
+                isOpen={isOpen}
+                onClose={closeFilters}
+                filters={filters}
+                onUpdate={updateFilter as (key: string, value: any) => void}
+                onReset={resetFilters}
+                definitions={filterDefinitions}
+            />
         </div>
     );
 };
