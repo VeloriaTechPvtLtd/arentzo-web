@@ -1,0 +1,117 @@
+
+> arentzo-web@0.0.0 lint
+> eslint .
+
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/app/routes/AppRouter.tsx
+  33:7  error  Fast refresh only works when a file only exports components. Move your component(s) to a separate file  react-refresh/only-export-components
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/customer-home/components/ProductsGrid.tsx
+  7:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/customer-home/components/product-details/ProductInfo.tsx
+  11:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/customer-home/components/product-details/RelatedProducts.tsx
+  5:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/customer-home/components/product-details/SimilarProducts.tsx
+  34:60  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/customer-home/components/product-details/SimilarProducts.tsx:34:60
+  32 |                             <div className="product-card-rating">
+  33 |                                 <span className="stars">★★★★★</span>
+> 34 |                                 <span className="count">({(Math.random() * 500 + 100).toFixed(0)})</span>
+     |                                                            ^^^^^^^^^^^^^ Cannot call impure function
+  35 |                             </div>
+  36 |                             <div className="product-card-footer">
+  37 |                                 <div className="product-price">  react-hooks/purity
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/customer-home/context/CartContext.tsx
+  20:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/profile/components/ProfilePanel.tsx
+   65:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/profile/components/ProfilePanel.tsx:65:9
+  63 |     // Sync local profileUser if global activeRole changes
+  64 |     useEffect(() => {
+> 65 |         setProfileUser(prev => ({ ...prev, activeRole: activeRole || 'customer' }));
+     |         ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  66 |     }, [activeRole]);
+  67 |
+  68 |     // Close on escape key  react-hooks/set-state-in-effect
+  104:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/profile/components/ProfilePanel.tsx:104:13
+  102 |             return () => clearTimeout(timer);
+  103 |         } else {
+> 104 |             setView(authUser ? 'profile' : 'login');
+      |             ^^^^^^^ Avoid calling setState() directly within an effect
+  105 |         }
+  106 |     }, [isOpen, !!authUser]);
+  107 |                                                       react-hooks/set-state-in-effect
+  106:8   warning  React Hook useEffect has a missing dependency: 'authUser'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+  106:17  warning  React Hook useEffect has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/profile/components/ProviderProfileContent.tsx
+  23:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/provider-dashboard/ProviderDashboard.tsx
+  27:63  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  67:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  73:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/provider-dashboard/components/ProviderFilterModal.tsx
+  17:14  error  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  18:36  error  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  68:17  error  Unexpected lexical declaration in case block  no-case-declarations
+  95:17  error  Unexpected lexical declaration in case block  no-case-declarations
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/provider-dashboard/components/ProviderOrdersPage.tsx
+   32:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  274:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/provider-dashboard/components/ProviderProductsPage.tsx
+   37:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/provider-dashboard/hooks/useProviderFilters.ts
+  13:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:89  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/provider-onboarding/components/IdentityVerification.tsx
+  176:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/provider-onboarding/context/ProviderOnboardingContext.tsx
+  278:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/search/SearchResultsPage.tsx
+  131:79  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/search/components/PriceDrop.tsx
+  52:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/features/search/components/SearchResults.tsx
+  46:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/viswatangella/Desktop/free-apps/arentzo-web/src/shared/context/DrawerContext.tsx
+  73:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+✖ 31 problems (29 errors, 2 warnings)
+

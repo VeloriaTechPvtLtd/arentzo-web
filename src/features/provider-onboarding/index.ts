@@ -1,4 +1,6 @@
-export { ProviderOnboardingPage } from './ProviderOnboardingPage';
-export { ProviderOnboardingPanel } from './ProviderOnboardingPanel';
-export { OnboardingStepper } from './components/OnboardingStepper';
-export { ProviderOnboardingProvider, useProviderOnboarding } from './context/ProviderOnboardingContext';
+export { ProviderOnboardingPage } from './ui/pages/ProviderOnboardingPage';
+export { ProviderOnboardingPanel } from './ui/components/ProviderOnboardingPanel';
+export { OnboardingStepper } from './ui/components/OnboardingStepper';
+export { ProviderOnboardingProvider } from './ui/context/ProviderOnboardingProvider';
+export { useProviderOnboarding } from './ui/hooks/useProviderOnboarding';
+export * from './ui/context/ProviderOnboardingContext';

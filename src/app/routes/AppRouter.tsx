@@ -1,39 +1,34 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { LandingPage } from '../../features/landing/LandingPage';
-import { CustomerHomePage } from '../../features/customer-home/CustomerHomePage';
-import { ProductDetailsPage } from '../../features/customer-home/ProductDetailsPage';
-import { LoginPage } from '../../features/auth/pages/LoginPage';
-import { SignupPage } from '../../features/auth/pages/SignupPage';
-import { ForgotPasswordPage } from '../../features/auth/pages/ForgotPasswordPage';
-import { VerifyOtpPage } from '../../features/auth/pages/VerifyOtpPage';
-import { ResetPasswordPage } from '../../features/auth/pages/ResetPasswordPage';
-import { PasswordResetSuccessPage } from '../../features/auth/pages/PasswordResetSuccessPage';
-import { SearchResultsPage } from '../../features/search/SearchResultsPage';
-import { MyRentalsPage } from '../../features/rentals/MyRentalsPage';
-import { FilterTestPage } from '../../features/filters/FilterTestPage';
+import { CustomerHomePage } from '../../features/customer-home/ui/pages/CustomerHomePage';
+import { ProductDetailsPage } from '../../features/customer-home/ui/pages/ProductDetailsPage';
+import { LoginPage } from '../../features/auth/ui/pages/LoginPage';
+import { SignupPage } from '../../features/auth/ui/pages/SignupPage';
+import { ForgotPasswordPage } from '../../features/auth/ui/pages/ForgotPasswordPage';
+import { VerifyOtpPage } from '../../features/auth/ui/pages/VerifyOtpPage';
+import { ResetPasswordPage } from '../../features/auth/ui/pages/ResetPasswordPage';
+import { PasswordResetSuccessPage } from '../../features/auth/ui/pages/PasswordResetSuccessPage';
+import { SearchResultsPage } from '../../features/search/ui/pages/SearchResultsPage';
+import { MyRentalsPage } from '../../features/rentals/ui/pages/MyRentalsPage';
+import { FilterTestPage } from '../../features/filters/ui/pages/FilterTestPage';
 import { ProviderOnboardingPage } from '../../features/provider-onboarding';
-import { ProviderDashboard } from '../../features/provider-dashboard/ProviderDashboard';
-import { ProviderProductsPage } from '../../features/provider-dashboard/components/ProviderProductsPage';
-import { ProviderOffersPage } from '../../features/provider-dashboard/components/ProviderOffersPage';
-import { ProviderOrdersPage } from '../../features/provider-dashboard/components/ProviderOrdersPage';
-import { ProviderLayout } from '../../features/provider-dashboard/layouts/ProviderLayout';
+import { ProviderDashboard } from '../../features/provider-dashboard/ui/pages/ProviderDashboard';
+import { ProviderProductsPage } from '../../features/provider-dashboard/ui/pages/ProviderProductsPage';
+import { ProviderOffersPage } from '../../features/provider-dashboard/ui/pages/ProviderOffersPage';
+import { ProviderOrdersPage } from '../../features/provider-dashboard/ui/pages/ProviderOrdersPage';
+import { ProviderLayout } from '../../features/provider-dashboard/ui/layouts/ProviderLayout';
 
-import { AboutUsPage } from '../../features/info/pages/AboutUsPage';
-import { ContactUsPage } from '../../features/info/pages/ContactUsPage';
-import { PrivacyPolicyPage } from '../../features/info/pages/PrivacyPolicyPage';
-import { TermsConditionsPage } from '../../features/info/pages/TermsConditionsPage';
-import { FaqPage } from '../../features/info/pages/FaqPage';
+import { AboutUsPage } from '../../features/info/ui/pages/AboutUsPage';
+import { ContactUsPage } from '../../features/info/ui/pages/ContactUsPage';
+import { PrivacyPolicyPage } from '../../features/info/ui/pages/PrivacyPolicyPage';
+import { TermsConditionsPage } from '../../features/info/ui/pages/TermsConditionsPage';
+import { FaqPage } from '../../features/info/ui/pages/FaqPage';
 
 import { RootLayout } from '../../shared/components/layout/RootLayout';
-import { useAuth } from '../../features/auth/context/AuthContext';
 import { StandardErrorBoundary } from '../../shared/components/error/StandardErrorBoundary';
-import { FavoritesPage } from '../../features/favorites/FavoritesPage';
+import { FavoritesPage } from '../../features/favorites/ui/pages/FavoritesPage';
+import { HomeRoute } from './HomeRoute';
 
 
-const HomeRoute = () => {
-    const { user } = useAuth();
-    return user ? <CustomerHomePage /> : <LandingPage />;
-};
 
 export const router = createBrowserRouter([
     {
@@ -106,6 +101,10 @@ export const router = createBrowserRouter([
             },
             {
                 path: '/my-rentals',
+                element: <MyRentalsPage />,
+            },
+            {
+                path: '/my-rentals/:id',
                 element: <MyRentalsPage />,
             },
             {

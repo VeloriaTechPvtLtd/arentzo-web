@@ -1,2 +1,2 @@
-export { MessagesPanel } from './components/MessagesPanel';
-export * from './types';
+export { MessagesPanel } from './ui/components/MessagesPanel';
+export * from './domain/entities/types';

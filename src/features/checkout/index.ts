@@ -1,1 +1,1 @@
-export * from './CheckoutPanel';
+export { CheckoutPanel } from './ui/components/CheckoutPanel';

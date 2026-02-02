@@ -1,12 +1,5 @@
-// Customer Home Feature - Main Export
-export { CustomerHomePage } from './CustomerHomePage';
-export * from './types';
-
-export * from './components/CategoryTabs';
-export * from './components/HeroBanner';
-export * from './components/SubcategoryCards';
-
-export * from './components/ProductsGrid';
-export * from './components/TopSelections';
-
-export * from './components/FloatingCart';
+export { CustomerHomePage } from './ui/pages/CustomerHomePage';
+export { ProductDetailsPage } from './ui/pages/ProductDetailsPage';
+export { CartProvider } from '../../shared/context/CartProvider';
+export { useCart } from '../../shared/hooks/useCart';
+export * from './domain/entities/types';

@@ -1,10 +1,10 @@
 import React from 'react';
-import { useDrawer } from '../../context/DrawerContext';
+import { useDrawer } from '../../hooks/useDrawer';
 import { ProfilePanel } from '../../../features/profile';
 import { CheckoutPanel } from '../../../features/checkout';
 import { MessagesPanel } from '../../../features/messages';
 import { ProviderOnboardingPanel } from '../../../features/provider-onboarding';
-import { SelectDeliveryLocation, type AddressItem } from '../../../features/checkout/components/SelectDeliveryLocation';
+import { SelectDeliveryLocation, type AddressItem } from '../../../features/checkout/ui/components/SelectDeliveryLocation';
 
 export const GlobalDrawers: React.FC = () => {
     const {

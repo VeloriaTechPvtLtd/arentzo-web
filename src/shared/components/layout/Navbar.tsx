@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, User as UserIcon, LogOut, Box } from 'lucide-react';
-import { useAuth } from '../../../features/auth/context/AuthContext';
-import { useDrawer } from '../../context/DrawerContext';
+import { useAuth } from '../../../features/auth/ui/context/AuthContext';
+import { useDrawer } from '../../hooks/useDrawer';
 
 export const Navbar: React.FC = () => {
     const { user, signOut } = useAuth();

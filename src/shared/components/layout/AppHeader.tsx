@@ -1,14 +1,13 @@
 import React from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
     User,
     Search,
-    Mic,
     MessageSquare,
     Box
 } from 'lucide-react';
-import { useAuth } from '../../../features/auth/context/AuthContext';
-import { useDrawer } from '../../context/DrawerContext';
+import { useAuth } from '../../../features/auth/ui/context/AuthContext';
+import { useDrawer } from '../../hooks/useDrawer';
 import './AppHeader.css';
 
 export const AppHeader: React.FC = () => {
@@ -58,16 +57,7 @@ export const AppHeader: React.FC = () => {
                                 <Link to="/provider-dashboard/offers" className="app-header__nav-link">Offers</Link>
                                 <Link to="/provider-dashboard/orders" className="app-header__nav-link">Orders</Link>
                             </nav>
-                        ) : (
-                            // Customer/General Signed-in User
-                            location.pathname !== '/search' && (
-                                <button className="app-header__search" onClick={() => navigate('/search')}>
-                                    <Search size={18} className="app-header__search-icon" />
-                                    <span className="app-header__search-placeholder">Search products...</span>
-                                    <Mic size={18} className="app-header__mic-icon" />
-                                </button>
-                            )
-                        )
+                        ) : null
                     ) : (
                         // Guest User
                         <nav className="app-header__nav">
@@ -82,6 +72,46 @@ export const AppHeader: React.FC = () => {
                 <div className="app-header__right">
                     {user ? (
                         <>
+                            {/* Conditional Search: Bar on Search Page, Icon elsewhere */}
+                            {activeRole !== 'service_provider' && (
+                                location.pathname === '/search' ? (
+                                    <div className="flex-1 w-full max-w-[600px] mx-4">
+                                        <div className="app-header__search">
+                                            <Search size={18} className="app-header__search-icon" />
+                                            <input
+                                                type="text"
+                                                placeholder="Search for furniture, mattresses..."
+                                                defaultValue={new URLSearchParams(location.search).get('q') || ''}
+                                                onChange={(e) => {
+                                                    const query = e.target.value;
+                                                    const searchParams = new URLSearchParams(location.search);
+                                                    if (query) {
+                                                        searchParams.set('q', query);
+                                                    } else {
+                                                        searchParams.delete('q');
+                                                    }
+                                                    // Use replace: true to update URL without adding history entries for every character
+                                                    // casting to any to bypass strict type checking if needed relative path
+                                                    navigate({ search: searchParams.toString() } as any, { replace: true });
+                                                }}
+                                                // Using onKeyDown to handle "Enter" if we want to push navigation history?
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        // Standard navigation
+                                                        // navigate(...)
+                                                    }
+                                                }}
+                                                className="w-full bg-transparent border-none focus:outline-none"
+                                                autoFocus
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <Link to="/search" className="app-header__action-btn" aria-label="Search">
+                                        <Search size={22} />
+                                    </Link>
+                                )
+                            )}
                             <button className="app-header__action-btn" onClick={openMessages} aria-label="Messages">
                                 <MessageSquare size={22} />
                                 <span className="app-header__badge">3</span>

@@ -18,10 +18,10 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 calc(var(--spacing) * 6);
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: calc(var(--spacing) * 8);
+    height: 100%;
 }
 
 /* Left Section */
@@ -80,10 +80,13 @@
 /* Center Section */
 .app-header__center {
     display: flex;
+    justify-content: flex-end;
+    /* Align search icon near actions if needed, or center? Let's use auto margins if we want absolute center, but flex layout standard suggests simple flow. */
+    flex: 1;
+    padding: 0 calc(var(--spacing) * 4);
     justify-content: center;
 }
 
-/* Navigation Links */
 .app-header__nav {
     display: flex;
     align-items: center;
@@ -132,22 +135,27 @@
     transition: all 0.2s ease;
 }
 
-.app-header__search:hover {
+.app-header__search:hover,
+.app-header__search:focus-within {
     border-color: var(--primary);
     box-shadow: var(--shadow-sm);
 }
 
-.app-header__search-placeholder {
-    flex: 1;
-    text-align: left;
+.app-header__search input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
     font-size: 0.875rem;
+    color: var(--foreground);
+    line-height: 1.5;
+}
+
+.app-header__search-icon {
     color: var(--muted-foreground);
 }
 
-.app-header__search-icon,
-.app-header__mic-icon {
-    color: var(--muted-foreground);
-}
+
 
 /* Right Section */
 .app-header__right {
@@ -242,50 +250,108 @@
     z-index: 2;
 }
 
+.app-header__auth-btns {
+    display: flex;
+    gap: calc(var(--spacing) * 3);
+}
+
+.app-header__login-btn,
+.app-header__signup-btn {
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 5);
+    border-radius: var(--radius-lg);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.app-header__login-btn {
+    background: transparent;
+    color: var(--foreground);
+    border: none;
+}
+
+.app-header__login-btn:hover {
+    background: var(--secondary);
+    color: var(--primary);
+}
+
+.app-header__signup-btn {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.app-header__signup-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+
 /* Mobile Adjustments */
 @media (max-width: 768px) {
     .app-header {
-        height: auto;
-        min-height: 72px;
-        padding: calc(var(--spacing) * 3) 0;
+        height: 64px;
+        /* Reduced height for mobile */
+        padding: 0;
     }
 
     .app-header__container {
-        grid-template-columns: 1fr auto;
-        grid-template-rows: auto auto;
-        gap: calc(var(--spacing) * 4);
         padding: 0 calc(var(--spacing) * 4);
+        /* Flex layout inherited from base styles works for single row */
+        gap: calc(var(--spacing) * 2);
     }
 
-    .app-header__left {
-        grid-row: 1;
-        grid-column: 1;
+    .app-header__greeting,
+    .app-header__location {
+        display: none;
+        /* Hide extra info on mobile */
     }
 
-    .app-header__right {
-        grid-row: 1;
-        grid-column: 2;
+    .app-header__logo-text {
+        font-size: 1rem;
+        /* Smaller text */
+    }
+
+    .app-header__logo-icon {
+        width: 32px;
+        height: 32px;
     }
 
     .app-header__center {
-        grid-row: 2;
-        grid-column: span 2;
-        width: 100%;
-        display: flex;
-        justify-content: center;
+        /* On mobile, we might want the search icon to be part of the right actions cluster visually, 
+           or keep it center. Since the request asked for search icon instead of bar, 
+           having it in the center or pushed right is fine. 
+           Let's push it to the right with the other actions to save space if needed, 
+           or keep it center but minimal.
+        */
+        justify-content: flex-end;
+        padding-right: calc(var(--spacing) * 2);
+    }
+
+    .app-header__nav {
+        display: none;
     }
 
     .app-header__avatar {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
     }
 
     .app-header__action-btn {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
     }
 
-    .app-header--service-provider .app-header__nav {
-        display: none;
+    .app-header__auth-btns {
+        gap: calc(var(--spacing) * 2);
+    }
+
+    .app-header__login-btn,
+    .app-header__signup-btn {
+        padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3);
+        font-size: 0.875rem;
     }
 }

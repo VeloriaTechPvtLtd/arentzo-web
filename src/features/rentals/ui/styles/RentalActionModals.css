@@ -1,0 +1,719 @@
+/* Rental Action Modals - Shared Styles */
+
+/* Base Modal Overlay */
+.rental-action-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    background: var(--background);
+    animation: fadeIn 0.2s ease-out;
+}
+
+@media (min-width: 640px) {
+    .rental-action-modal {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+}
+
+/* Modal Container */
+.rental-action-modal__container {
+    width: 100%;
+    height: 100%;
+    background: var(--background);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+@media (min-width: 640px) {
+    .rental-action-modal__container {
+        max-width: 500px;
+        max-height: 85vh;
+        height: auto;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-2xl);
+        animation: slideUp 0.3s ease-out;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Modal Header */
+.rental-action-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    flex-shrink: 0;
+}
+
+.rental-action-modal__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.rental-action-modal__close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--secondary);
+    color: var(--foreground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rental-action-modal__close-btn:hover {
+    background: var(--muted);
+    transform: scale(1.05);
+}
+
+/* Modal Content */
+.rental-action-modal__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Modal Footer */
+.rental-action-modal__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Form Elements */
+.rental-action-modal__form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rental-action-modal__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.rental-action-modal__select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+}
+
+.rental-action-modal__select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+.rental-action-modal__textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.rental-action-modal__textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+.rental-action-modal__textarea::placeholder {
+    color: var(--muted-foreground);
+}
+
+.rental-action-modal__input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    transition: border-color 0.2s;
+}
+
+.rental-action-modal__input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Button Variants */
+.rental-action-modal__btn {
+    flex: 1;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.rental-action-modal__btn--primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.rental-action-modal__btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.rental-action-modal__btn--primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.rental-action-modal__btn--secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+}
+
+.rental-action-modal__btn--secondary:hover {
+    background: var(--secondary);
+}
+
+.rental-action-modal__btn--destructive {
+    background: var(--destructive);
+    color: var(--destructive-foreground);
+    border: none;
+}
+
+.rental-action-modal__btn--destructive:hover {
+    opacity: 0.9;
+}
+
+/* Info Card */
+.rental-action-modal__info-card {
+    background: var(--secondary);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+}
+
+.rental-action-modal__info-card--warning {
+    background: oklch(0.96 0.04 70);
+    border: 1px solid oklch(0.85 0.12 70);
+}
+
+.dark .rental-action-modal__info-card--warning {
+    background: oklch(0.3 0.04 70);
+    border: 1px solid oklch(0.4 0.08 70);
+}
+
+.rental-action-modal__info-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rental-action-modal__info-icon--warning {
+    background: oklch(0.75 0.15 70);
+}
+
+.rental-action-modal__info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.rental-action-modal__info-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.rental-action-modal__info-value {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--foreground);
+    line-height: 1.3;
+}
+
+/* Upload Area */
+.rental-action-modal__upload-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rental-action-modal__upload-area:hover {
+    border-color: var(--primary);
+    background: var(--secondary);
+}
+
+.rental-action-modal__upload-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--secondary);
+    color: var(--muted-foreground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rental-action-modal__upload-text {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    text-align: center;
+}
+
+.rental-action-modal__upload-text strong {
+    color: var(--primary);
+}
+
+/* Star Rating */
+.rental-action-modal__star-rating {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.rental-action-modal__star {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    color: var(--border);
+    transition: all 0.2s;
+}
+
+.rental-action-modal__star:hover {
+    transform: scale(1.1);
+}
+
+.rental-action-modal__star--filled {
+    color: oklch(0.78 0.16 80);
+}
+
+.rental-action-modal__star svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+.rental-action-modal__rating-label {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+    min-height: 1.5rem;
+}
+
+/* Quick Tags */
+.rental-action-modal__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.rental-action-modal__tag {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rental-action-modal__tag:hover {
+    background: var(--secondary);
+}
+
+.rental-action-modal__tag--selected {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-color: var(--primary);
+}
+
+/* QR Code Container */
+.rental-action-modal__qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+}
+
+.rental-action-modal__qr-code {
+    width: 200px;
+    height: 200px;
+    background: var(--muted);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rental-action-modal__qr-id {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--foreground);
+    padding: 0.5rem 1rem;
+    background: var(--secondary);
+    border-radius: var(--radius);
+}
+
+/* Contact Options */
+.rental-action-modal__contact-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.rental-action-modal__contact-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rental-action-modal__contact-option:hover {
+    background: var(--secondary);
+    border-color: var(--primary);
+}
+
+.rental-action-modal__contact-option svg {
+    color: var(--primary);
+}
+
+.rental-action-modal__contact-option span {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--foreground);
+}
+
+/* Duration Selector */
+.rental-action-modal__duration-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+    .rental-action-modal__duration-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.rental-action-modal__duration-option {
+    padding: 0.875rem 0.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.rental-action-modal__duration-option:hover {
+    border-color: var(--primary);
+}
+
+.rental-action-modal__duration-option--selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.rental-action-modal__duration-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.rental-action-modal__duration-label {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+/* Cost Display */
+.rental-action-modal__cost-display {
+    background: var(--secondary);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rental-action-modal__cost-label {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+.rental-action-modal__cost-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Reason Tags */
+.rental-action-modal__reason-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Success State */
+.rental-action-modal__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    gap: 1rem;
+    flex: 1;
+}
+
+.rental-action-modal__success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: oklch(0.9 0.1 140);
+    color: oklch(0.5 0.2 140);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.rental-action-modal__success-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.rental-action-modal__success-text {
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* Product Preview Card */
+.rental-action-modal__product-preview {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--secondary);
+    border-radius: var(--radius-lg);
+}
+
+.rental-action-modal__product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.rental-action-modal__product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.rental-action-modal__product-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rental-action-modal__product-provider {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Date Picker Area */
+.rental-action-modal__date-picker {
+    display: flex;
+    gap: 1rem;
+}
+
+@media (max-width: 480px) {
+    .rental-action-modal__date-picker {
+        flex-direction: column;
+    }
+}
+
+.rental-action-modal__date-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rental-action-modal__date-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    font-family: inherit;
+}
+
+.rental-action-modal__date-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* FAQ Links */
+.rental-action-modal__faq-section {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+}
+
+.rental-action-modal__faq-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.75rem;
+}
+
+.rental-action-modal__faq-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rental-action-modal__faq-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem;
+    border-radius: var(--radius);
+    color: var(--foreground);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.rental-action-modal__faq-link:hover {
+    background: var(--secondary);
+}
+
+.rental-action-modal__faq-link svg {
+    color: var(--primary);
+    flex-shrink: 0;
+}

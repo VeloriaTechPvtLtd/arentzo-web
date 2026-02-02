@@ -1,0 +1,222 @@
+/* My Rentals Page Styles */
+
+/* ==========================================
+   Page Layout
+   ========================================== */
+
+.my-rentals-page {
+    min-height: 100vh;
+    background-color: var(--background);
+    padding-top: 64px;
+    /* Default mobile header height */
+    padding-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+    .my-rentals-page {
+        padding-top: 72px;
+        /* Desktop header height */
+    }
+}
+
+/* ==========================================
+   Header & Tabs
+   ========================================== */
+
+.my-rentals-header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 64px;
+    /* Below global app header */
+    z-index: 40;
+}
+
+@media (min-width: 768px) {
+    .my-rentals-header {
+        top: 72px;
+    }
+}
+
+.my-rentals-header__tabs {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* Rental Tabs (Matching Category Tabs) */
+.rental-tabs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    /* Removed vertical padding */
+}
+
+/* Back button removed, keeping class for potential future use or cleanup */
+.rental-tabs__back-btn {
+    display: none;
+}
+
+.rental-tabs__container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+    padding: 4px 0 0;
+    /* Removed bottom padding */
+    margin-bottom: -1px;
+    /* Align indicator flush with border */
+}
+
+.rental-tabs__container::-webkit-scrollbar {
+    display: none;
+}
+
+.rental-tabs__tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    /* Reduced gap */
+    padding: 8px 16px;
+    /* Reduced padding */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted-foreground);
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.2s;
+    min-width: 60px;
+    /* Slightly more compact */
+}
+
+.rental-tabs__tab:hover {
+    color: var(--foreground);
+}
+
+.rental-tabs__tab--active {
+    color: var(--foreground);
+}
+
+.rental-tabs__icon {
+    width: 28px;
+    /* Reduced icon container size */
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.rental-tabs__tab--active .rental-tabs__icon {
+    background: var(--primary);
+    color: white;
+}
+
+.rental-tabs__label {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.rental-tabs__indicator {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    /* Adjusted width */
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px 3px 0 0;
+}
+
+/* ==========================================
+   Content Grid
+   ========================================== */
+
+.rentals-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+.rentals-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 640px) {
+    .rentals-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+}
+
+/* ==========================================
+   Empty State
+   ========================================== */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    margin-top: 1rem;
+}
+
+.empty-state__icon {
+    width: 80px;
+    height: 80px;
+    background: var(--secondary);
+    /* Using secondary for softer background */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-foreground);
+    margin-bottom: 24px;
+}
+
+.empty-state h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin: 0 0 8px 0;
+}
+
+.empty-state p {
+    color: var(--muted-foreground);
+    margin-bottom: 24px;
+    font-size: 0.9375rem;
+    max-width: 320px;
+    line-height: 1.5;
+}
+
+.browse-btn {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.browse-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
