@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { mockProducts } from '../../infrastructure/api/mockData';
-import { CustomerLayout } from '../layouts/CustomerLayout';
 import { useCart } from '../../../../shared/hooks/useCart';
 import { ProductGallery } from '../components/product-details/ProductGallery';
 import { ProductInfo } from '../components/product-details/ProductInfo';
@@ -11,6 +11,7 @@ import '../styles/CustomerHome.css';
 
 export const ProductDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
     const { addToCart, items: cartItems, updateQuantity } = useCart();
 
     const product = useMemo(() => {
@@ -41,45 +42,43 @@ export const ProductDetailsPage: React.FC = () => {
 
     if (!product) {
         return (
-            <CustomerLayout>
-                <div className="product-details-page">
-                    <div className="product-not-found">
-                        <h2>Product not found</h2>
-                        <a href="/home" className="back-button">
-                            <ArrowLeft size={20} />
-                            Back to Home
-                        </a>
-                    </div>
+            <div className="product-details-page">
+                <BackHeader title="Product Details" />
+                <div className="product-not-found">
+                    <h2>Product not found</h2>
+                    <button onClick={() => navigate('/browse')} className="back-button">
+                        <ArrowLeft size={20} />
+                        Browse Products
+                    </button>
                 </div>
-            </CustomerLayout>
+            </div>
         );
     }
 
     return (
-        <CustomerLayout>
-            <div className="product-details-page">
-                <main className="product-details-content">
-                    <div className="product-details-container">
-                        <div className="product-main-section">
-                            <ProductGallery
-                                images={product.images || [product.image, product.image, product.image]}
-                                name={product.name}
-                                isImported={product.isImported}
-                                specifications={product.specifications}
-                            />
+        <div className="product-details-page">
+            <BackHeader title="Product Details" />
+            <main className="product-details-content">
+                <div className="product-details-container">
+                    <div className="product-main-section">
+                        <ProductGallery
+                            images={product.images || [product.image, product.image, product.image]}
+                            name={product.name}
+                            isImported={product.isImported}
+                            specifications={product.specifications}
+                        />
 
-                            <ProductInfo
-                                product={product}
-                                quantity={quantity}
-                                onQuantityChange={handleQuantityChange}
-                                onAddToCart={handleAddToCart}
-                            />
-                        </div>
+                        <ProductInfo
+                            product={product}
+                            quantity={quantity}
+                            onQuantityChange={handleQuantityChange}
+                            onAddToCart={handleAddToCart}
+                        />
                     </div>
+                </div>
 
-                    <RelatedProducts products={relatedProducts} />
-                </main>
-            </div>
-        </CustomerLayout>
+                <RelatedProducts products={relatedProducts} />
+            </main>
+        </div>
     );
 };

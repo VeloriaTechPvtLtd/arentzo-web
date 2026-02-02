@@ -2415,9 +2415,10 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--home-card-bg);
+    background: var(--card);
     padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid var(--border);
     z-index: 1000;
 }
 

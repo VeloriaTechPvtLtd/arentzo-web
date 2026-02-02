@@ -194,16 +194,66 @@ export const ProviderProductsPage: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-
-                {filteredProducts.length === 0 && (
-                    <div className="no-results">
-                        <p>No products found matching your criteria.</p>
-                        <button onClick={resetFilters} className="text-primary hover:underline mt-2">
-                            Clear all filters
-                        </button>
-                    </div>
-                )}
             </div>
+
+            {/* Mobile Card View */}
+            <div className="products-mobile-cards">
+                {filteredProducts.map((product) => (
+                    <div key={product.id} className="product-mobile-card">
+                        <div className="product-mobile-card__header">
+                            <div className="product-mobile-card__info">
+                                <img src={product.image} alt={product.name} className="product-mobile-card__image" />
+                                <div className="product-mobile-card__main">
+                                    <span className="product-mobile-card__name">{product.name}</span>
+                                    <span className="product-mobile-card__id">{product.id}</span>
+                                </div>
+                            </div>
+                            <button className="icon-btn">
+                                <MoreVertical size={18} />
+                            </button>
+                        </div>
+
+                        <div className="product-mobile-card__body">
+                            <div className="product-mobile-card__grid">
+                                <div className="product-mobile-card__field">
+                                    <span className="field-label">Price</span>
+                                    <span className="price-value">{formatCurrency(product.price)}</span>
+                                </div>
+                                <div className="product-mobile-card__field">
+                                    <span className="field-label">Stock</span>
+                                    <span className="stock-value">{product.stock} units</span>
+                                </div>
+                                <div className="product-mobile-card__field">
+                                    <span className="field-label">Category</span>
+                                    <span className="text-sm font-medium">{product.category}</span>
+                                </div>
+                                <div className="product-mobile-card__field">
+                                    <span className="field-label">Status</span>
+                                    <div className="flex gap-1.5 flex-wrap">
+                                        <span className={`status-pill ${product.status}`}>
+                                            {product.status.replace('_', ' ').charAt(0).toUpperCase() + product.status.replace('_', ' ').slice(1)}
+                                        </span>
+                                        {product.condition && (
+                                            <span className="text-[10px] font-semibold text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-200 uppercase">
+                                                {product.condition.replace('_', ' ')}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {filteredProducts.length === 0 && (
+                <div className="no-results">
+                    <p>No products found matching your criteria.</p>
+                    <button onClick={resetFilters} className="text-primary hover:underline mt-2">
+                        Clear all filters
+                    </button>
+                </div>
+            )}
 
             {showAddProduct && (
                 <AddProductForm

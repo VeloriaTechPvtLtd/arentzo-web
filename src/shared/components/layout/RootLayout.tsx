@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { AppHeader } from './AppHeader';
 import { GlobalDrawers } from './GlobalDrawers';
 
 // Root layout component that handles scroll-to-top on route change
+// Note: Headers are now handled by MainLayout and DetailLayout
 export const RootLayout = () => {
     const { pathname } = useLocation();
 
@@ -13,7 +13,6 @@ export const RootLayout = () => {
 
     return (
         <>
-            <AppHeader />
             <Outlet />
             <GlobalDrawers />
         </>

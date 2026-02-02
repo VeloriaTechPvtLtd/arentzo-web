@@ -120,13 +120,62 @@ export const ProviderOffersPage: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-
-                {filteredOffers.length === 0 && (
-                    <div className="no-results">
-                        <p>No offers found matching your criteria.</p>
-                    </div>
-                )}
             </div>
+
+            {/* Mobile Card View */}
+            <div className="offers-mobile-cards">
+                {filteredOffers.map((offer) => (
+                    <div key={offer.id} className="offer-mobile-card">
+                        <div className="offer-mobile-card__header">
+                            <div className="offer-mobile-card__info">
+                                <div className="promo-icon">
+                                    <Tag size={18} />
+                                </div>
+                                <div className="promo-text">
+                                    <span className="promo-title text-sm font-bold">{offer.title}</span>
+                                    <span className="promo-id text-xs text-muted-foreground">{offer.id}</span>
+                                </div>
+                            </div>
+                            <button className="icon-btn">
+                                <MoreVertical size={18} />
+                            </button>
+                        </div>
+
+                        <div className="offer-mobile-card__body">
+                            <div className="offer-mobile-card__grid">
+                                <div className="offer-mobile-card__field">
+                                    <span className="field-label">Promo Code</span>
+                                    <code className="promo-code">{offer.code}</code>
+                                </div>
+                                <div className="offer-mobile-card__field">
+                                    <span className="field-label">Value</span>
+                                    <span className="text-sm font-bold text-primary">
+                                        {offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' OFF'}
+                                    </span>
+                                </div>
+                                <div className="offer-mobile-card__field">
+                                    <span className="field-label">Validity</span>
+                                    <span className="text-xs font-medium text-foreground">
+                                        {formatDate(offer.startDate)} - {formatDate(offer.endDate)}
+                                    </span>
+                                </div>
+                                <div className="offer-mobile-card__field">
+                                    <span className="field-label">Status</span>
+                                    <span className={`status-pill ${offer.status}`}>
+                                        {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {filteredOffers.length === 0 && (
+                <div className="no-results">
+                    <p>No offers found matching your criteria.</p>
+                </div>
+            )}
         </div>
     );
 };

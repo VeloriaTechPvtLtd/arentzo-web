@@ -2,7 +2,9 @@ import React from 'react';
 import {
     Search,
     Filter,
-    MoreVertical
+    MoreVertical,
+    Calendar,
+    User
 } from 'lucide-react';
 import { mockOrders } from '../../infrastructure/api/ordersMockData';
 import { useProviderFilters } from '../hooks/useProviderFilters';
@@ -256,16 +258,88 @@ export const ProviderOrdersPage: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-
-                {filteredOrders.length === 0 && (
-                    <div className="no-results">
-                        <p>No rentals found matching your criteria.</p>
-                        <button onClick={resetFilters} className="text-primary hover:underline mt-2">
-                            Clear all filters
-                        </button>
-                    </div>
-                )}
             </div>
+
+            {/* Mobile Card View */}
+            <div className="orders-mobile-cards">
+                {filteredOrders.map((order) => (
+                    <div key={order.id} className="order-mobile-card">
+                        <div className="order-mobile-card__header">
+                            <div className="order-mobile-card__info">
+                                <img src={order.image} alt={order.productName} className="order-mobile-card__image" />
+                                <div className="order-mobile-card__main">
+                                    <span className="order-mobile-card__name text-sm font-bold">{order.productName}</span>
+                                    <span className="order-mobile-card__id text-xs text-muted-foreground">{order.id}</span>
+                                </div>
+                            </div>
+                            <button className="icon-btn">
+                                <MoreVertical size={18} />
+                            </button>
+                        </div>
+
+                        <div className="order-mobile-card__body">
+                            <div className="order-mobile-card__grid">
+                                <div className="order-mobile-card__field">
+                                    <span className="field-label">Status</span>
+                                    <span className={`status-pill ${getStatusColor(order.rentalStatus)}`}>
+                                        {order.rentalStatus.charAt(0).toUpperCase() + order.rentalStatus.slice(1)}
+                                    </span>
+                                </div>
+                                <div className="order-mobile-card__field">
+                                    <span className="field-label">Return Due</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <Calendar size={12} className="text-muted-foreground" />
+                                        <span className="text-sm font-medium">{formatDate(order.returnDate)}</span>
+                                    </div>
+                                </div>
+                                <div className="order-mobile-card__field">
+                                    <span className="field-label">Customer</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <User size={12} className="text-muted-foreground" />
+                                        <span className="text-sm font-medium truncate">{order.customerName}</span>
+                                    </div>
+                                </div>
+                                <div className="order-mobile-card__field">
+                                    <span className="field-label">Total Amount</span>
+                                    <span className="text-sm font-bold text-primary">{formatCurrency(order.totalAmount)}</span>
+                                </div>
+                            </div>
+
+                            <div className="order-mobile-card__footer">
+                                <span className={`text-[10px] font-medium px-2 py-1 rounded-md border ${order.deliveryMethod === 'delivery'
+                                    ? 'bg-purple-50 text-purple-700 border-purple-200'
+                                    : 'bg-orange-50 text-orange-700 border-orange-200'
+                                    }`}>
+                                    {order.deliveryMethod.toUpperCase()}
+                                </span>
+                                <div className="flex gap-1">
+                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                                        }`}>
+                                        {order.paymentStatus.toUpperCase()}
+                                    </span>
+                                    {order.depositStatus !== 'n/a' && (
+                                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.depositStatus === 'held' ? 'bg-blue-100 text-blue-700' :
+                                            order.depositStatus === 'deducted' ? 'bg-red-100 text-red-700' :
+                                                'bg-gray-100 text-gray-700'
+                                            }`}>
+                                            DEP: {order.depositStatus.toUpperCase()}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {filteredOrders.length === 0 && (
+                <div className="no-results">
+                    <p>No rentals found matching your criteria.</p>
+                    <button onClick={resetFilters} className="text-primary hover:underline mt-2">
+                        Clear all filters
+                    </button>
+                </div>
+            )}
 
             <ProviderFilterModal
                 isOpen={isOpen}

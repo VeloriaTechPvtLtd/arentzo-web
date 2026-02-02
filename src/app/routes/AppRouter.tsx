@@ -9,6 +9,7 @@ import { ResetPasswordPage } from '../../features/auth/ui/pages/ResetPasswordPag
 import { PasswordResetSuccessPage } from '../../features/auth/ui/pages/PasswordResetSuccessPage';
 import { SearchResultsPage } from '../../features/search/ui/pages/SearchResultsPage';
 import { MyRentalsPage } from '../../features/rentals/ui/pages/MyRentalsPage';
+import { RentalDetailPage } from '../../features/rentals/ui/pages/RentalDetailPage';
 import { FilterTestPage } from '../../features/filters/ui/pages/FilterTestPage';
 import { ProviderOnboardingPage } from '../../features/provider-onboarding';
 import { ProviderDashboard } from '../../features/provider-dashboard/ui/pages/ProviderDashboard';
@@ -23,16 +24,16 @@ import { PrivacyPolicyPage } from '../../features/info/ui/pages/PrivacyPolicyPag
 import { TermsConditionsPage } from '../../features/info/ui/pages/TermsConditionsPage';
 import { FaqPage } from '../../features/info/ui/pages/FaqPage';
 
-import { RootLayout } from '../../shared/components/layout/RootLayout';
+import { MainLayout } from '../../shared/components/layout/MainLayout';
+import { DetailLayout } from '../../shared/components/layout/DetailLayout';
 import { StandardErrorBoundary } from '../../shared/components/error/StandardErrorBoundary';
 import { FavoritesPage } from '../../features/favorites/ui/pages/FavoritesPage';
 import { HomeRoute } from './HomeRoute';
 
-
-
 export const router = createBrowserRouter([
+    // Main Layout Routes (with AppHeader)
     {
-        element: <RootLayout />,
+        element: <MainLayout />,
         errorElement: <StandardErrorBoundary />,
         children: [
             {
@@ -46,10 +47,6 @@ export const router = createBrowserRouter([
             {
                 path: '/home',
                 element: <Navigate to="/" replace />,
-            },
-            {
-                path: '/product/:id',
-                element: <ProductDetailsPage />,
             },
             {
                 path: '/about-us',
@@ -71,6 +68,48 @@ export const router = createBrowserRouter([
                 path: '/faqs',
                 element: <FaqPage />,
             },
+            {
+                path: '/my-rentals',
+                element: <MyRentalsPage />,
+            },
+            {
+                path: '/favorites',
+                element: <FavoritesPage />,
+            },
+            {
+                path: '/filters-test',
+                element: <FilterTestPage />,
+            },
+            {
+                path: '/provider-onboarding',
+                element: <ProviderOnboardingPage />,
+            },
+        ]
+    },
+    // Detail Layout Routes (with BackHeader - no main AppHeader)
+    {
+        element: <DetailLayout />,
+        errorElement: <StandardErrorBoundary />,
+        children: [
+            {
+                path: '/search',
+                element: <SearchResultsPage />,
+            },
+            {
+                path: '/product/:id',
+                element: <ProductDetailsPage />,
+            },
+            {
+                path: '/my-rentals/:id',
+                element: <RentalDetailPage />,
+            },
+        ]
+    },
+    // Auth Routes (no layout header needed)
+    {
+        element: <DetailLayout />,
+        errorElement: <StandardErrorBoundary />,
+        children: [
             {
                 path: '/login',
                 element: <LoginPage />,
@@ -95,36 +134,9 @@ export const router = createBrowserRouter([
                 path: '/password-reset-success',
                 element: <PasswordResetSuccessPage />,
             },
-            {
-                path: '/search',
-                element: <SearchResultsPage />,
-            },
-            {
-                path: '/my-rentals',
-                element: <MyRentalsPage />,
-            },
-            {
-                path: '/my-rentals/:id',
-                element: <MyRentalsPage />,
-            },
-            {
-                path: '/filters-test',
-                element: <FilterTestPage />,
-            },
-            {
-                path: '/provider-onboarding',
-                element: <ProviderOnboardingPage />,
-            },
-            {
-                path: '/favorites',
-                element: <FavoritesPage />,
-            },
-            {
-                path: '*',
-                element: <div>404 Not Found</div>,
-            }
         ]
     },
+    // Provider Dashboard (has its own layout)
     {
         path: '/provider-dashboard',
         element: <ProviderLayout />,
@@ -147,5 +159,10 @@ export const router = createBrowserRouter([
                 element: <ProviderOrdersPage />,
             }
         ]
+    },
+    // 404 fallback
+    {
+        path: '*',
+        element: <div>404 Not Found</div>,
     }
 ]);

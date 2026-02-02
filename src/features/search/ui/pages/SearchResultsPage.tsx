@@ -1,5 +1,7 @@
-import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Search as SearchIcon, X } from 'lucide-react';
+import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { ProductCard } from '../../../../shared/components/ui/ProductCard';
 import { FilterBar } from '../components/FilterBar';
 import { RecentSearches } from '../components/RecentSearches';
@@ -19,7 +21,7 @@ const MOCK_PRODUCTS = [
         image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=300',
         rating: 5,
         reviewCount: 142,
-        price: 3299900, // converted to cents
+        price: 3299900,
         isImported: true,
         isFavorite: false,
     },
@@ -91,44 +93,91 @@ const MOCK_BROWSING_ITEMS = [
     }
 ];
 
-
-// ... (previous code)
-
 export const SearchResultsPage: React.FC = () => {
-    const [searchParams] = useSearchParams();
-    const searchQuery = searchParams.get('q') || '';
-    const showResults = searchQuery.length > 0;
+    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
+    const showResults = searchValue.length > 0;
 
     const { items, totalItems } = useCart();
     const { openCheckout } = useDrawer();
 
+    const handleSearchChange = (value: string) => {
+        setSearchValue(value);
+        const newParams = new URLSearchParams(searchParams);
+        if (value) {
+            newParams.set('q', value);
+        } else {
+            newParams.delete('q');
+        }
+        setSearchParams(newParams, { replace: true });
+    };
+
+    const handleClearSearch = () => {
+        setSearchValue('');
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('q');
+        setSearchParams(newParams, { replace: true });
+    };
+
+    const renderSearchInput = () => (
+        <div className="search-header-input">
+            <div className="search-header-input__field">
+                {!searchValue && <SearchIcon className="search-header-input__icon" size={18} />}
+                <input
+                    type="text"
+                    value={searchValue}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    placeholder="Search for furniture, mattresses..."
+                    className="search-header-input__input"
+                    autoFocus
+                />
+                {searchValue && (
+                    <button
+                        onClick={handleClearSearch}
+                        className="search-header-input__clear"
+                        aria-label="Clear search"
+                    >
+                        <X size={18} />
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+
     return (
-        <div className="bg-[var(--background)] min-h-screen pb-24 pt-[72px]">
+        <div className="search-results-page">
+            <BackHeader
+                title=""
+                rightElement={renderSearchInput()}
+                onBack={() => navigate(-1)}
+            />
 
-
-            {!showResults ? (
-                <div className="max-w-2xl mx-auto animate-fade-in">
-                    <RecentSearches
-                        searches={MOCK_RECENT_SEARCHES}
-                        onSelect={(s) => window.location.href = `/search?q=${encodeURIComponent(s.label)}`}
-                        onClear={() => { }}
-                    />
-                    <ContinueBrowsing items={MOCK_BROWSING_ITEMS} />
-                    <PriceDrop items={[]} />
-                </div>
-            ) : (
-                <div className="animate-fade-in">
-                    <div className="sticky top-[72px] z-10 bg-[var(--background)]/80 backdrop-blur-md border-b border-[var(--border)] mb-4">
-                        <FilterBar />
+            <main className="search-results-page__content">
+                {!showResults ? (
+                    <div className="search-results-page__suggestions">
+                        <RecentSearches
+                            searches={MOCK_RECENT_SEARCHES}
+                            onSelect={(s) => handleSearchChange(s.label)}
+                            onClear={() => { }}
+                        />
+                        <ContinueBrowsing items={MOCK_BROWSING_ITEMS} />
+                        <PriceDrop items={[]} />
                     </div>
+                ) : (
+                    <div className="search-results-page__results">
+                        <div className="search-results-page__filter-bar">
+                            <FilterBar />
+                        </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4">
-                        {MOCK_PRODUCTS.map((product) => (
-                            <ProductCard key={product.id} product={product as Product} />
-                        ))}
+                        <div className="search-results-page__grid">
+                            {MOCK_PRODUCTS.map((product) => (
+                                <ProductCard key={product.id} product={product as Product} />
+                            ))}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </main>
 
             {items.length > 0 && (
                 <FloatingCart

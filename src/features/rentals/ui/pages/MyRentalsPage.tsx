@@ -1,29 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, History, Clock, CheckCircle2, Box, AlertCircle, LayoutGrid } from 'lucide-react';
 import { RentalCard } from '../components/RentalCard';
 import { RentalTabs } from '../components/RentalTabs';
-import { RentalDetailModal } from '../components/RentalDetailModal';
 import { mockRentals } from '../../infrastructure/api/mockRentals';
-import type { Rental, RentalStatus } from '../../domain/entities';
+import type { RentalStatus } from '../../domain/entities';
 import '../styles/MyRentalsPage.css';
 
 export const MyRentalsPage: React.FC = () => {
     const navigate = useNavigate();
-    const { id: rentalIdFromUrl } = useParams<{ id?: string }>();
     const [activeTab, setActiveTab] = useState<RentalStatus | 'all'>('all');
-    const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
-
-    useEffect(() => {
-        if (rentalIdFromUrl) {
-            const rental = mockRentals.find(r => r.id === rentalIdFromUrl);
-            if (rental) {
-                setSelectedRental(rental);
-            }
-        } else {
-            setSelectedRental(null);
-        }
-    }, [rentalIdFromUrl]);
 
     const filteredRentals = mockRentals.filter(rental => {
         return activeTab === 'all' || rental.status === activeTab;
@@ -38,16 +24,8 @@ export const MyRentalsPage: React.FC = () => {
         { id: 'cancelled', label: 'Cancelled', icon: History },
     ];
 
-    const handleBack = () => {
-        navigate(-1);
-    };
-
     const handleRentalClick = (rentalId: string) => {
         navigate(`/my-rentals/${rentalId}`);
-    };
-
-    const handleCloseModal = () => {
-        navigate('/my-rentals');
     };
 
     return (
@@ -58,7 +36,6 @@ export const MyRentalsPage: React.FC = () => {
                         tabs={tabs}
                         activeTab={activeTab}
                         onTabChange={setActiveTab}
-                        onBack={handleBack}
                     />
                 </div>
             </header>
@@ -87,14 +64,6 @@ export const MyRentalsPage: React.FC = () => {
                     </div>
                 )}
             </main>
-
-            {selectedRental && (
-                <RentalDetailModal
-                    rental={selectedRental}
-                    isOpen={true}
-                    onClose={handleCloseModal}
-                />
-            )}
         </div>
     );
 };

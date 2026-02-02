@@ -4,8 +4,6 @@ import { RentalOptions } from './RentalOptions';
 import { SellerProfile } from './SellerProfile';
 import { RentalTerms } from './RentalTerms';
 import { CustomerReviews } from './CustomerReviews';
-import { SimilarProducts } from './SimilarProducts';
-import { mockProducts } from '../../../infrastructure/api/mockData';
 import type { Product } from '../../../domain/entities/types';
 
 interface ProductInfoProps {
@@ -56,8 +54,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
             {product.seller && <SellerProfile seller={product.seller} />}
 
             {product.terms && <RentalTerms terms={product.terms} />}
-
-            <SimilarProducts products={mockProducts.filter(p => p.id !== product.id)} />
 
             {product.reviews && <CustomerReviews reviews={product.reviews} />}
 
