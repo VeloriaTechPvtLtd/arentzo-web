@@ -75,7 +75,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSucce
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    showPasswordToggle={true}
+
                     required
                 />
 
@@ -85,7 +85,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSucce
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    showPasswordToggle={true}
+
                     required
                 />
 

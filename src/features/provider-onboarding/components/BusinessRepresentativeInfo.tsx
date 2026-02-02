@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Camera, CloudUpload } from 'lucide-react';
+import { CloudUpload } from 'lucide-react';
 import { useProviderOnboarding } from '../context/ProviderOnboardingContext';
 
 export const BusinessRepresentativeInfo: React.FC = () => {

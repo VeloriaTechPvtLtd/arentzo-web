@@ -22,8 +22,9 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
     });
     const [selectedAddress, setSelectedAddress] = useState<AddressItem>({
         id: 'home',
-        type: 'Home',
-        address: 'Kalyani Business Centre, 3rd Floor, Office...'
+        label: 'Home',
+        address: 'Kalyani Business Centre, 3rd Floor, Office...',
+        phone: '1234567890'
     });
     const [couponApplied, setCouponApplied] = useState(true);
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);

@@ -5,7 +5,7 @@ export * from './types';
 export * from './components/CategoryTabs';
 export * from './components/HeroBanner';
 export * from './components/SubcategoryCards';
-export * from './components/ProductCard';
+
 export * from './components/ProductsGrid';
 export * from './components/TopSelections';
 

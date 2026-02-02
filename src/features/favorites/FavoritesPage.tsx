@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Heart, ShoppingBag } from 'lucide-react';
 import { ProductCard } from '../../shared/components/ui/ProductCard';
 import { mockProducts } from '../customer-home/data/mockData';
 import './FavoritesPage.css';

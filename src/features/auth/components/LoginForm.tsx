@@ -45,7 +45,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        showPasswordToggle={true}
+
                         required
                     />
 

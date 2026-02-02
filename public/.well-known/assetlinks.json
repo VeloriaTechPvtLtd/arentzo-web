@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.veloriatech.arentzo",
+            "sha256_cert_fingerprints": [
+                "3C:0E:66:32:E4:D5:1B:E8:9D:52:92:27:B5:DC:9B:52:BE:C8:ED:34:7C:71:45:29:DC:6F:AE:B6:CE:18:CF:BB"
+            ]
+        }
+    }
+]

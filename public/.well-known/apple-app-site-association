@@ -1,0 +1,22 @@
+{
+    "applinks": {
+        "details": [
+            {
+                "appIDs": [
+                    "Z4LMN7NQ8V.com.veloriatech.arentzo"
+                ],
+                "components": [
+                    {
+                        "#": "no_universal_link",
+                        "exclude": true,
+                        "comment": "Exclude paths that should not open the app"
+                    },
+                    {
+                        "/": "*",
+                        "comment": "Allow all other paths"
+                    }
+                ]
+            }
+        ]
+    }
+}
