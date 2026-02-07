@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import {
     Search,
     Filter,
-    MoreVertical,
     Plus
 } from 'lucide-react';
-import { mockProducts } from '../../infrastructure/api/productsMockData';
+import { mockProducts, type Product } from '../../infrastructure/api/productsMockData';
 import { AddProductForm } from '../components/AddProductForm';
 import { useProviderFilters } from '../hooks/useProviderFilters';
 import { ProviderFilterModal, type FilterDefinition } from '../components/ProviderFilterModal';
+import { ProductCard } from '../components/ProductCard';
+import { ProductDetailsDrawer } from '../components/ProductDetailsDrawer';
 import '../styles/ProviderProductsPage.css';
 
 export const ProviderProductsPage: React.FC = () => {
@@ -31,6 +32,7 @@ export const ProviderProductsPage: React.FC = () => {
     });
 
     const [showAddProduct, setShowAddProduct] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     const uniqueCategories = Array.from(new Set(mockProducts.map(p => p.category)));
 
@@ -100,14 +102,6 @@ export const ProviderProductsPage: React.FC = () => {
         return matchesSearch && matchesCategory && matchesStatus && matchesCondition && matchesPrice && matchesStock;
     });
 
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            maximumFractionDigits: 0
-        }).format(amount);
-    };
-
     return (
         <div className="provider-products-page">
             <div className="products-toolbar">
@@ -140,109 +134,14 @@ export const ProviderProductsPage: React.FC = () => {
                 </div>
             </div>
 
-            <div className="products-table-container">
-                <table className="products-table">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Category</th>
-                            <th>Stock</th>
-                            <th>Price</th>
-                            <th>Status/Condition</th>
-                            <th className="actions-cell"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredProducts.map((product) => (
-                            <tr key={product.id}>
-                                <td className="product-cell">
-                                    <div className="product-info">
-                                        <img src={product.image} alt={product.name} />
-                                        <div className="product-text">
-                                            <span className="product-name">{product.name}</span>
-                                            <span className="product-id">{product.id}</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span className="category-pouch">{product.category}</span>
-                                </td>
-                                <td>
-                                    <div className="stock-box">{product.stock}</div>
-                                </td>
-                                <td>
-                                    <div className="price-box">{formatCurrency(product.price)}</div>
-                                </td>
-                                <td>
-                                    <div className="flex flex-col gap-1 items-start">
-                                        <span className={`status-pill ${product.status}`}>
-                                            {product.status.replace('_', ' ').charAt(0).toUpperCase() + product.status.replace('_', ' ').slice(1)}
-                                        </span>
-                                        {product.condition && (
-                                            <span className="text-[10px] font-semibold text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-200">
-                                                {product.condition.replace('_', ' ').toUpperCase()}
-                                            </span>
-                                        )}
-                                    </div>
-                                </td>
-                                <td className="actions-cell">
-                                    <button className="icon-btn" title="More">
-                                        <MoreVertical size={18} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Mobile Card View */}
-            <div className="products-mobile-cards">
+            {/* Product Grid View */}
+            <div className="products-grid">
                 {filteredProducts.map((product) => (
-                    <div key={product.id} className="product-mobile-card">
-                        <div className="product-mobile-card__header">
-                            <div className="product-mobile-card__info">
-                                <img src={product.image} alt={product.name} className="product-mobile-card__image" />
-                                <div className="product-mobile-card__main">
-                                    <span className="product-mobile-card__name">{product.name}</span>
-                                    <span className="product-mobile-card__id">{product.id}</span>
-                                </div>
-                            </div>
-                            <button className="icon-btn">
-                                <MoreVertical size={18} />
-                            </button>
-                        </div>
-
-                        <div className="product-mobile-card__body">
-                            <div className="product-mobile-card__grid">
-                                <div className="product-mobile-card__field">
-                                    <span className="field-label">Price</span>
-                                    <span className="price-value">{formatCurrency(product.price)}</span>
-                                </div>
-                                <div className="product-mobile-card__field">
-                                    <span className="field-label">Stock</span>
-                                    <span className="stock-value">{product.stock} units</span>
-                                </div>
-                                <div className="product-mobile-card__field">
-                                    <span className="field-label">Category</span>
-                                    <span className="text-sm font-medium">{product.category}</span>
-                                </div>
-                                <div className="product-mobile-card__field">
-                                    <span className="field-label">Status</span>
-                                    <div className="flex gap-1.5 flex-wrap">
-                                        <span className={`status-pill ${product.status}`}>
-                                            {product.status.replace('_', ' ').charAt(0).toUpperCase() + product.status.replace('_', ' ').slice(1)}
-                                        </span>
-                                        {product.condition && (
-                                            <span className="text-[10px] font-semibold text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-200 uppercase">
-                                                {product.condition.replace('_', ' ')}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        onClick={() => setSelectedProduct(product)}
+                    />
                 ))}
             </div>
 
@@ -270,6 +169,13 @@ export const ProviderProductsPage: React.FC = () => {
                 onReset={resetFilters}
                 definitions={filterDefinitions}
             />
+
+            {selectedProduct && (
+                <ProductDetailsDrawer
+                    product={selectedProduct}
+                    onClose={() => setSelectedProduct(null)}
+                />
+            )}
         </div>
     );
 };

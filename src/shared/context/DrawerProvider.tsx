@@ -9,8 +9,13 @@ export const DrawerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const [isProviderOnboardingOpen, setIsProviderOnboardingOpen] = useState(false);
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
+    const [isAuthOpen, setIsAuthOpen] = useState(false);
+
     const openProfile = useCallback(() => setIsProfileOpen(true), []);
     const closeProfile = useCallback(() => setIsProfileOpen(false), []);
+
+    const openAuth = useCallback(() => setIsAuthOpen(true), []);
+    const closeAuth = useCallback(() => setIsAuthOpen(false), []);
 
     const openCheckout = useCallback(() => setIsCheckoutOpen(true), []);
     const closeCheckout = useCallback(() => setIsCheckoutOpen(false), []);
@@ -36,11 +41,12 @@ export const DrawerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             closeNotifications();
             closeProviderOnboarding();
             closeLocation();
+            closeAuth();
         };
 
         window.addEventListener('popstate', handlePopState);
         return () => window.removeEventListener('popstate', handlePopState);
-    }, [closeProfile, closeCheckout, closeMessages, closeNotifications, closeProviderOnboarding, closeLocation]);
+    }, [closeProfile, closeCheckout, closeMessages, closeNotifications, closeProviderOnboarding, closeLocation, closeAuth]);
 
     return (
         <DrawerContext.Provider
@@ -63,6 +69,9 @@ export const DrawerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 closeProviderOnboarding,
                 openLocation,
                 closeLocation,
+                isAuthOpen,
+                openAuth,
+                closeAuth,
             }}
         >
             {children}

@@ -4,6 +4,8 @@ trigger: always_on
 
 Don't integrate the supabase integration. currently i'm building ui, i want clean code archtecture, need to follow the clean code principles, my application need to mobile responsive.
 
+we are use localisation so don't hard code string any ware use those stiring in localisation files only
+
 when ever your decine some thing you need to allways refer this theme npx shadcn@latest add https://tweakcn.com/r/themes/sunset-horizon.json
 
 this is the complete theme

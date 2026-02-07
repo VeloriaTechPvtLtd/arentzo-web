@@ -16,6 +16,21 @@ export interface Order {
 
 export const mockOrders: Order[] = [
     {
+        id: 'RNT-941',
+        customerName: 'Sarah Chen',
+        customerEmail: 'sarah.chen@example.com',
+        productName: 'Range Rover Sports',
+        quantity: 1,
+        totalAmount: 256.50,
+        rentalStatus: 'requested',
+        paymentStatus: 'pending',
+        deliveryMethod: 'pickup',
+        depositStatus: 'n/a',
+        startDate: '2024-01-20T10:00:00Z',
+        returnDate: '2024-01-23T10:00:00Z',
+        image: 'https://images.unsplash.com/photo-1606611013016-969c19ba27bb?w=500&q=80'
+    },
+    {
         id: 'RNT-001',
         customerName: 'Rahul Sharma',
         customerEmail: 'rahul@example.com',

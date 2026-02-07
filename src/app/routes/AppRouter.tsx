@@ -1,12 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { CustomerHomePage } from '../../features/customer-home/ui/pages/CustomerHomePage';
 import { ProductDetailsPage } from '../../features/customer-home/ui/pages/ProductDetailsPage';
-import { LoginPage } from '../../features/auth/ui/pages/LoginPage';
-import { SignupPage } from '../../features/auth/ui/pages/SignupPage';
-import { ForgotPasswordPage } from '../../features/auth/ui/pages/ForgotPasswordPage';
-import { VerifyOtpPage } from '../../features/auth/ui/pages/VerifyOtpPage';
-import { ResetPasswordPage } from '../../features/auth/ui/pages/ResetPasswordPage';
-import { PasswordResetSuccessPage } from '../../features/auth/ui/pages/PasswordResetSuccessPage';
 import { SearchResultsPage } from '../../features/search/ui/pages/SearchResultsPage';
 import { MyRentalsPage } from '../../features/rentals/ui/pages/MyRentalsPage';
 import { RentalDetailPage } from '../../features/rentals/ui/pages/RentalDetailPage';
@@ -105,36 +99,11 @@ export const router = createBrowserRouter([
             },
         ]
     },
-    // Auth Routes (no layout header needed)
+    // Auth Routes (no layout header needed) - EMPTY
     {
         element: <DetailLayout />,
         errorElement: <StandardErrorBoundary />,
-        children: [
-            {
-                path: '/login',
-                element: <LoginPage />,
-            },
-            {
-                path: '/signup',
-                element: <SignupPage />,
-            },
-            {
-                path: '/forgot-password',
-                element: <ForgotPasswordPage />,
-            },
-            {
-                path: '/verify-otp',
-                element: <VerifyOtpPage />,
-            },
-            {
-                path: '/reset-password',
-                element: <ResetPasswordPage />,
-            },
-            {
-                path: '/password-reset-success',
-                element: <PasswordResetSuccessPage />,
-            },
-        ]
+        children: []
     },
     // Provider Dashboard (has its own layout)
     {

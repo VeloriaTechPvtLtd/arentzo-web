@@ -5,6 +5,7 @@ import { CheckoutPanel } from '../../../features/checkout';
 import { MessagesPanel } from '../../../features/messages';
 import { ProviderOnboardingPanel } from '../../../features/provider-onboarding';
 import { SelectDeliveryLocation, type AddressItem } from '../../../features/checkout/ui/components/SelectDeliveryLocation';
+import { AuthDrawer } from '../../../features/auth/ui/components/AuthDrawer';
 
 export const GlobalDrawers: React.FC = () => {
     const {
@@ -24,6 +25,7 @@ export const GlobalDrawers: React.FC = () => {
             <CheckoutPanel isOpen={isCheckoutOpen} onClose={closeCheckout} />
             <MessagesPanel isOpen={isMessagesOpen} onClose={closeMessages} />
             <ProviderOnboardingPanel isOpen={isProviderOnboardingOpen} onClose={closeProviderOnboarding} />
+            <AuthDrawer />
 
             {/* Location Selection Overlay */}
             <div className={`checkout-overlay ${isLocationModalOpen ? 'checkout-overlay--open' : ''}`}>

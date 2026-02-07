@@ -1,6 +1,7 @@
 import React from 'react';
 
-export const GoogleIcon = () => (
+// Use specific functional components for icons to ensure proper sizing and filling
+const GoogleIcon = () => (
     <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M44.5 20H24V29H35.8C34.7 33.9 30.1 37 24 37C16.8 37 11 31.2 11 24C11 16.8 16.8 11 24 11C27.2 11 30.2 12.2 32.5 14.3L39.1 7.7C35.1 4 29.8 2 24 2C11.8 2 2 11.8 2 24C2 36.2 11.8 46 24 46C36.2 46 46 36.2 46 24C46 22.6 45.8 21.3 45.5 20H44.5Z" fill="#FFC107" />
         <path d="M6.30005 14.7L14.1 20.2C16.1 15.5 20.7 12.2 26 12.2C29.3 12.2 32.3 13.4 34.6 15.4L41.3 8.7C37.3 5 32 2.8 26 2.8C17.6 2.8 10.3 7.7 6.30005 14.7Z" fill="#FF3D00" />
@@ -9,15 +10,16 @@ export const GoogleIcon = () => (
     </svg>
 );
 
-export const FacebookIcon = () => (
+const FacebookIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg">
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.248h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
     </svg>
 );
 
-export const AppleIcon = () => (
+const AppleIcon = () => (
+    // Explicitly set fill to text-current to inherit from parent, but ensure parent has distinct color or handle dark mode
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path d="M17.05 20.28c-.96.95-2.22 1.43-3.77 1.43-1.12 0-2.15-.25-3.08-.75-.93-.49-1.63-.49-2.52 0-.97.53-2.01.81-3.13.81-1.74 0-3.18-.7-4.32-2.11C-.23 17.5 0 13.9 0 13.9c.77-5.02 4.05-7.79 7.63-7.79 1.25 0 2.37.33 3.39.99 1.02.66 1.62.66 2.63 0 1.13-.74 2.4-1.12 3.84-1.12 2.16 0 3.96.88 5.4 2.65-1.14.77-2.01 1.8-2.61 3.09-.6 1.29-.6 2.61 0 3.96.53 1.18 1.3 2.13 2.31 2.85-.29.83-.8 1.58-1.54 2.25zM12.03 5.42c-.11-1.42.36-2.74 1.41-3.96h.05c1.45.05 2.72.63 3.82 1.74.1.13.1.2.1.2-.1.14-.1.14-.1.14-1.29 1.42-2.8 2.13-4.52 2.13-.42 0-.6-.04-.76-.25z" />
+        <path d="M17.05 20.28c-.96.95-2.22 1.43-3.77 1.43-1.12 0-2.15-.25-3.08-.75-.93-.49-1.63-.49-2.52 0-.97.53-2.01.81-3.13.81-1.74 0-3.18-.7-4.32-2.11C-.23 17.5 0 13.9 0 13.9c.77-5.02 4.05-7.79 7.63-7.79 1.25 0 2.37.33 3.39.99 1.02.66 1.62.66 2.63 0 1.13-.74 2.4-1.12 3.84-1.12 2.16 0 3.96.88 5.4 2.65-1.14.77-2.01 1.8-2.61 3.09-.6 1.29-.6 2.61 0 3.96.53 1.18 1.3 2.13 2.31 2.85-.29.83-.8 1.58-1.54 2.25zM12.03 5.42c-.11-1.42.36-2.74 1.41-3.96h.05c1.45.05 2.72.63 3.82 1.74.1.13.1.2.1.2-.1.14-.1.14-1.29 1.42-2.8 2.13-4.52 2.13-.42 0-.6-.04-.76-.25z" />
     </svg>
 );
 
@@ -40,15 +42,24 @@ export const AuthSocialButtons: React.FC<AuthSocialButtonsProps> = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <button className="flex items-center justify-center space-x-2 py-3 px-4 bg-card border border-border rounded-xl hover:bg-muted/50 hover:border-border-strong transition-all shadow-sm active:scale-95 group">
+                <button
+                    type="button"
+                    className="flex items-center justify-center space-x-2 py-3 px-4 bg-card border border-border rounded-xl hover:bg-muted/50 hover:border-border-strong transition-all shadow-sm active:scale-95 group"
+                >
                     <GoogleIcon />
                     <span className="text-sm font-bold text-foreground/80 sm:hidden lg:inline-block">Google</span>
                 </button>
-                <button className="flex items-center justify-center space-x-2 py-3 px-4 bg-card border border-border rounded-xl hover:bg-muted/50 hover:border-border-strong transition-all shadow-sm active:scale-95 group">
+                <button
+                    type="button"
+                    className="flex items-center justify-center space-x-2 py-3 px-4 bg-card border border-border rounded-xl hover:bg-muted/50 hover:border-border-strong transition-all shadow-sm active:scale-95 group"
+                >
                     <FacebookIcon />
                     <span className="text-sm font-bold text-foreground/80 sm:hidden lg:inline-block">Facebook</span>
                 </button>
-                <button className="flex items-center justify-center space-x-2 py-3 px-4 bg-card border border-border rounded-xl hover:bg-muted/50 hover:border-border-strong transition-all shadow-sm active:scale-95 group">
+                <button
+                    type="button"
+                    className="flex items-center justify-center space-x-2 py-3 px-4 bg-card border border-border rounded-xl hover:bg-muted/50 hover:border-border-strong transition-all shadow-sm active:scale-95 group text-foreground"
+                >
                     <AppleIcon />
                     <span className="text-sm font-bold text-foreground/80 sm:hidden lg:inline-block">Apple</span>
                 </button>

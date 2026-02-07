@@ -19,6 +19,9 @@ export interface DrawerContextType {
     closeProviderOnboarding: () => void;
     openLocation: () => void;
     closeLocation: () => void;
+    isAuthOpen: boolean;
+    openAuth: () => void;
+    closeAuth: () => void;
 }
 
 export const DrawerContext = createContext<DrawerContextType | undefined>(undefined);

@@ -1,17 +1,20 @@
 import React from 'react';
 import {
     Search,
-    Filter,
-    MoreVertical,
-    Calendar,
-    User
+    Filter
 } from 'lucide-react';
 import { mockOrders } from '../../infrastructure/api/ordersMockData';
 import { useProviderFilters } from '../hooks/useProviderFilters';
 import { ProviderFilterModal, type FilterDefinition } from '../components/ProviderFilterModal';
+import { OrderDetailsDrawer } from '../components/OrderDetailsDrawer';
+import { type Order } from '../../infrastructure/api/ordersMockData';
+import { OrderCard } from '../components/OrderCard';
 import '../styles/ProviderOrdersPage.css';
 
 export const ProviderOrdersPage: React.FC = () => {
+    const [orders, setOrders] = React.useState<Order[]>(mockOrders);
+    const [selectedOrderId, setSelectedOrderId] = React.useState<string | null>(null);
+
     const {
         isOpen,
         openFilters,
@@ -91,7 +94,7 @@ export const ProviderOrdersPage: React.FC = () => {
         }
     ];
 
-    const filteredOrders = mockOrders.filter(order => {
+    const filteredOrders = orders.filter(order => {
         const matchesSearch =
             order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
             order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -126,35 +129,13 @@ export const ProviderOrdersPage: React.FC = () => {
         return matchesSearch && matchesRentalStatus && matchesPaymentStatus && matchesAmount && matchesReturnDate && matchesDelivery && matchesDeposit;
     });
 
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            maximumFractionDigits: 0
-        }).format(amount);
+    const handleStatusChange = (orderId: string, newStatus: Order['rentalStatus']) => {
+        setOrders(prev => prev.map(order =>
+            order.id === orderId ? { ...order, rentalStatus: newStatus } : order
+        ));
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        });
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'requested': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
-            case 'approved': return 'bg-blue-50 text-blue-700 border-blue-200';
-            case 'booked': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
-            case 'active': return 'bg-green-100 text-green-700 border-green-200';
-            case 'returned': return 'bg-purple-50 text-purple-700 border-purple-200';
-            case 'overdue': return 'bg-red-100 text-red-700 border-red-200';
-            case 'completed': return 'bg-gray-100 text-gray-700 border-gray-200';
-            case 'cancelled': return 'bg-red-50 text-red-600 border-red-100';
-            default: return 'bg-gray-100 text-gray-600';
-        }
-    };
+    const selectedOrder = orders.find(o => o.id === selectedOrderId);
 
     return (
         <div className="provider-orders-page">
@@ -183,152 +164,14 @@ export const ProviderOrdersPage: React.FC = () => {
                 </div>
             </div>
 
-            <div className="orders-table-container">
-                <table className="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Rental Status</th>
-                            <th>Return Due</th>
-                            <th>Logistics</th>
-                            <th>Financials</th>
-                            <th>Customer</th>
-                            <th className="actions-cell"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredOrders.map((order) => (
-                            <tr key={order.id}>
-                                <td className="product-cell">
-                                    <div className="product-info">
-                                        <img src={order.image} alt={order.productName} />
-                                        <div className="product-text">
-                                            <span className="product-name">{order.productName}</span>
-                                            <span className="product-id">{order.id}</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span className={`status-pill ${getStatusColor(order.rentalStatus)}`}>
-                                        {order.rentalStatus.charAt(0).toUpperCase() + order.rentalStatus.slice(1)}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div className="date-box">{formatDate(order.returnDate)}</div>
-                                </td>
-                                <td>
-                                    <span className={`text-xs font-medium px-2 py-1 rounded-md border ${order.deliveryMethod === 'delivery'
-                                        ? 'bg-purple-50 text-purple-700 border-purple-200'
-                                        : 'bg-orange-50 text-orange-700 border-orange-200'
-                                        }`}>
-                                        {order.deliveryMethod.toUpperCase()}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div className="flex flex-col gap-1">
-                                        <div className="amount-box text-xs py-1">{formatCurrency(order.totalAmount)}</div>
-                                        <div className="flex gap-1">
-                                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                                                }`}>
-                                                {order.paymentStatus.toUpperCase()}
-                                            </span>
-                                            {order.depositStatus !== 'n/a' && (
-                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.depositStatus === 'held' ? 'bg-blue-100 text-blue-700' :
-                                                    order.depositStatus === 'deducted' ? 'bg-red-100 text-red-700' :
-                                                        'bg-gray-100 text-gray-700'
-                                                    }`}>
-                                                    DEP: {order.depositStatus.toUpperCase()}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="customer-cell">
-                                    <div className="customer-info">
-                                        <span className="customer-name">{order.customerName}</span>
-                                        <span className="customer-email">{order.customerEmail}</span>
-                                    </div>
-                                </td>
-                                <td className="actions-cell">
-                                    <button className="icon-btn" title="More">
-                                        <MoreVertical size={18} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Mobile Card View */}
-            <div className="orders-mobile-cards">
+            {/* Order Grid View */}
+            <div className="orders-grid">
                 {filteredOrders.map((order) => (
-                    <div key={order.id} className="order-mobile-card">
-                        <div className="order-mobile-card__header">
-                            <div className="order-mobile-card__info">
-                                <img src={order.image} alt={order.productName} className="order-mobile-card__image" />
-                                <div className="order-mobile-card__main">
-                                    <span className="order-mobile-card__name text-sm font-bold">{order.productName}</span>
-                                    <span className="order-mobile-card__id text-xs text-muted-foreground">{order.id}</span>
-                                </div>
-                            </div>
-                            <button className="icon-btn">
-                                <MoreVertical size={18} />
-                            </button>
-                        </div>
-
-                        <div className="order-mobile-card__body">
-                            <div className="order-mobile-card__grid">
-                                <div className="order-mobile-card__field">
-                                    <span className="field-label">Status</span>
-                                    <span className={`status-pill ${getStatusColor(order.rentalStatus)}`}>
-                                        {order.rentalStatus.charAt(0).toUpperCase() + order.rentalStatus.slice(1)}
-                                    </span>
-                                </div>
-                                <div className="order-mobile-card__field">
-                                    <span className="field-label">Return Due</span>
-                                    <div className="flex items-center gap-1.5">
-                                        <Calendar size={12} className="text-muted-foreground" />
-                                        <span className="text-sm font-medium">{formatDate(order.returnDate)}</span>
-                                    </div>
-                                </div>
-                                <div className="order-mobile-card__field">
-                                    <span className="field-label">Customer</span>
-                                    <div className="flex items-center gap-1.5">
-                                        <User size={12} className="text-muted-foreground" />
-                                        <span className="text-sm font-medium truncate">{order.customerName}</span>
-                                    </div>
-                                </div>
-                                <div className="order-mobile-card__field">
-                                    <span className="field-label">Total Amount</span>
-                                    <span className="text-sm font-bold text-primary">{formatCurrency(order.totalAmount)}</span>
-                                </div>
-                            </div>
-
-                            <div className="order-mobile-card__footer">
-                                <span className={`text-[10px] font-medium px-2 py-1 rounded-md border ${order.deliveryMethod === 'delivery'
-                                    ? 'bg-purple-50 text-purple-700 border-purple-200'
-                                    : 'bg-orange-50 text-orange-700 border-orange-200'
-                                    }`}>
-                                    {order.deliveryMethod.toUpperCase()}
-                                </span>
-                                <div className="flex gap-1">
-                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                                        }`}>
-                                        {order.paymentStatus.toUpperCase()}
-                                    </span>
-                                    {order.depositStatus !== 'n/a' && (
-                                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${order.depositStatus === 'held' ? 'bg-blue-100 text-blue-700' :
-                                            order.depositStatus === 'deducted' ? 'bg-red-100 text-red-700' :
-                                                'bg-gray-100 text-gray-700'
-                                            }`}>
-                                            DEP: {order.depositStatus.toUpperCase()}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <OrderCard
+                        key={order.id}
+                        order={order}
+                        onClick={() => setSelectedOrderId(order.id)}
+                    />
                 ))}
             </div>
 
@@ -349,6 +192,14 @@ export const ProviderOrdersPage: React.FC = () => {
                 onReset={resetFilters}
                 definitions={filterDefinitions}
             />
+
+            {selectedOrder && (
+                <OrderDetailsDrawer
+                    order={selectedOrder}
+                    onClose={() => setSelectedOrderId(null)}
+                    onStatusChange={handleStatusChange}
+                />
+            )}
         </div>
     );
 };

@@ -13,10 +13,12 @@ import './AppHeader.css';
 export const AppHeader: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { user, activeRole } = useAuth();
+    const { user } = useAuth();
+    const activeRole = user?.role;
     const {
         openProfile,
         openMessages,
+        openAuth,
     } = useDrawer();
 
     const isAuthPage = ['/login', '/signup', '/forgot-password', '/verify-otp', '/reset-password'].includes(location.pathname);
@@ -91,8 +93,9 @@ export const AppHeader: React.FC = () => {
                                                         searchParams.delete('q');
                                                     }
                                                     // Use replace: true to update URL without adding history entries for every character
-                                                    // casting to any to bypass strict type checking if needed relative path
-                                                    navigate({ search: searchParams.toString() } as any, { replace: true });
+                                                    // searchParams string starts with ? if not empty, but here we construct it.
+                                                    // navigate({ search: searchParams.toString() }) is valid Partial<Path>
+                                                    navigate({ search: searchParams.toString() }, { replace: true });
                                                 }}
                                                 // Using onKeyDown to handle "Enter" if we want to push navigation history?
                                                 onKeyDown={(e) => {
@@ -125,10 +128,10 @@ export const AppHeader: React.FC = () => {
                         </>
                     ) : (
                         <div className="app-header__auth-btns">
-                            <button className="app-header__login-btn" onClick={openProfile}>
+                            <button className="app-header__login-btn" onClick={openAuth}>
                                 Login
                             </button>
-                            <button className="app-header__signup-btn" onClick={openProfile}>
+                            <button className="app-header__signup-btn" onClick={openAuth}>
                                 Sign Up
                             </button>
                         </div>

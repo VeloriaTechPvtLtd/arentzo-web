@@ -23,7 +23,7 @@ export const AuthInput: React.FC<AuthInputProps> = ({
 
     return (
         <div className="space-y-2 w-full group">
-            <label className={`text-sm font-bold transition-colors duration-200 ml-1 ${isFocused ? 'text-primary' : 'text-foreground/70'}`}>
+            <label className="text-sm font-medium text-foreground ml-1">
                 {label}
             </label>
             <div className="relative group/input">
@@ -32,41 +32,45 @@ export const AuthInput: React.FC<AuthInputProps> = ({
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     className={`
-                        w-full px-5 py-4 bg-card border-[1.5px] rounded-2xl outline-none transition-all duration-300 text-base font-medium placeholder:text-muted-foreground/30
+                        w-full px-4 py-3.5 bg-card/50 border rounded-lg outline-none transition-all duration-300 text-sm font-medium placeholder:text-muted-foreground/40
                         ${error
-                            ? 'border-destructive bg-destructive/5'
+                            ? 'border-destructive/50 bg-destructive/5 focus:border-destructive'
                             : success
-                                ? 'border-green-500 bg-green-50/30'
+                                ? 'border-green-500/50 bg-green-500/5 focus:border-green-500'
                                 : isFocused
-                                    ? 'border-primary shadow-[0_0_0_4px_oklch(var(--primary)/0.1)]'
-                                    : 'border-border hover:border-border-strong hover:bg-muted/30'}
+                                    ? 'border-primary shadow-[0_4px_20px_-4px_oklch(var(--primary)/0.1)] bg-background'
+                                    : 'border-input hover:border-sidebar-primary/50 hover:bg-card'}
                         ${className}
                     `}
                     {...props}
                 />
 
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2 pointer-events-none">
                     {isPassword && (
                         <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent input focus loss if needed
+                                setShowPassword(!showPassword);
+                            }}
+                            className="p-1.5 text-muted-foreground/70 hover:text-foreground transition-colors rounded-md hover:bg-muted pointer-events-auto"
                         >
-                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                     )}
 
                     {error && (
-                        <AlertCircle className="w-5 h-5 text-destructive animate-in zoom-in duration-300" />
+                        <AlertCircle className="w-4 h-4 text-destructive animate-in zoom-in duration-300" />
                     )}
 
                     {success && !error && (
-                        <CheckCircle2 className="w-5 h-5 text-green-500 animate-in zoom-in duration-300" />
+                        <CheckCircle2 className="w-4 h-4 text-green-500 animate-in zoom-in duration-300" />
                     )}
                 </div>
             </div>
             {error && (
-                <p className="text-xs font-bold text-destructive ml-1 mt-1 animate-in slide-in-from-top-1 duration-300">
+                <p className="text-[13px] font-medium text-destructive ml-1 mt-1.5 animate-in slide-in-from-top-1 duration-300 flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-destructive inline-block" />
                     {error}
                 </p>
             )}

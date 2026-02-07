@@ -2,18 +2,50 @@ import React, { useState } from 'react';
 import {
     Search,
     Filter,
-    MoreVertical,
-    Plus,
-    Tag
+    Plus
 } from 'lucide-react';
-import { mockOffers } from '../../infrastructure/api/offersMockData';
+import { mockOffers, type Offer } from '../../infrastructure/api/offersMockData';
+import { AddOfferForm } from '../components/AddOfferForm';
+import { OfferDetailsDrawer } from '../components/OfferDetailsDrawer';
+import { OfferCard } from '../components/OfferCard';
 import '../styles/ProviderOffersPage.css';
 
 export const ProviderOffersPage: React.FC = () => {
+    const [offers, setOffers] = useState<Offer[]>(mockOffers);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
-    const filteredOffers = mockOffers.filter(offer => {
+    const handleCreateOffer = (newOffer: Offer) => {
+        setOffers([newOffer, ...offers]);
+        setShowCreateModal(false);
+    };
+
+    const handleOfferClick = (offer: Offer) => {
+        setSelectedOffer(offer);
+    };
+
+    const handlePauseOffer = (offerId: string) => {
+        setOffers(offers.map(offer => {
+            if (offer.id === offerId) {
+                const newStatus = offer.status === 'active' ? 'paused' : 'active';
+                return { ...offer, status: newStatus };
+            }
+            return offer;
+        }));
+
+        if (selectedOffer && selectedOffer.id === offerId) {
+            setSelectedOffer(prev => prev ? { ...prev, status: prev.status === 'active' ? 'paused' : 'active' } : null);
+        }
+    };
+
+    const handleDeleteOffer = (offerId: string) => {
+        setOffers(offers.filter(offer => offer.id !== offerId));
+        setSelectedOffer(null);
+    };
+
+    const filteredOffers = offers.filter(offer => {
         const matchesSearch =
             offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             offer.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -23,14 +55,6 @@ export const ProviderOffersPage: React.FC = () => {
 
         return matchesSearch && matchesStatus;
     });
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        });
-    };
 
     return (
         <div className="provider-offers-page">
@@ -57,117 +81,25 @@ export const ProviderOffersPage: React.FC = () => {
                             <option value="scheduled">Scheduled</option>
                             <option value="expired">Expired</option>
                             <option value="draft">Draft</option>
+                            <option value="paused">Paused</option>
                         </select>
                     </div>
 
-                    <button className="create-offer-btn">
+                    <button className="create-offer-btn" onClick={() => setShowCreateModal(true)}>
                         <Plus size={20} />
                         <span>Create Offer</span>
                     </button>
                 </div>
             </div>
 
-            <div className="offers-table-container">
-                <table className="offers-table">
-                    <thead>
-                        <tr>
-                            <th>Promotion</th>
-                            <th>Code</th>
-                            <th>Value</th>
-                            <th>Validity</th>
-                            <th>Status</th>
-                            <th className="actions-cell"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredOffers.map((offer) => (
-                            <tr key={offer.id}>
-                                <td className="promotion-cell">
-                                    <div className="promotion-info">
-                                        <div className="promo-icon">
-                                            <Tag size={18} />
-                                        </div>
-                                        <div className="promo-text">
-                                            <span className="promo-title">{offer.title}</span>
-                                            <span className="promo-id">{offer.id}</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <code className="promo-code">{offer.code}</code>
-                                </td>
-                                <td>
-                                    <div className="value-box">
-                                        {offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' OFF'}
-                                    </div>
-                                </td>
-                                <td className="validity-cell">
-                                    <div className="date-badge">
-                                        {formatDate(offer.startDate)} - {formatDate(offer.endDate)}
-                                    </div>
-                                </td>
-                                <td>
-                                    <span className={`status-pill ${offer.status}`}>
-                                        {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
-                                    </span>
-                                </td>
-                                <td className="actions-cell">
-                                    <button className="icon-btn" title="More">
-                                        <MoreVertical size={18} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Mobile Card View */}
-            <div className="offers-mobile-cards">
+            {/* Offer Grid View */}
+            <div className="offers-grid">
                 {filteredOffers.map((offer) => (
-                    <div key={offer.id} className="offer-mobile-card">
-                        <div className="offer-mobile-card__header">
-                            <div className="offer-mobile-card__info">
-                                <div className="promo-icon">
-                                    <Tag size={18} />
-                                </div>
-                                <div className="promo-text">
-                                    <span className="promo-title text-sm font-bold">{offer.title}</span>
-                                    <span className="promo-id text-xs text-muted-foreground">{offer.id}</span>
-                                </div>
-                            </div>
-                            <button className="icon-btn">
-                                <MoreVertical size={18} />
-                            </button>
-                        </div>
-
-                        <div className="offer-mobile-card__body">
-                            <div className="offer-mobile-card__grid">
-                                <div className="offer-mobile-card__field">
-                                    <span className="field-label">Promo Code</span>
-                                    <code className="promo-code">{offer.code}</code>
-                                </div>
-                                <div className="offer-mobile-card__field">
-                                    <span className="field-label">Value</span>
-                                    <span className="text-sm font-bold text-primary">
-                                        {offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' OFF'}
-                                    </span>
-                                </div>
-                                <div className="offer-mobile-card__field">
-                                    <span className="field-label">Validity</span>
-                                    <span className="text-xs font-medium text-foreground">
-                                        {formatDate(offer.startDate)} - {formatDate(offer.endDate)}
-                                    </span>
-                                </div>
-                                <div className="offer-mobile-card__field">
-                                    <span className="field-label">Status</span>
-                                    <span className={`status-pill ${offer.status}`}>
-                                        {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <OfferCard
+                        key={offer.id}
+                        offer={offer}
+                        onClick={() => handleOfferClick(offer)}
+                    />
                 ))}
             </div>
 
@@ -175,6 +107,22 @@ export const ProviderOffersPage: React.FC = () => {
                 <div className="no-results">
                     <p>No offers found matching your criteria.</p>
                 </div>
+            )}
+
+            {showCreateModal && (
+                <AddOfferForm
+                    onClose={() => setShowCreateModal(false)}
+                    onSuccess={handleCreateOffer}
+                />
+            )}
+
+            {selectedOffer && (
+                <OfferDetailsDrawer
+                    offer={selectedOffer}
+                    onClose={() => setSelectedOffer(null)}
+                    onPause={handlePauseOffer}
+                    onDelete={handleDeleteOffer}
+                />
             )}
         </div>
     );

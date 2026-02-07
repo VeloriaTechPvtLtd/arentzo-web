@@ -1,27 +1,19 @@
 import { createContext } from 'react';
-
-export interface User {
-    id: string;
-    email?: string;
-    [key: string]: unknown;
-}
-
-export interface Session {
-    user: User;
-    access_token: string;
-    [key: string]: unknown;
-}
-
-export type UserRole = 'customer' | 'service_provider';
+import type { User, Session } from '../../domain/entities/User';
 
 export interface AuthContextType {
     user: User | null;
     session: Session | null;
     loading: boolean;
-    activeRole: UserRole;
-    signIn: () => Promise<void>;
+    signIn: (email: string, password?: string) => Promise<void>;
+    verifyOtp: (email: string, otp: string) => Promise<void>;
+    signUp: (email: string, name: string) => Promise<void>;
+    forgotPassword: (email: string) => Promise<void>;
+    verifyResetOtp: (email: string, otp: string) => Promise<boolean>;
+    resetPassword: (email: string, otp: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
-    switchRole: (role: UserRole) => void;
+    activeRole?: 'customer' | 'service_provider';
+    // Removed switchRole as it was a mockup feature, can be re-added via Service if needed for logic
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

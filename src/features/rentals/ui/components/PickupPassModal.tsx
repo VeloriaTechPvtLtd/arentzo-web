@@ -34,7 +34,9 @@ export const PickupPassModal: React.FC<PickupPassModalProps> = ({ rental, isOpen
             for (let j = 0; j < 15; j++) {
                 const isBorder = i === 0 || i === 14 || j === 0 || j === 14;
                 const isCorner = (i < 5 && j < 5) || (i < 5 && j > 9) || (i > 9 && j < 5);
-                const isRandom = Math.random() > 0.5;
+                // Use deterministic logic for visual patterns instead of random to satisfy pure render requirements
+                // e.g. based on coordinates
+                const isRandom = ((i * 7 + j * 13) % 3) === 0;
                 const shouldFill = isBorder || isCorner || isRandom;
                 row.push(
                     <rect
