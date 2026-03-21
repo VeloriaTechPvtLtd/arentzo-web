@@ -25,8 +25,9 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
                 <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom duration-700">
                     <div className="space-y-4">
                         {showLogo && (
-                            <Link to="/" className="text-4xl font-black text-primary tracking-tighter mb-8 inline-block hover:scale-105 transition-transform">
-                                Arentzo
+                            <Link to="/" className="flex items-center gap-3 mb-8 hover:scale-105 transition-transform inline-flex">
+                                <img src="/logo.svg" alt="Arentzo" className="w-12 h-12" />
+                                <span className="text-4xl font-black text-primary tracking-tighter">Arentzo</span>
                             </Link>
                         )}
 

@@ -18,6 +18,12 @@ import { PrivacyPolicyPage } from '../../features/info/ui/pages/PrivacyPolicyPag
 import { TermsConditionsPage } from '../../features/info/ui/pages/TermsConditionsPage';
 import { FaqPage } from '../../features/info/ui/pages/FaqPage';
 
+import {
+    PartnerPage, FranchisePage, SellerPage,
+    WarehousePage, DeliverPage, ResourcesPage,
+    CareersPage, BlogPage, BlogDetailPage,
+} from '../../features/business-pages';
+
 import { MainLayout } from '../../shared/components/layout/MainLayout';
 import { DetailLayout } from '../../shared/components/layout/DetailLayout';
 import { StandardErrorBoundary } from '../../shared/components/error/StandardErrorBoundary';
@@ -77,6 +83,42 @@ export const router = createBrowserRouter([
             {
                 path: '/provider-onboarding',
                 element: <ProviderOnboardingPage />,
+            },
+            {
+                path: '/partner',
+                element: <PartnerPage />,
+            },
+            {
+                path: '/franchise',
+                element: <FranchisePage />,
+            },
+            {
+                path: '/seller',
+                element: <SellerPage />,
+            },
+            {
+                path: '/warehouse',
+                element: <WarehousePage />,
+            },
+            {
+                path: '/deliver',
+                element: <DeliverPage />,
+            },
+            {
+                path: '/resources',
+                element: <ResourcesPage />,
+            },
+            {
+                path: '/careers',
+                element: <CareersPage />,
+            },
+            {
+                path: '/blog',
+                element: <BlogPage />,
+            },
+            {
+                path: '/blog/:slug',
+                element: <BlogDetailPage />,
             },
         ]
     },

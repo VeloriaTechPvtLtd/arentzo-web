@@ -159,7 +159,7 @@ export const PrivacyPolicyPage: React.FC = () => {
                         <p>If you have any questions about this Privacy Policy, You can contact us:</p>
                         <ul className="list-disc pl-6 space-y-2">
                             <li>By email: support@arentzo.com</li>
-                            <li>By phone number: +91 95059 62262</li>
+                            <li>By phone number: +91 63615 62262</li>
                             <li>By visiting this page on our website: <a href="https://arentzo.com/contact" target="_blank" rel="external nofollow noopener" className="text-primary hover:underline">https://arentzo.com/contact</a></li>
                             <li>By mail: 12-132, Main Road, Pedda Devaram Padu, Ammanabrolu, Ongole Mandal, Prakasham, 523180, Andhra Pradesh, India</li>
                         </ul>

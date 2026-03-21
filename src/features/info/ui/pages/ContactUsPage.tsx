@@ -22,7 +22,7 @@ export const ContactUsPage: React.FC = () => {
                         <p>For general inquiries, support requests, or information about our services, please contact us:</p>
                         <ul className="list-disc pl-6 space-y-2">
                             <li><strong>Email:</strong> support@arentzo.com</li>
-                            <li><strong>Phone:</strong> +91 95059 62262</li>
+                            <li><strong>Phone:</strong> +91 63615 62262</li>
                             <li><strong>Website Contact Form:</strong> <a href="https://arentzo.com/contact" target="_blank" rel="external nofollow noopener" className="text-primary hover:underline">https://arentzo.com/contact</a></li>
                         </ul>
 

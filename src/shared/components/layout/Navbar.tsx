@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, User as UserIcon, LogOut, Box } from 'lucide-react';
+import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { useAuth } from '../../../features/auth/ui/context/AuthContext';
 import { useDrawer } from '../../hooks/useDrawer';
 
@@ -25,9 +25,7 @@ export const Navbar: React.FC = () => {
                 <div className="flex justify-between items-center">
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2 group">
-                        <div className="w-10 h-10 bg-[#ff7e5f] rounded-xl flex items-center justify-center shadow-lg shadow-[#ff7e5f]/20 group-hover:scale-110 transition-transform">
-                            <Box className="w-6 h-6 text-white" />
-                        </div>
+                        <img src="/logo.svg" alt="Arentzo" className="w-10 h-10 group-hover:scale-110 transition-transform" />
                         <span className="text-2xl font-bold text-[#3d3436] tracking-tight">Arentzo</span>
                     </Link>
 

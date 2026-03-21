@@ -2,6 +2,14 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { businessPagesEn } from '../features/business-pages/ui/translations/en';
+import { franchiseEn } from '../features/business-pages/ui/translations/franchiseEn';
+import { sellerEn } from '../features/business-pages/ui/translations/sellerEn';
+import { warehouseEn } from '../features/business-pages/ui/translations/warehouseEn';
+import { deliverEn } from '../features/business-pages/ui/translations/deliverEn';
+import { resourcesEn } from '../features/business-pages/ui/translations/resourcesEn';
+import { careersEn } from '../features/business-pages/ui/translations/careersEn';
+import { blogEn } from '../features/business-pages/ui/translations/blogEn';
 
 i18n
   .use(LanguageDetector)
@@ -10,7 +18,7 @@ i18n
     debug: true,
     fallbackLng: 'en',
     interpolation: {
-      escapeValue: false, // not needed for react as it escapes by default
+      escapeValue: false,
     },
     resources: {
       en: {
@@ -42,7 +50,15 @@ i18n
             contact: "Contact",
             privacy: "Privacy Policy",
             terms: "Terms of Service"
-          }
+          },
+          ...businessPagesEn,
+          ...franchiseEn,
+          ...sellerEn,
+          ...warehouseEn,
+          ...deliverEn,
+          ...resourcesEn,
+          ...careersEn,
+          ...blogEn
         }
       }
     }

@@ -3,8 +3,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
     User,
     Search,
-    MessageSquare,
-    Box
+    MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../../../features/auth/ui/context/AuthContext';
 import { useDrawer } from '../../hooks/useDrawer';
@@ -42,9 +41,7 @@ export const AppHeader: React.FC = () => {
                 {/* Left Section: Contextual Title */}
                 <div className="app-header__left">
                     <Link to={activeRole === 'service_provider' ? '/provider-dashboard' : '/'} className="app-header__logo">
-                        <div className="app-header__logo-icon">
-                            <Box size={24} />
-                        </div>
+                        <img src="/logo.svg" alt="Arentzo" className="w-8 h-8 mr-2" />
                         <span className="app-header__logo-text">{getPageTitle()}</span>
                     </Link>
                 </div>
