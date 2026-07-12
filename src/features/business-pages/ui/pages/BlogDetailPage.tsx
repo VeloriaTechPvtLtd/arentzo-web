@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useRouter } from 'next/navigation';
 import {
     ArrowLeft, Clock, Calendar, Share2,
     Link2, ArrowRight,
@@ -236,8 +238,8 @@ const RelatedPostCard: React.FC<{
 
 export const BlogDetailPage: React.FC = () => {
     const { t } = useTranslation();
-    const { slug } = useParams<{ slug: string }>();
-    const navigate = useNavigate();
+    const { slug } = useParams() as { slug: string };
+    const router = useRouter();
     const readingProgress = useReadingProgress();
 
     const allPosts = t('blog.posts', {
@@ -265,7 +267,7 @@ export const BlogDetailPage: React.FC = () => {
     }, [allPosts, currentPost]);
 
     const navigateToPost = (postId: string) => {
-        navigate(`/blog/${postId}`);
+        router.push(`/blog/${postId}`);
         window.scrollTo(0, 0);
     };
 
@@ -278,7 +280,7 @@ export const BlogDetailPage: React.FC = () => {
                     <p>Article not found.</p>
                     <button
                         className="business-hero__cta"
-                        onClick={() => navigate('/blog')}
+                        onClick={() => router.push('/blog')}
                     >
                         {t('blog.detail.backToArticles')}
                     </button>
@@ -300,7 +302,7 @@ export const BlogDetailPage: React.FC = () => {
                         t(`blog.categories.${currentPost.category}`)
                     }
                     readTimeLabel={t('blog.featured.readTime')}
-                    onBack={() => navigate('/blog')}
+                    onBack={() => router.push('/blog')}
                     backLabel={t('blog.detail.backToArticles')}
                 />
 

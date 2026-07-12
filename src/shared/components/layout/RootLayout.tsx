@@ -1,20 +1,20 @@
+'use client';
+
 import { useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import { GlobalDrawers } from './GlobalDrawers';
 
-// Root layout component that handles scroll-to-top on route change
-// Note: Headers are now handled by MainLayout and DetailLayout
-export const RootLayout = () => {
-    const { pathname } = useLocation();
+export const RootLayout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [pathname]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
-    return (
-        <>
-            <Outlet />
-            <GlobalDrawers />
-        </>
-    );
+  return (
+    <>
+      {children}
+      <GlobalDrawers />
+    </>
+  );
 };

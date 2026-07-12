@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { CheckCircle2, TrendingUp } from 'lucide-react';
 import {
   Area,
@@ -94,7 +96,7 @@ export function ProviderCTA() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild size="lg" className="w-full rounded-full font-semibold shadow-sm sm:w-auto">
-              <Link to="/seller">Become a Provider</Link>
+              <Link href="/seller">Become a Provider</Link>
             </Button>
             <Button
               asChild
@@ -102,7 +104,7 @@ export function ProviderCTA() {
               variant="outline"
               className="w-full rounded-full border-border bg-card font-semibold shadow-xs sm:w-auto"
             >
-              <Link to="/resources">See how it works</Link>
+              <Link href="/resources">See how it works</Link>
             </Button>
           </div>
         </div>

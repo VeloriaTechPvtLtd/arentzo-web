@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import './BackHeader.css';
 
@@ -14,7 +16,7 @@ export const BackHeader: React.FC<BackHeaderProps> = ({
     rightElement,
     onBack
 }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
@@ -29,7 +31,7 @@ export const BackHeader: React.FC<BackHeaderProps> = ({
         if (onBack) {
             onBack();
         } else {
-            navigate(-1);
+            router.back();
         }
     };
 

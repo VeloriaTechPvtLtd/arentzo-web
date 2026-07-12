@@ -1,5 +1,7 @@
+'use client';
+
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, Heart, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -81,7 +83,7 @@ export function PopularPicks() {
             </h2>
           </div>
           <Link
-            to="/browse"
+            href="/browse"
             className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
           >
             View All Items

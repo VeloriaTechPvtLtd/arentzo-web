@@ -19,7 +19,10 @@ export function WaitlistPageShell({
   const { setTheme } = useTheme();
 
   useEffect(() => {
-    const previous = (localStorage.getItem('theme') as Theme | null) ?? 'system';
+    const previous =
+      (typeof window !== 'undefined'
+        ? (window.localStorage.getItem('theme') as Theme | null)
+        : null) ?? 'system';
     setTheme('light');
     return () => setTheme(previous);
   }, [setTheme]);

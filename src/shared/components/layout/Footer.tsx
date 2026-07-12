@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -37,7 +39,7 @@ export const Footer: React.FC = () => {
                                         return (
                                             <Link
                                                 key={link}
-                                                to={to}
+                                                href={to}
                                                 className="text-gray-400 hover:text-white transition-colors text-[13px]"
                                             >
                                                 {link}
@@ -54,14 +56,14 @@ export const Footer: React.FC = () => {
                         <div className="flex justify-between items-center mb-8">
                             <h4 className="text-lg font-bold text-white flex items-center gap-4">
                                 Categories
-                                <Link to="/categories" className="text-gray-400 text-sm font-medium hover:text-white hover:underline">see all</Link>
+                                <Link href="/categories" className="text-gray-400 text-sm font-medium hover:text-white hover:underline">see all</Link>
                             </h4>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-3">
                             {categories.map((category) => (
                                 <Link
                                     key={category}
-                                    to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                                    href={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
                                     className="text-gray-400 hover:text-white transition-colors text-[13px]"
                                 >
                                     {category}

@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { InfoPageLayout } from '../components/InfoPageLayout';
 
 export const AboutUsPage = () => {
@@ -164,7 +166,7 @@ export const AboutUsPage = () => {
             We implement industry-standard security measures and comply with
             applicable data protection laws. For detailed information about how
             we handle your data, please refer to our{' '}
-            <Link to="/privacy-policy">Privacy Policy</Link>.
+            <Link href="/privacy-policy">Privacy Policy</Link>.
           </p>
 
           <h3>Customer Support</h3>
@@ -214,8 +216,8 @@ export const AboutUsPage = () => {
           <p>
             For detailed information about our legal compliance and user rights,
             please refer to our{' '}
-            <Link to="/terms-and-conditions">Terms and Conditions</Link> and{' '}
-            <Link to="/privacy-policy">Privacy Policy</Link>.
+            <Link href="/terms-and-conditions">Terms and Conditions</Link> and{' '}
+            <Link href="/privacy-policy">Privacy Policy</Link>.
           </p>
 
           <h2>Our Team</h2>
@@ -229,7 +231,7 @@ export const AboutUsPage = () => {
           <p>
             We value your feedback, questions, and suggestions. If you would like
             to get in touch with us, please visit our{' '}
-            <Link to="/contact-us">Contact Us</Link> page or reach out to us
+            <Link href="/contact-us">Contact Us</Link> page or reach out to us
             through the following channels:
           </p>
           <ul>
@@ -265,7 +267,7 @@ export const AboutUsPage = () => {
           </p>
           <p>
             If you have any questions, concerns, or feedback, please don&apos;t
-            hesitate to <Link to="/contact-us">contact us</Link>. We&apos;re
+            hesitate to <Link href="/contact-us">contact us</Link>. We&apos;re
             here to help!
           </p>
         </div>

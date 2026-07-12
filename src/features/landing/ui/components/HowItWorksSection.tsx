@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import {
   ArrowRight,
   CalendarDays,
@@ -59,7 +61,7 @@ export function HowItWorksSection() {
               return.
             </p>
             <Link
-              to="/about-us"
+              href="/about-us"
               className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
             >
               Learn More

@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
-// import { useNavigate } from 'react-router-dom';
+// import { useRouter } from 'next/navigation';
 import { CategoryTabs } from '../components/CategoryTabs';
 import { HeroBanner } from '../components/HeroBanner';
 import { SubcategoryCards } from '../components/SubcategoryCards';
@@ -38,7 +40,7 @@ export const CustomerHomePage: React.FC = () => {
     const { items: cartItems, addToCart, updateQuantity } = useCart();
     // Layout-related state is now handled in CustomerLayout
 
-    // const navigate = useNavigate();
+    // const router = useRouter();
 
     // Sync products with cart state
     const products = useMemo(() => {

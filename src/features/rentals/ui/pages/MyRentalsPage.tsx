@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Calendar, History, Clock, CheckCircle2, Box, AlertCircle, LayoutGrid } from 'lucide-react';
 import { RentalCard } from '../components/RentalCard';
 import { RentalTabs } from '../components/RentalTabs';
@@ -8,7 +10,7 @@ import type { RentalStatus } from '../../domain/entities';
 import '../styles/MyRentalsPage.css';
 
 export const MyRentalsPage: React.FC = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState<RentalStatus | 'all'>('all');
 
     const filteredRentals = mockRentals.filter(rental => {
@@ -25,7 +27,7 @@ export const MyRentalsPage: React.FC = () => {
     ];
 
     const handleRentalClick = (rentalId: string) => {
-        navigate(`/my-rentals/${rentalId}`);
+        router.push(`/my-rentals/${rentalId}`);
     };
 
     return (
@@ -58,7 +60,7 @@ export const MyRentalsPage: React.FC = () => {
                         </div>
                         <h3>No rentals found</h3>
                         <p>You haven't made any rentals in this category yet.</p>
-                        <button className="browse-btn" onClick={() => navigate('/browse')}>
+                        <button className="browse-btn" onClick={() => router.push('/browse')}>
                             Browse Items
                         </button>
                     </div>

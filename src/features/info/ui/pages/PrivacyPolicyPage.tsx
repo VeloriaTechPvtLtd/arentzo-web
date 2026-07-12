@@ -1,3 +1,5 @@
+'use client';
+
 import { InfoPageLayout } from '../components/InfoPageLayout';
 
 export const PrivacyPolicyPage = () => {

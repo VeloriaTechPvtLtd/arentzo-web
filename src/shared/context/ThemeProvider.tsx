@@ -1,49 +1,97 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import type { Theme } from '../types/theme';
+import { FORCE_LIGHT_THEME } from '../types/theme';
 import { ThemeContext } from './ThemeContextDefinition';
 
+function readStoredTheme(): Theme {
+  try {
+    if (typeof window === 'undefined') return 'light';
+    const savedTheme = window.localStorage.getItem('theme');
+    return (savedTheme as Theme) || 'light';
+  } catch {
+    return 'light';
+  }
+}
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [theme, setTheme] = useState<Theme>(() => {
-        const savedTheme = localStorage.getItem('theme');
-        return (savedTheme as Theme) || 'system';
-    });
+  const [theme, setThemeState] = useState<Theme>('light');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
-    const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const setTheme = (next: Theme) => {
+    // Dark theme implementation retained; switching is disabled while forced light.
+    if (FORCE_LIGHT_THEME) {
+      setThemeState('light');
+      return;
+    }
+    setThemeState(next);
+  };
 
-    useEffect(() => {
-        const root = window.document.documentElement;
+  useEffect(() => {
+    if (FORCE_LIGHT_THEME) {
+      setThemeState('light');
+      return;
+    }
+    setThemeState(readStoredTheme());
+  }, []);
 
-        const removeOldTheme = () => {
-            root.classList.remove('light', 'dark');
-        };
+  useEffect(() => {
+    const root = window.document.documentElement;
 
-        const applyTheme = (targetTheme: 'light' | 'dark') => {
-            removeOldTheme();
-            root.classList.add(targetTheme);
-            setResolvedTheme(targetTheme);
-        };
+    const removeOldTheme = () => {
+      root.classList.remove('light', 'dark');
+    };
 
-        if (theme === 'system') {
-            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            applyTheme(systemTheme);
+    const applyTheme = (targetTheme: 'light' | 'dark') => {
+      removeOldTheme();
+      root.classList.add(targetTheme);
+      setResolvedTheme(targetTheme);
+    };
 
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            const handleChange = (e: MediaQueryListEvent) => {
-                applyTheme(e.matches ? 'dark' : 'light');
-            };
+    // Keep dark/system logic below for when FORCE_LIGHT_THEME is turned off.
+    if (FORCE_LIGHT_THEME) {
+      applyTheme('light');
+      try {
+        window.localStorage.setItem('theme', 'light');
+      } catch {
+        // ignore
+      }
+      return;
+    }
 
-            mediaQuery.addEventListener('change', handleChange);
-            return () => mediaQuery.removeEventListener('change', handleChange);
-        } else {
-            applyTheme(theme);
-        }
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+      applyTheme(systemTheme);
 
-        localStorage.setItem('theme', theme);
-    }, [theme]);
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e: MediaQueryListEvent) => {
+        applyTheme(e.matches ? 'dark' : 'light');
+      };
 
-    return (
-        <ThemeContext.Provider value={{ theme, setTheme, currentTheme: resolvedTheme }}>
-            {children}
-        </ThemeContext.Provider>
-    );
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    applyTheme(theme);
+    try {
+      window.localStorage.setItem('theme', theme);
+    } catch {
+      // ignore storage errors during SSR / restricted environments
+    }
+  }, [theme]);
+
+  return (
+    <ThemeContext.Provider
+      value={{
+        theme: FORCE_LIGHT_THEME ? 'light' : theme,
+        setTheme,
+        currentTheme: FORCE_LIGHT_THEME ? 'light' : resolvedTheme,
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
 };

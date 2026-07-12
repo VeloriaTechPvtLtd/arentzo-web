@@ -1,5 +1,6 @@
-import { useEffect, type FC } from 'react';
-import { useLocation } from 'react-router-dom';
+'use client';
+
+import { useEffect, useState, type FC } from 'react';
 import { useTheme } from '../../../../shared/context/useTheme';
 import type { Theme } from '../../../../shared/types/theme';
 import { CompareRentBuy } from '../components/CompareRentBuy';
@@ -14,13 +15,23 @@ import '../landing.css';
 
 export const LandingPage: FC = () => {
   const { setTheme } = useTheme();
-  const { hash } = useLocation();
+  const [hash, setHash] = useState('');
 
   useEffect(() => {
-    const previous = (localStorage.getItem('theme') as Theme | null) ?? 'system';
+    const previous =
+      (typeof window !== 'undefined'
+        ? (window.localStorage.getItem('theme') as Theme | null)
+        : null) ?? 'system';
     setTheme('light');
     return () => setTheme(previous);
   }, [setTheme]);
+
+  useEffect(() => {
+    const syncHash = () => setHash(window.location.hash);
+    syncHash();
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
 
   useEffect(() => {
     if (!hash) return;

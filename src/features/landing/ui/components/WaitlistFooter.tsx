@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import {
   Facebook,
   Instagram,
@@ -74,7 +76,7 @@ export function WaitlistFooter() {
       <div className="mx-auto max-w-7xl px-4 pt-14 pb-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-8 md:grid-cols-4 lg:gap-6">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="inline-flex items-center gap-2">
+            <Link href="/" className="inline-flex items-center gap-2">
               <img
                 src="/logo.svg"
                 alt=""
@@ -108,7 +110,7 @@ export function WaitlistFooter() {
                 {col.links.map((link) => (
                   <li key={link.label}>
                     <Link
-                      to={link.to}
+                      href={link.to}
                       className="text-xs text-background/55 transition-colors hover:text-primary"
                     >
                       {link.label}

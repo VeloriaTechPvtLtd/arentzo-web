@@ -1,12 +1,14 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { ProductCard } from '../../../../shared/components/ui/ProductCard';
 import { mockProducts } from '../../../customer-home/infrastructure/api/mockData';
 import '../styles/FavoritesPage.css';
 
 export const FavoritesPage: React.FC = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [favorites, setFavorites] = useState(mockProducts.filter(p => p.isFavorite));
 
     const handleFavoriteToggle = (productId: string) => {
@@ -49,7 +51,7 @@ export const FavoritesPage: React.FC = () => {
                         </p>
                         <button
                             className="explore-btn"
-                            onClick={() => navigate('/browse')}
+                            onClick={() => router.push('/browse')}
                         >
                             Start Exploring
                         </button>
@@ -69,7 +71,7 @@ export const FavoritesPage: React.FC = () => {
                         </div>
                         <button
                             className="explore-btn whitespace-nowrap"
-                            onClick={() => navigate('/browse')}
+                            onClick={() => router.push('/browse')}
                         >
                             View Marketplace
                         </button>

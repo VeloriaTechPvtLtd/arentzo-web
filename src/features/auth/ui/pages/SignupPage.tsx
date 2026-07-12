@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthInput } from '../components/AuthInput';
 import { AuthSocialButtons } from '../components/AuthSocialButtons';
@@ -101,7 +103,7 @@ export const SignupPage: React.FC = () => {
                             </svg>
                         </div>
                         <label htmlFor="terms" className="text-sm font-medium text-foreground/70 leading-tight cursor-pointer">
-                            I agree to the <Link to="/terms" className="text-primary font-bold hover:underline underline-offset-4">Terms</Link> and <Link to="/privacy" className="text-primary font-bold hover:underline underline-offset-4">Privacy Policy</Link>
+                            I agree to the <Link href="/terms" className="text-primary font-bold hover:underline underline-offset-4">Terms</Link> and <Link href="/privacy" className="text-primary font-bold hover:underline underline-offset-4">Privacy Policy</Link>
                         </label>
                     </div>
                 </div>
@@ -117,7 +119,7 @@ export const SignupPage: React.FC = () => {
 
                 <p className="text-center text-sm font-medium text-muted-foreground pt-4">
                     Already have an account?{' '}
-                    <Link to="/login" className="text-primary font-bold hover:underline underline-offset-4">
+                    <Link href="/login" className="text-primary font-bold hover:underline underline-offset-4">
                         Log in
                     </Link>
                 </p>

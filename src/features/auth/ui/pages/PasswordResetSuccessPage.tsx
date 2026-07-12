@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Check, ShieldCheck } from 'lucide-react';
 import { AuthLayout } from '../layouts/AuthLayout';
 
@@ -15,7 +17,7 @@ const HeaderIcon = () => (
 );
 
 export const PasswordResetSuccessPage: React.FC = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     return (
         <AuthLayout
@@ -27,7 +29,7 @@ export const PasswordResetSuccessPage: React.FC = () => {
         >
             <div className="mt-8 space-y-6">
                 <button
-                    onClick={() => navigate('/login')}
+                    onClick={() => router.push('/login')}
                     className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]"
                 >
                     Back to log in

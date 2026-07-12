@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Search as SearchIcon, X } from 'lucide-react';
 import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { ProductCard } from '../../../../shared/components/ui/ProductCard';
@@ -94,30 +96,36 @@ const MOCK_BROWSING_ITEMS = [
 ];
 
 export const SearchResultsPage: React.FC = () => {
-    const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
     const showResults = searchValue.length > 0;
 
     const { items, totalItems } = useCart();
     const { openCheckout } = useDrawer();
 
+    const replaceQuery = (next: URLSearchParams) => {
+        const qs = next.toString();
+        router.replace(qs ? `${pathname}?${qs}` : pathname);
+    };
+
     const handleSearchChange = (value: string) => {
         setSearchValue(value);
-        const newParams = new URLSearchParams(searchParams);
+        const newParams = new URLSearchParams(searchParams.toString());
         if (value) {
             newParams.set('q', value);
         } else {
             newParams.delete('q');
         }
-        setSearchParams(newParams, { replace: true });
+        replaceQuery(newParams);
     };
 
     const handleClearSearch = () => {
         setSearchValue('');
-        const newParams = new URLSearchParams(searchParams);
+        const newParams = new URLSearchParams(searchParams.toString());
         newParams.delete('q');
-        setSearchParams(newParams, { replace: true });
+        replaceQuery(newParams);
     };
 
     const renderSearchInput = () => (
@@ -150,7 +158,7 @@ export const SearchResultsPage: React.FC = () => {
             <BackHeader
                 title=""
                 rightElement={renderSearchInput()}
-                onBack={() => navigate(-1)}
+                onBack={() => router.back()}
             />
 
             <main className="search-results-page__content">

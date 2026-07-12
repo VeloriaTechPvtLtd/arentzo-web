@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Globe, Sun, Moon, Laptop } from 'lucide-react';
 import { useTheme } from '../../../../shared/context/ThemeContext';
 import type { Theme } from '../../../../shared/types/theme';
+import { FORCE_LIGHT_THEME } from '../../../../shared/types/theme';
 
 interface LanguageThemeSettingsProps {
     onSave: () => void;
@@ -50,6 +51,8 @@ export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = () =>
                 </div>
             </div>
 
+            {/* Dark theme UI kept but hidden while FORCE_LIGHT_THEME is on */}
+            {!FORCE_LIGHT_THEME && (
             <div className="settings-section">
                 <h3 className="settings-section__title">App Theme</h3>
                 <p className="settings-section__subtitle">Switch between light & dark mode</p>
@@ -105,6 +108,7 @@ export const LanguageThemeSettings: React.FC<LanguageThemeSettingsProps> = () =>
                     </div>
                 </button>
             </div>
+            )}
 
         </div>
     );

@@ -1,8 +1,10 @@
+'use client';
+
 import React from 'react';
 import { Heart, Star, Plus, Minus } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import type { Product } from '../../types/product';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
     product: Product;
@@ -21,7 +23,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     className,
     variant = 'default',
 }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const quantity = product.quantity || 0;
     const isOutOfStock = product.isAvailable === false;
 
@@ -35,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     };
 
     const handleCardClick = () => {
-        navigate(`/product/${product.id}`);
+        router.push(`/product/${product.id}`);
     };
 
     const handleAction = (e: React.MouseEvent, action: () => void) => {

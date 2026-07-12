@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { FilterModal } from '../components/FilterModal';
 import { Filter } from 'lucide-react';

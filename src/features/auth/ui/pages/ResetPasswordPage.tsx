@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { CheckCircle2, Circle, KeyRound, ArrowLeft } from 'lucide-react';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthInput } from '../components/AuthInput';
@@ -16,7 +19,7 @@ const HeaderIcon = () => (
 );
 
 export const ResetPasswordPage: React.FC = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -31,7 +34,7 @@ export const ResetPasswordPage: React.FC = () => {
         e.preventDefault();
         const allMet = requirements.every(req => req.met);
         if (allMet && password === confirmPassword) {
-            navigate('/password-reset-success');
+            router.push('/password-reset-success');
         }
     };
 
@@ -93,7 +96,7 @@ export const ResetPasswordPage: React.FC = () => {
                     </button>
 
                     <div className="text-center pt-2">
-                        <Link to="/login" className="inline-flex items-center text-sm font-bold text-muted-foreground hover:text-primary transition-colors group">
+                        <Link href="/login" className="inline-flex items-center text-sm font-bold text-muted-foreground hover:text-primary transition-colors group">
                             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
                             Back to log in
                         </Link>

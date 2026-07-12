@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { RecentSearches } from '../components/RecentSearches';
 import { ContinueBrowsing } from '../components/ContinueBrowsing';
 import { PriceDrop } from '../components/PriceDrop';
@@ -103,7 +105,9 @@ const MOCK_SEARCH_RESULTS = [
 ];
 
 export const SearchPage = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const searchQuery = searchParams.get('q') || '';
     const showResults = searchQuery.length > 0;
 
@@ -112,7 +116,7 @@ export const SearchPage = () => {
     const { openCheckout } = useDrawer();
 
     const handleRecentSearchSelect = (search: { label: string }) => {
-        setSearchParams({ q: search.label });
+        router.push(`${pathname}?q=${encodeURIComponent(search.label)}`);
     };
 
     const handleClearHistory = () => {

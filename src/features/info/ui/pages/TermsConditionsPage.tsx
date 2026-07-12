@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { InfoPageLayout } from '../components/InfoPageLayout';
 
 export const TermsConditionsPage = () => {
@@ -67,14 +69,14 @@ export const TermsConditionsPage = () => {
                             <li>Compliance with legal and regulatory requirements</li>
                             <li>Any other purposes described in Our Privacy Policy</li>
                         </ul>
-                        <p>For detailed information about how We collect, use, and share Your data, please refer to Our <Link to="/privacy-policy">Privacy Policy</Link>.</p>
+                        <p>For detailed information about how We collect, use, and share Your data, please refer to Our <Link href="/privacy-policy">Privacy Policy</Link>.</p>
 
                         <h2>Acknowledgment</h2>
                         <p>These are the Terms and Conditions governing the use of this Service and the agreement that operates between You and the Company. These Terms and Conditions set out the rights and obligations of all users regarding the use of the Service.</p>
                         <p>Your access to and use of the Service is conditioned on Your acceptance of and compliance with these Terms and Conditions. These Terms and Conditions apply to all visitors, users and others who access or use the Service.</p>
                         <p>By accessing or using the Service You agree to be bound by these Terms and Conditions. If You disagree with any part of these Terms and Conditions then You may not access the Service.</p>
                         <p>You represent that you are over the age of 18. The Company does not permit those under 18 to use the Service.</p>
-                        <p>Your access to and use of the Service is also conditioned on Your acceptance of and compliance with the Privacy Policy of the Company. Our Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your personal information when You use the Application or the Website and tells You about Your privacy rights and how the law protects You. Please read Our <Link to="/privacy-policy">Privacy Policy</Link> carefully before using Our Service.</p>
+                        <p>Your access to and use of the Service is also conditioned on Your acceptance of and compliance with the Privacy Policy of the Company. Our Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your personal information when You use the Application or the Website and tells You about Your privacy rights and how the law protects You. Please read Our <Link href="/privacy-policy">Privacy Policy</Link> carefully before using Our Service.</p>
 
                         <h2>User Accounts</h2>
                         <p>Yes, users can create accounts on Our Service. When You create an account with Us, You must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of Your account on Our Service.</p>
@@ -112,7 +114,7 @@ export const TermsConditionsPage = () => {
                         <p>Service Providers may be required to complete additional verification before listing items on the Platform. We reserve the right to reject or suspend accounts that fail verification or provide fraudulent information.</p>
 
                         <h3>Account Data and VELORIA TECH (OPC) PRIVATE LIMITED</h3>
-                        <p>All account data, including registration information, verification documents, transaction history, and usage data, is collected and maintained by VELORIA TECH (OPC) PRIVATE LIMITED. By creating an account, You consent to the collection, storage, and processing of Your data by VELORIA TECH (OPC) PRIVATE LIMITED as described in Our <Link to="/privacy-policy">Privacy Policy</Link>.</p>
+                        <p>All account data, including registration information, verification documents, transaction history, and usage data, is collected and maintained by VELORIA TECH (OPC) PRIVATE LIMITED. By creating an account, You consent to the collection, storage, and processing of Your data by VELORIA TECH (OPC) PRIVATE LIMITED as described in Our <Link href="/privacy-policy">Privacy Policy</Link>.</p>
 
                         <h2>User-Generated Content</h2>
                         <p>Yes, users can create and/or upload content on Our Service, including but not limited to text, images, photos, documents, and other media files.</p>

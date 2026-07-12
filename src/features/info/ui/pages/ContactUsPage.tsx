@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { InfoPageLayout } from '../components/InfoPageLayout';
 
 export const ContactUsPage = () => {
@@ -120,7 +122,7 @@ export const ContactUsPage = () => {
           </ul>
           <p>
             For detailed information about how we handle your personal data,
-            please refer to our <Link to="/privacy-policy">Privacy Policy</Link>.
+            please refer to our <Link href="/privacy-policy">Privacy Policy</Link>.
           </p>
 
           <h3>Your Privacy Rights</h3>
@@ -275,7 +277,7 @@ export const ContactUsPage = () => {
           <h2>Frequently Asked Questions (FAQ)</h2>
           <p>
             Before contacting us, you may find answers to common questions in our{' '}
-            <Link to="/faqs">Help Center</Link>. Please check our website or
+            <Link href="/faqs">Help Center</Link>. Please check our website or
             mobile application for frequently asked questions and answers.
           </p>
 
@@ -334,7 +336,7 @@ export const ContactUsPage = () => {
           </p>
           <p>
             For more information about our company, please visit our{' '}
-            <Link to="/about-us">About Us</Link> page.
+            <Link href="/about-us">About Us</Link> page.
           </p>
         </div>
       </div>

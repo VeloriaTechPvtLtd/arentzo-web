@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useRouter } from 'next/navigation';
 import { Calendar, MapPin, Store, Clock, CreditCard, QrCode, RotateCcw, MessageCircle, Star } from 'lucide-react';
 import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { ReportIssueModal } from '../components/ReportIssueModal';
@@ -23,8 +25,8 @@ type ActionModalType =
     | null;
 
 export const RentalDetailPage: React.FC = () => {
-    const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>();
+    const router = useRouter();
+    const { id } = useParams() as { id: string };
     const [activeAction, setActiveAction] = useState<ActionModalType>(null);
 
     const rental = useMemo(() => {
@@ -38,7 +40,7 @@ export const RentalDetailPage: React.FC = () => {
                 <div className="rental-detail-page__not-found">
                     <h2>Rental not found</h2>
                     <p>The rental you're looking for doesn't exist or has been removed.</p>
-                    <button onClick={() => navigate('/my-rentals')}>
+                    <button onClick={() => router.push('/my-rentals')}>
                         Back to My Rentals
                     </button>
                 </div>
@@ -71,7 +73,7 @@ export const RentalDetailPage: React.FC = () => {
     };
 
     const handleBrowseSimilar = () => {
-        navigate('/browse');
+        router.push('/browse');
     };
 
     const renderFooterActions = () => {

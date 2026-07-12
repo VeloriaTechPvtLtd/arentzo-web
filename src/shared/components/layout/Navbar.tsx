@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { useAuth } from '../../../features/auth/ui/context/AuthContext';
 import { useDrawer } from '../../hooks/useDrawer';
@@ -24,17 +26,17 @@ export const Navbar: React.FC = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2 group">
+                    <Link href="/" className="flex items-center gap-2 group">
                         <img src="/logo.svg" alt="Arentzo" className="w-10 h-10 group-hover:scale-110 transition-transform" />
                         <span className="text-2xl font-bold text-[#3d3436] tracking-tight">Arentzo</span>
                     </Link>
 
                     {/* Desktop Navigation */}
                     <div className="flex max-md:hidden items-center space-x-10">
-                        <Link to="/browse" className="text-[#3d3436] font-bold text-[#ff7e5f] hover:underline transition-colors">Browse Marketplace</Link>
-                        <Link to="/" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">Programs</Link>
-                        <Link to="/#how-it-works" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">How It Works</Link>
-                        <Link to="/contact-us" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">Support</Link>
+                        <Link href="/browse" className="text-[#3d3436] font-bold text-[#ff7e5f] hover:underline transition-colors">Browse Marketplace</Link>
+                        <Link href="/" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">Programs</Link>
+                        <Link href="/#how-it-works" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">How It Works</Link>
+                        <Link href="/contact-us" className="text-[#3d3436] font-medium hover:text-[#ff7e5f] transition-colors">Support</Link>
                     </div>
 
                     {/* Auth Actions */}
@@ -87,9 +89,9 @@ export const Navbar: React.FC = () => {
             {isMenuOpen && (
                 <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-xl p-6 space-y-6 animate-in slide-in-from-top duration-300">
                     <div className="flex flex-col space-y-4">
-                        <Link to="/" className="text-lg font-medium text-[#3d3436]" onClick={() => setIsMenuOpen(false)}>Programs</Link>
-                        <Link to="/#how-it-works" className="text-lg font-medium text-[#3d3436]" onClick={() => setIsMenuOpen(false)}>How It Works</Link>
-                        <Link to="/contact-us" className="text-lg font-medium text-[#3d3436]" onClick={() => setIsMenuOpen(false)}>Support</Link>
+                        <Link href="/" className="text-lg font-medium text-[#3d3436]" onClick={() => setIsMenuOpen(false)}>Programs</Link>
+                        <Link href="/#how-it-works" className="text-lg font-medium text-[#3d3436]" onClick={() => setIsMenuOpen(false)}>How It Works</Link>
+                        <Link href="/contact-us" className="text-lg font-medium text-[#3d3436]" onClick={() => setIsMenuOpen(false)}>Support</Link>
                     </div>
 
                     <div className="pt-6 border-t border-gray-100">

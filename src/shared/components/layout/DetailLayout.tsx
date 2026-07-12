@@ -1,18 +1,20 @@
+'use client';
+
 import { useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import { GlobalDrawers } from './GlobalDrawers';
 
-export const DetailLayout = () => {
-    const { pathname } = useLocation();
+export const DetailLayout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [pathname]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
-    return (
-        <>
-            <Outlet />
-            <GlobalDrawers />
-        </>
-    );
+  return (
+    <>
+      {children}
+      <GlobalDrawers />
+    </>
+  );
 };

@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthInput } from '../components/AuthInput';
 import { ShieldCheck, ArrowLeft, Mail } from 'lucide-react';
@@ -18,14 +21,14 @@ const HeaderIcon = () => (
 export const ForgotPasswordPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitted(true);
 
         setTimeout(() => {
-            navigate('/verify-otp', { state: { email } });
+            router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
         }, 2000);
     };
 
@@ -69,7 +72,7 @@ export const ForgotPasswordPage: React.FC = () => {
                     </button>
 
                     <div className="text-center pt-2">
-                        <Link to="/login" className="inline-flex items-center text-sm font-bold text-muted-foreground hover:text-primary transition-colors group">
+                        <Link href="/login" className="inline-flex items-center text-sm font-bold text-muted-foreground hover:text-primary transition-colors group">
                             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
                             Back to log in
                         </Link>

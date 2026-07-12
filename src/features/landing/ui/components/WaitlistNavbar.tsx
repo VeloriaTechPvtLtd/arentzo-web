@@ -1,5 +1,8 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -22,16 +25,24 @@ function scrollToHash(hashPath: string) {
 }
 
 export function WaitlistNavbar() {
-  const { pathname, hash } = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [hash, setHash] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const syncHash = () => setHash(window.location.hash);
+    syncHash();
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, [pathname]);
 
   const goToWaitlist = () => {
     if (pathname === '/') {
       scrollToWaitlist();
       return;
     }
-    navigate('/#waitlist-hero-form');
+    router.push('/#waitlist-hero-form');
   };
 
   const isActive = (link: (typeof navLinks)[number]) => {
@@ -44,7 +55,7 @@ export function WaitlistNavbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 shadow-2xs backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 sm:h-16 sm:gap-4 sm:px-6 lg:h-[72px] lg:px-8">
-        <Link to="/" className="flex min-w-0 shrink items-center gap-2 sm:gap-2.5">
+        <Link href="/" className="flex min-w-0 shrink items-center gap-2 sm:gap-2.5">
           <img src="/logo.svg" alt="" className="size-8 shrink-0 rounded-full object-cover shadow-xs sm:size-9" />
           <div className="min-w-0 leading-tight">
             <span className="block truncate text-base font-bold tracking-tight text-foreground sm:text-lg">

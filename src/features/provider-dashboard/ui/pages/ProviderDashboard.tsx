@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import type { FC } from 'react';
 import { StatsOverview } from '../components/StatsOverview';

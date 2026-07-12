@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ChevronDown, ChevronUp, Mic, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -167,7 +169,7 @@ export function FaqPage() {
           </p>
           <p>
             Or visit our{' '}
-            <Link to="/contact-us" className="font-medium text-primary hover:underline">
+            <Link href="/contact-us" className="font-medium text-primary hover:underline">
               Contact page
             </Link>
             .

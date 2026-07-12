@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { mockProducts } from '../../infrastructure/api/mockData';
@@ -10,8 +12,8 @@ import { RelatedProducts } from '../components/product-details/RelatedProducts';
 import '../styles/CustomerHome.css';
 
 export const ProductDetailsPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
+    const { id } = useParams() as { id: string };
+    const router = useRouter();
     const { addToCart, items: cartItems, updateQuantity } = useCart();
 
     const product = useMemo(() => {
@@ -46,7 +48,7 @@ export const ProductDetailsPage: React.FC = () => {
                 <BackHeader title="Product Details" />
                 <div className="product-not-found">
                     <h2>Product not found</h2>
-                    <button onClick={() => navigate('/browse')} className="back-button">
+                    <button onClick={() => router.push('/browse')} className="back-button">
                         <ArrowLeft size={20} />
                         Browse Products
                     </button>

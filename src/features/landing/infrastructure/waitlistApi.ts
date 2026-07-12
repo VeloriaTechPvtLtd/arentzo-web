@@ -7,11 +7,12 @@ const UNIQUE_VIOLATION = '23505';
 
 function persistLocal(email: string) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    if (typeof window === 'undefined') return;
+    const raw = window.localStorage.getItem(STORAGE_KEY);
     const emails: string[] = raw ? (JSON.parse(raw) as string[]) : [];
     if (!emails.includes(email)) {
       emails.push(email);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(emails));
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(emails));
     }
   } catch {
     // ignore storage failures
@@ -53,7 +54,7 @@ export async function submitWaitlistEmail(
         persistLocal(normalized);
         return { ok: true };
       }
-      if (import.meta.env.DEV) {
+      if (process.env.NODE_ENV === "development") {
         console.warn('[waitlist]', error.message);
       }
       return {
@@ -67,7 +68,7 @@ export async function submitWaitlistEmail(
   } catch (err) {
     // Network / client failure — keep a local copy, but tell the user.
     persistLocal(normalized);
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV === "development") {
       console.warn('[waitlist]', err);
     }
     return {

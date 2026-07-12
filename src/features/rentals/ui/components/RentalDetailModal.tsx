@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { X, Calendar, MapPin, Store, Clock, CreditCard, QrCode, RotateCcw, MessageCircle, Star } from 'lucide-react';
 import type { Rental } from '../../domain/entities';
 import { ReportIssueModal } from './ReportIssueModal';
@@ -28,7 +30,7 @@ interface RentalDetailModalProps {
 }
 
 export const RentalDetailModal: React.FC<RentalDetailModalProps> = ({ rental, isOpen, onClose }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [activeAction, setActiveAction] = useState<ActionModalType>(null);
 
     if (!isOpen) return null;
@@ -65,7 +67,7 @@ export const RentalDetailModal: React.FC<RentalDetailModalProps> = ({ rental, is
 
     const handleBrowseSimilar = () => {
         onClose();
-        navigate('/browse');
+        router.push('/browse');
     };
 
     const renderFooterActions = () => {

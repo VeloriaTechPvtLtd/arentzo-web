@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer } from '../../../../shared/components/ui/drawer/Drawer.tsx';
-import { useDrawer } from '../../../../shared/hooks/useDrawer.ts';
+import { Drawer } from '../../../../shared/components/ui/drawer/Drawer';
+import { useDrawer } from '../../../../shared/hooks/useDrawer';
 import { LoginForm } from './LoginForm';
 import { VerifyOtpForm } from './VerifyOtpForm';
 import { SignupForm } from './SignupForm';

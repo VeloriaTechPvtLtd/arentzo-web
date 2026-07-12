@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Search as SearchIcon, ChevronLeft, X } from 'lucide-react';
 import '../styles/Search.css';
 
@@ -10,7 +12,7 @@ interface SearchHeaderProps {
 }
 
 export const SearchHeader: React.FC<SearchHeaderProps> = ({ value, onChange, onClear }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
@@ -25,7 +27,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({ value, onChange, onC
         <header className={`search-header-container ${isScrolled ? 'scrolled' : ''}`}>
             <div className="search-bar-wrapper">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => router.back()}
                     className="icon-button"
                     aria-label="Go back"
                 >

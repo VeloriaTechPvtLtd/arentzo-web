@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { X, ArrowLeft, Edit3, Wallet, CreditCard, Tag, MapPin, Shield, Globe, Bell, Lightbulb, MessageCircle } from 'lucide-react';
 import { ProfileUserInfo } from './ProfileUserInfo';
 import { ProfileQuickActions } from './ProfileQuickActions';
@@ -50,7 +52,7 @@ const OnboardingHeader: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 };
 
 const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const { user: authUser, signOut, activeRole, switchRole } = useAuth();
     const { currentStep, providerType } = useProviderOnboarding();
     const [view, setView] = useState<ProfileView>(authUser ? 'profile' : 'login');
@@ -117,13 +119,13 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
         // Brief delay so user sees the checkmark change before navigating/closing
         setTimeout(() => {
             if (role === 'service_provider') {
-                navigate('/provider-dashboard');
+                router.push('/provider-dashboard');
             } else {
-                navigate('/');
+                router.push('/');
             }
             onClose();
         }, 400);
-    }, [activeRole, navigate, onClose, switchRole]);
+    }, [activeRole, router, onClose, switchRole]);
 
     const handleBackdropClick = useCallback((e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
@@ -307,11 +309,11 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                                             <ProfileQuickActions
                                                 onNotificationsClick={() => setView('notifications')}
                                                 onFavouritesClick={() => {
-                                                    navigate('/favorites');
+                                                    router.push('/favorites');
                                                     onClose();
                                                 }}
                                                 onRentalsClick={() => {
-                                                    navigate('/my-rentals');
+                                                    router.push('/my-rentals');
                                                     onClose();
                                                 }}
                                             />
@@ -398,7 +400,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     signOut();
                     setIsLogoutModalOpen(false);
                     onClose();
-                    navigate('/');
+                    router.push('/');
                 }}
             />
         </div>

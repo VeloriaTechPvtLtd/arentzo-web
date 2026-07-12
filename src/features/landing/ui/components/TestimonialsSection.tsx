@@ -1,5 +1,7 @@
+'use client';
+
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import {
   ArrowRight,
   BadgeCheck,
@@ -64,7 +66,7 @@ export function TestimonialsSection() {
             </h2>
           </div>
           <Link
-            to="/blog"
+            href="/blog"
             className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
           >
             View All Reviews

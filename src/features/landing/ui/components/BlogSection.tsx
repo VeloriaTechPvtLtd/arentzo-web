@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -53,7 +55,7 @@ export function BlogSection() {
             </h2>
           </div>
           <Link
-            to="/blog"
+            href="/blog"
             className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
           >
             Visit Blog
@@ -63,7 +65,7 @@ export function BlogSection() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           {posts.map((post) => (
-            <Link key={post.slug} to={`/blog/${post.slug}`} className="group">
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
               <Card className="landing-surface h-full gap-0 overflow-hidden border-border/80 py-0 shadow-sm transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-md">
                 <div className="landing-media-top relative aspect-[16/10] overflow-hidden bg-muted">
                   <img

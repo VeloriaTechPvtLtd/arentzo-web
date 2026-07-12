@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
     BookOpen, ShoppingBag, Handshake, Store,
@@ -7,7 +9,7 @@ import {
     HelpCircle, Users, Video, MessageCircle,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import { BusinessHeroSection } from '../components/BusinessHeroSection';
 import { BusinessCTASection } from '../components/BusinessCTASection';
@@ -133,7 +135,7 @@ export const ResourcesPage: React.FC = () => {
                                             return (
                                                 <Link
                                                     key={item.key}
-                                                    to={linkTo}
+                                                    href={linkTo}
                                                     className="no-underline"
                                                 >
                                                     {card}

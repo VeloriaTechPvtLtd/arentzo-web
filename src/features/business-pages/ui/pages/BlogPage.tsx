@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import '../styles/BusinessPages.css';
@@ -179,7 +181,7 @@ const NewsletterSection: React.FC = () => {
 
 export const BlogPage: React.FC = () => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
+    const router = useRouter();
     const [activeCategory, setActiveCategory] = useState('all');
 
     const allPosts = t('blog.posts', { returnObjects: true }) as BlogPost[];
@@ -193,7 +195,7 @@ export const BlogPage: React.FC = () => {
     const regularPosts = filteredPosts.filter((post) => !post.featured);
 
     const navigateToPost = (postId: string) => {
-        navigate(`/blog/${postId}`);
+        router.push(`/blog/${postId}`);
     };
 
     return (

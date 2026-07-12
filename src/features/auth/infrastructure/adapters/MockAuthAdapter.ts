@@ -76,15 +76,22 @@ export class MockAuthAdapter implements AuthPort {
         console.log('[MockAuthAdapter] Signing out');
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
-        localStorage.removeItem(STORAGE_KEY_SESSION);
+        try {
+            if (typeof window !== 'undefined') {
+                window.localStorage.removeItem(STORAGE_KEY_SESSION);
+            }
+        } catch {
+            // ignore
+        }
     }
 
     async getSession(): Promise<Session | null> {
-        const stored = localStorage.getItem(STORAGE_KEY_SESSION);
-        if (!stored) return null;
         try {
+            if (typeof window === 'undefined') return null;
+            const stored = window.localStorage.getItem(STORAGE_KEY_SESSION);
+            if (!stored) return null;
             return JSON.parse(stored) as Session;
-        } catch (e) {
+        } catch {
             return null;
         }
     }
@@ -97,6 +104,12 @@ export class MockAuthAdapter implements AuthPort {
     }
 
     private persistSession(session: Session) {
-        localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(session));
+        try {
+            if (typeof window !== 'undefined') {
+                window.localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(session));
+            }
+        } catch {
+            // ignore
+        }
     }
 }

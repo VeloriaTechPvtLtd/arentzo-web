@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { ProviderOnboardingProvider } from '../context/ProviderOnboardingProvider';
 import { useProviderOnboarding } from '../hooks/useProviderOnboarding';
 import { ProviderTypeSelection } from '../components/ProviderTypeSelection';
@@ -10,12 +12,12 @@ import { BankDetails } from '../components/BankDetails';
 import '../styles/ProviderOnboarding.css';
 
 const OnboardingContent: React.FC = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const { currentStep, prevStep } = useProviderOnboarding();
 
     const handleBack = () => {
         if (currentStep === 1) {
-            navigate(-1);
+            router.back();
         } else {
             prevStep();
         }
