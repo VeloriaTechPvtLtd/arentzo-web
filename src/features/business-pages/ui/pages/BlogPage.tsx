@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import '../styles/BusinessPages.css';
 
 interface BlogPost {
@@ -196,6 +197,7 @@ export const BlogPage: React.FC = () => {
     };
 
     return (
+        <WaitlistPageShell>
         <main>
             <section className="business-hero">
                 <div className="business-hero__blob-1" />
@@ -241,5 +243,6 @@ export const BlogPage: React.FC = () => {
 
             <NewsletterSection />
         </main>
+        </WaitlistPageShell>
     );
 };

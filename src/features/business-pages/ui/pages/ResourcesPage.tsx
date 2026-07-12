@@ -8,8 +8,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Navbar } from '../../../../shared/components/layout/Navbar';
-import { Footer } from '../../../../shared/components/layout/Footer';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import { BusinessHeroSection } from '../components/BusinessHeroSection';
 import { BusinessCTASection } from '../components/BusinessCTASection';
 import '../styles/BusinessPages.css';
@@ -100,9 +99,8 @@ export const ResourcesPage: React.FC = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="min-h-screen bg-background font-sans text-foreground flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
+        <WaitlistPageShell>
+            <main>
                 <BusinessHeroSection
                     titleKey="resources.hero.title"
                     subtitleKey="resources.hero.subtitle"
@@ -156,7 +154,6 @@ export const ResourcesPage: React.FC = () => {
                     buttonKey="resources.cta.button"
                 />
             </main>
-            <Footer />
-        </div>
+        </WaitlistPageShell>
     );
 };

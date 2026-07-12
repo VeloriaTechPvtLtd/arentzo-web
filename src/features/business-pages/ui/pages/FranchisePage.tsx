@@ -4,8 +4,7 @@ import {
     Package, Headphones,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Navbar } from '../../../../shared/components/layout/Navbar';
-import { Footer } from '../../../../shared/components/layout/Footer';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import { BusinessHeroSection } from '../components/BusinessHeroSection';
 import { BenefitsGrid } from '../components/BenefitsGrid';
 import { StepsSection } from '../components/StepsSection';
@@ -52,9 +51,8 @@ export const FranchisePage: React.FC = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="min-h-screen bg-background font-sans text-foreground flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
+        <WaitlistPageShell>
+            <main>
                 <BusinessHeroSection
                     titleKey="franchise.hero.title"
                     subtitleKey="franchise.hero.subtitle"
@@ -98,7 +96,6 @@ export const FranchisePage: React.FC = () => {
                     buttonKey="franchise.cta.button"
                 />
             </main>
-            <Footer />
-        </div>
+        </WaitlistPageShell>
     );
 };

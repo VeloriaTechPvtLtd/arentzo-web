@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { AuthContext } from './AuthContextDefinition';
 import { AuthService } from '../../application/services/AuthService';
 import { MockAuthAdapter } from '../../infrastructure/adapters/MockAuthAdapter';
-import type { User, Session } from '../../domain/entities/User';
+import type { User, Session, UserRole } from '../../domain/entities/User';
 
 // Initialize Service (Dependency Injection Root for Feature)
 // In a real app, this might come from a DI container or Prop
@@ -13,6 +13,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
+    const [activeRole, setActiveRole] = useState<UserRole>('customer');
+
+    useEffect(() => {
+        if (user) {
+            setActiveRole(user.role);
+        } else {
+            setActiveRole('customer');
+        }
+    }, [user]);
 
     useEffect(() => {
         const initAuth = async () => {
@@ -123,6 +132,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const switchRole = useCallback((role: UserRole) => {
+        setActiveRole(role);
+        setUser((prev) => (prev ? { ...prev, role } : null));
+        setSession((prev) =>
+            prev ? { ...prev, user: { ...prev.user, role } } : null
+        );
+    }, []);
+
     const value = useMemo(() => ({
         user,
         session,
@@ -133,8 +150,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         forgotPassword,
         verifyResetOtp,
         resetPassword,
-        signOut
-    }), [user, session, loading]);
+        signOut,
+        activeRole,
+        switchRole
+    }), [user, session, loading, activeRole, switchRole]);
 
     return (
         <AuthContext.Provider value={value}>

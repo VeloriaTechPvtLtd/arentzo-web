@@ -1,38 +1,53 @@
-import React from 'react';
-import { Footer } from '../../../../shared/components/layout/Footer';
-import { HeroSection } from '../components/HeroSection';
-import { CategorySection } from '../components/CategorySection';
-import { HowItWorks } from '../components/HowItWorks';
-import { FeaturesSection } from '../components/FeaturesSection';
-import { CTASection } from '../components/CTASection';
+import { useEffect, type FC } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useTheme } from '../../../../shared/context/useTheme';
+import type { Theme } from '../../../../shared/types/theme';
+import { CompareRentBuy } from '../components/CompareRentBuy';
+import { EarlyAccessBanner } from '../components/EarlyAccessBanner';
+import { HowItWorksSection } from '../components/HowItWorksSection';
+import { TrustFeaturesBar } from '../components/TrustFeaturesBar';
+import { WaitlistFooter } from '../components/WaitlistFooter';
+import { WaitlistHero } from '../components/WaitlistHero';
+import { WaitlistNavbar } from '../components/WaitlistNavbar';
+import { WhatYouCanRent } from '../components/WhatYouCanRent';
+import '../landing.css';
 
-export const LandingPage: React.FC = () => {
-    return (
-        <div className="min-h-screen bg-white font-sans text-[#3d3436] selection:bg-[#ff7e5f]/30">
-            <main>
-                {/* Hero Section */}
-                <HeroSection />
+export const LandingPage: FC = () => {
+  const { setTheme } = useTheme();
+  const { hash } = useLocation();
 
-                {/* Browse by Category Section */}
-                <div id="categories">
-                    <CategorySection />
-                </div>
+  useEffect(() => {
+    const previous = (localStorage.getItem('theme') as Theme | null) ?? 'system';
+    setTheme('light');
+    return () => setTheme(previous);
+  }, [setTheme]);
 
-                {/* How It Works Section */}
-                <div id="how-it-works">
-                    <HowItWorks />
-                </div>
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.replace(/^#/, '');
+    const frame = window.requestAnimationFrame(() => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: id === 'waitlist-hero-form' ? 'center' : 'start',
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [hash]);
 
-                {/* Why Choose Arentzo Section */}
-                <div id="features">
-                    <FeaturesSection />
-                </div>
-
-                {/* Final Call to Action */}
-                <CTASection />
-            </main>
-
-            <Footer />
-        </div>
-    );
+  return (
+    <div className="landing-page min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased selection:bg-primary/20 selection:text-foreground">
+      <WaitlistNavbar />
+      <main>
+        <WaitlistHero />
+        <TrustFeaturesBar />
+        <WhatYouCanRent />
+        <HowItWorksSection />
+        <CompareRentBuy />
+        <EarlyAccessBanner />
+      </main>
+      <WaitlistFooter />
+    </div>
+  );
 };

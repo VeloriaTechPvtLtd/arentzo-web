@@ -1,9 +1,5 @@
 /* Profile Feature - Main Styles */
 
-.hidden {
-    display: none !important;
-}
-
 /* Profile Overlay */
 .profile-overlay {
     position: fixed;

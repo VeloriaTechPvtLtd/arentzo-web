@@ -6,7 +6,7 @@ import {
     TrendingUp,
     MoreHorizontal
 } from 'lucide-react';
-import { Offer } from '../../infrastructure/api/offersMockData';
+import type { Offer } from '../../infrastructure/api/offersMockData';
 import '../styles/OfferCard.css';
 
 interface OfferCardProps {

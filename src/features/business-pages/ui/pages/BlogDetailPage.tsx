@@ -5,6 +5,7 @@ import {
     ArrowLeft, Clock, Calendar, Share2,
     Link2, ArrowRight,
 } from 'lucide-react';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import { useReadingProgress } from '../hooks/useReadingProgress';
 import { parseMarkdownText } from '../utils/parseMarkdownText';
 import '../styles/BlogDetailPage.css';
@@ -270,6 +271,7 @@ export const BlogDetailPage: React.FC = () => {
 
     if (!currentPost) {
         return (
+            <WaitlistPageShell>
             <main className="blog-detail">
                 <div className="blog-detail__not-found">
                     <h1>{t('blog.hero.title')}</h1>
@@ -282,10 +284,12 @@ export const BlogDetailPage: React.FC = () => {
                     </button>
                 </div>
             </main>
+            </WaitlistPageShell>
         );
     }
 
     return (
+        <WaitlistPageShell>
         <main className="blog-detail">
             <ReadingProgressBar progress={readingProgress} />
 
@@ -353,5 +357,6 @@ export const BlogDetailPage: React.FC = () => {
                 )}
             </div>
         </main>
+        </WaitlistPageShell>
     );
 };

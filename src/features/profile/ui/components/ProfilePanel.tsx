@@ -364,26 +364,24 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
 
                     {view === 'login' && (
                         <LoginForm
-                            onSwitchToSignup={() => setView('signup')}
-                            onSwitchToForgotPassword={() => setView('forgot-password')}
+                            onSignupClick={() => setView('signup')}
+                            onForgotPasswordClick={() => setView('forgot-password')}
                             onSuccess={() => setView('profile')}
                         />
                     )}
 
                     {view === 'signup' && (
                         <SignupForm
-                            onSwitchToLogin={() => setView('login')}
+                            onLoginClick={() => setView('login')}
                             onSuccess={() => setView('profile')}
                         />
                     )}
 
                     {view === 'forgot-password' && (
                         <ForgotPasswordForm
-                            onSwitchToLogin={() => setView('login')}
-                            onSuccess={(email) => {
-                                console.log('OTP sent to', email);
-                                setView('login');
-                            }}
+                            onBack={() => setView('login')}
+                            onEmailSet={(email) => console.log('Reset link sent to', email)}
+                            onSuccess={() => setView('login')}
                         />
                     )}
 

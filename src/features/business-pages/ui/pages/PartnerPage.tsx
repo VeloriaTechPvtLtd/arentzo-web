@@ -4,8 +4,7 @@ import {
     BarChart3, GraduationCap, CheckCircle2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Navbar } from '../../../../shared/components/layout/Navbar';
-import { Footer } from '../../../../shared/components/layout/Footer';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import { BusinessHeroSection } from '../components/BusinessHeroSection';
 import { BenefitsGrid } from '../components/BenefitsGrid';
 import { StepsSection } from '../components/StepsSection';
@@ -49,9 +48,8 @@ export const PartnerPage: React.FC = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="min-h-screen bg-background font-sans text-foreground flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
+        <WaitlistPageShell>
+            <main>
                 <BusinessHeroSection
                     titleKey="partner.hero.title"
                     subtitleKey="partner.hero.subtitle"
@@ -106,7 +104,6 @@ export const PartnerPage: React.FC = () => {
                     buttonKey="partner.cta.button"
                 />
             </main>
-            <Footer />
-        </div>
+        </WaitlistPageShell>
     );
 };

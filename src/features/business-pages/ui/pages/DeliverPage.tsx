@@ -4,8 +4,7 @@ import {
     Headphones, Navigation, TrendingUp, CheckCircle2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Navbar } from '../../../../shared/components/layout/Navbar';
-import { Footer } from '../../../../shared/components/layout/Footer';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import { BusinessHeroSection } from '../components/BusinessHeroSection';
 import { BenefitsGrid } from '../components/BenefitsGrid';
 import { StepsSection } from '../components/StepsSection';
@@ -52,9 +51,8 @@ export const DeliverPage: React.FC = () => {
     ) as string[];
 
     return (
-        <div className="min-h-screen bg-background font-sans text-foreground flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
+        <WaitlistPageShell>
+            <main>
                 <BusinessHeroSection
                     titleKey="deliver.hero.title"
                     subtitleKey="deliver.hero.subtitle"
@@ -108,7 +106,6 @@ export const DeliverPage: React.FC = () => {
                     buttonKey="deliver.cta.button"
                 />
             </main>
-            <Footer />
-        </div>
+        </WaitlistPageShell>
     );
 };

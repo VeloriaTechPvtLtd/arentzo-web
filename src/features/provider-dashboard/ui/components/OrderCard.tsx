@@ -7,7 +7,7 @@ import {
     CreditCard,
     ChevronRight
 } from 'lucide-react';
-import { Order } from '../../infrastructure/api/ordersMockData';
+import type { Order } from '../../infrastructure/api/ordersMockData';
 import '../styles/OrderCard.css';
 
 interface OrderCardProps {

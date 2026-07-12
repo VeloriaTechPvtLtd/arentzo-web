@@ -4,8 +4,7 @@ import {
     GraduationCap, BarChart3, Network, CheckCircle2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Navbar } from '../../../../shared/components/layout/Navbar';
-import { Footer } from '../../../../shared/components/layout/Footer';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import { BusinessHeroSection } from '../components/BusinessHeroSection';
 import { BenefitsGrid } from '../components/BenefitsGrid';
 import { StepsSection } from '../components/StepsSection';
@@ -49,9 +48,8 @@ export const WarehousePage: React.FC = () => {
     const requirements = t('warehouse.requirements.items', { returnObjects: true }) as string[];
 
     return (
-        <div className="min-h-screen bg-background font-sans text-foreground flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
+        <WaitlistPageShell>
+            <main>
                 <BusinessHeroSection
                     titleKey="warehouse.hero.title"
                     subtitleKey="warehouse.hero.subtitle"
@@ -93,7 +91,6 @@ export const WarehousePage: React.FC = () => {
                     buttonKey="warehouse.cta.button"
                 />
             </main>
-            <Footer />
-        </div>
+        </WaitlistPageShell>
     );
 };

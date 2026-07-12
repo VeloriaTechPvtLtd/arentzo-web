@@ -1,107 +1,122 @@
 export const sellerEn = {
   seller: {
     hero: {
-      title: "Start Earning on Arentzo",
-      subtitle: "List your items, set your price, and earn passive income. Whether you have one item or a full inventory — our platform makes renting out effortless.",
-      cta: "List Your First Item",
-      stats: {
-        sellers: "15K+",
-        sellersLabel: "Active Sellers",
-        avgEarning: "₹25K/mo",
-        avgEarningLabel: "Avg. Seller Income",
-        categories: "300+",
-        categoriesLabel: "Rental Categories"
-      }
+      title: 'Become a Provider on Arentzo',
+      subtitle:
+        'List what you already own and earn when someone needs it. Join the provider waitlist for early access at launch.',
+      cta: 'Join Provider Waitlist',
+      brand: 'Arentzo',
+      eyebrow: 'For providers',
     },
     benefits: {
-      title: "Why Sell on Arentzo",
-      subtitle: "Everything you need to build a rental business from your existing assets.",
+      title: 'Why list on Arentzo',
+      subtitle: 'Tools and protection built for renting out what you own.',
+      eyebrow: 'Benefits',
       items: {
         listing: {
-          title: "Effortless Listing Creation",
-          description: "Create professional listings in under 5 minutes with our guided setup. Add photos, set rates, define availability, and publish instantly."
+          title: 'Simple listing setup',
+          description:
+            'Add photos, set rates and availability, and publish when we launch — no complicated storefront required.',
         },
         pricing: {
-          title: "Smart Pricing Tools",
-          description: "AI-powered pricing recommendations based on market demand, seasonality, and competitor analysis. Set daily, weekly, and monthly rates."
+          title: 'Flexible pricing',
+          description:
+            'Set daily, weekly, or monthly rates that work for you. Stay in control of what your items earn.',
         },
         dashboard: {
-          title: "Powerful Seller Dashboard",
-          description: "Manage bookings, track earnings, monitor item status, and communicate with renters — all from one unified dashboard."
+          title: 'One place to manage',
+          description:
+            'Track bookings, earnings, and conversations with renters from a single provider dashboard.',
         },
         protection: {
-          title: "Seller Protection Program",
-          description: "Comprehensive insurance coverage up to ₹5,00,000 per item. Damage claims are handled by our dedicated resolution team."
+          title: 'Provider protection',
+          description:
+            'Coverage and a clear claims process so damage disputes are handled fairly — not left on you alone.',
         },
         payments: {
-          title: "Fast & Secure Payouts",
-          description: "Earn with confidence. Payouts are processed within 24–48 hours of rental completion via UPI, bank transfer, or wallet credit."
+          title: 'Fast, secure payouts',
+          description:
+            'Get paid after completed rentals via UPI or bank transfer. Clear statements for every transaction.',
         },
         verification: {
-          title: "Renter Verification",
-          description: "Every renter is identity-verified through Aadhaar, PAN, or driving license checks. You always know who is using your items."
-        }
-      }
+          title: 'Verified renters',
+          description:
+            'Identity checks help you know who is borrowing your items before you hand them over.',
+        },
+      },
     },
     steps: {
-      title: "How to Start Selling",
-      subtitle: "Three simple steps to begin earning from your assets.",
+      title: 'How to get started',
+      subtitle: 'Three steps from waitlist to your first booking.',
+      eyebrow: 'Simple flow',
       items: {
         register: {
-          title: "Create Your Seller Account",
-          description: "Sign up with your business or individual details. Complete KYC verification — Aadhaar, PAN, and bank account details — to activate your seller profile."
+          title: 'Join the waitlist',
+          description:
+            'Share your email so we can invite you early. At launch, finish a short KYC to activate your provider profile.',
         },
         list: {
-          title: "List Your Items",
-          description: "Upload high-quality photos, write descriptions, set rental rates and availability windows. Our AI assistant helps optimize listings for maximum visibility."
+          title: 'List your items',
+          description:
+            'Upload photos, write a clear description, and set rental rates and availability windows.',
         },
         earn: {
-          title: "Accept Bookings & Earn",
-          description: "Receive booking requests, approve rentals, hand over items, and get paid. Track everything in real-time from your seller dashboard."
-        }
-      }
+          title: 'Accept bookings & earn',
+          description:
+            'Approve requests, hand over items, and get paid when the rental completes.',
+        },
+      },
     },
     earnings: {
-      title: "Earning Potential",
-      subtitle: "See what top sellers earn across popular categories.",
+      title: 'What you can list',
+      subtitle:
+        'Illustrative monthly ranges by category — actual earnings depend on demand, pricing, and how often items rent.',
+      eyebrow: 'Categories',
       items: {
-        cameras: { category: "Cameras & Lenses", range: "₹15,000 – ₹40,000/mo" },
-        vehicles: { category: "Cars & Bikes", range: "₹30,000 – ₹1,20,000/mo" },
-        electronics: { category: "Laptops & Tablets", range: "₹10,000 – ₹25,000/mo" },
-        events: { category: "Event Equipment", range: "₹20,000 – ₹60,000/mo" },
-        tools: { category: "Power Tools", range: "₹8,000 – ₹20,000/mo" },
-        fashion: { category: "Designer Wear", range: "₹12,000 – ₹35,000/mo" }
-      }
+        cameras: { category: 'Cameras & Lenses', range: '₹15,000 – ₹40,000/mo' },
+        vehicles: { category: 'Cars & Bikes', range: '₹30,000 – ₹1,20,000/mo' },
+        electronics: { category: 'Laptops & Tablets', range: '₹10,000 – ₹25,000/mo' },
+        events: { category: 'Event Equipment', range: '₹20,000 – ₹60,000/mo' },
+        tools: { category: 'Power Tools', range: '₹8,000 – ₹20,000/mo' },
+        fashion: { category: 'Designer Wear', range: '₹12,000 – ₹35,000/mo' },
+      },
     },
     cta: {
-      title: "Your Assets Are Sitting Idle. Let Them Earn.",
-      description: "Join 15,000+ sellers already earning on Arentzo. Sign up takes 5 minutes — start earning today.",
-      button: "Become a Seller"
+      title: 'Ready to earn from what you own?',
+      description:
+        'Join the provider waitlist for early access, launch updates, and first-listing tips.',
+      button: 'Join Provider Waitlist',
     },
     faq: {
-      title: "Frequently Asked Questions",
+      title: 'Frequently asked questions',
+      eyebrow: 'Support',
       items: {
         fees: {
-          question: "What fees does Arentzo charge sellers?",
-          answer: "Arentzo charges a platform service fee of 10–15% on each completed rental transaction. This covers payment processing, insurance, customer support, and platform maintenance. There are no listing fees or monthly subscriptions."
+          question: 'What fees does Arentzo charge providers?',
+          answer:
+            'Arentzo plans a platform service fee of 10–15% on each completed rental. That covers payments, support, and platform costs. There are no listing fees or monthly subscriptions planned for standard providers.',
         },
         items: {
-          question: "What items can I list for rent?",
-          answer: "You can list nearly anything — electronics, vehicles, tools, furniture, event supplies, fashion, sports equipment, and more. Items must be in good working condition and comply with our listing guidelines. Prohibited items include weapons, hazardous materials, and controlled substances."
+          question: 'What items can I list for rent?',
+          answer:
+            'Most everyday and specialty gear — electronics, vehicles, tools, furniture, event supplies, fashion, sports equipment, and more — as long as items are in good condition and follow our listing guidelines. Weapons, hazardous materials, and controlled substances are not allowed.',
         },
         damage: {
-          question: "What happens if a renter damages my item?",
-          answer: "All rentals are covered under Arentzo's Seller Protection Program. If damage occurs, file a claim within 48 hours of return. Our resolution team assesses the claim, and you receive compensation within 7 business days."
+          question: 'What happens if a renter damages my item?',
+          answer:
+            'Rentals are covered under Arentzo’s provider protection process. If damage occurs, file a claim promptly after return. Our team reviews the claim and works toward fair resolution.',
         },
         cancellation: {
-          question: "Can I cancel a booking after accepting?",
-          answer: "Seller cancellations are discouraged as they affect your reliability rating. If unavoidable, cancel at least 24 hours before the rental start time. Repeated cancellations may result in listing penalties."
+          question: 'Can I cancel a booking after accepting?',
+          answer:
+            'Provider cancellations hurt reliability. If you must cancel, do so as early as possible before the rental starts. Repeated cancellations may affect listing visibility.',
         },
         tax: {
-          question: "How are taxes handled?",
-          answer: "Arentzo provides monthly transaction statements for your records. GST is collected and remitted on platform service fees. You are responsible for reporting rental income per applicable tax laws. We recommend consulting a tax professional."
-        }
-      }
-    }
-  }
+          question: 'How are taxes handled?',
+          answer:
+            'You will receive transaction statements for your records. You are responsible for reporting rental income under applicable tax laws. Consult a tax professional for advice specific to your situation.',
+        },
+      },
+    },
+  },
 };

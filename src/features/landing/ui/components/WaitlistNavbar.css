@@ -1,0 +1,47 @@
+/* Waitlist landing navbar — slim pre-launch chrome */
+
+.waitlist-nav__links {
+  display: none;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.waitlist-nav__cta {
+  display: none;
+}
+
+.waitlist-nav__menu-btn {
+  display: inline-flex;
+}
+
+.waitlist-nav__mobile {
+  display: block;
+}
+
+.waitlist-nav__tagline {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .waitlist-nav__tagline {
+    display: block;
+  }
+
+  .waitlist-nav__cta {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 900px) {
+  .waitlist-nav__links {
+    display: flex;
+  }
+
+  .waitlist-nav__menu-btn {
+    display: none;
+  }
+
+  .waitlist-nav__mobile {
+    display: none;
+  }
+}

@@ -6,6 +6,7 @@ import {
     ShieldCheck, PieChart, GraduationCap, Clock, Palmtree, Monitor,
     MapPin, Briefcase
 } from 'lucide-react';
+import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 import '../styles/BusinessPages.css';
 
 const VALUE_ICONS = [Rocket, Gem, Eye, Target, BookOpen, Heart] as const;
@@ -147,6 +148,7 @@ export const CareersPage: React.FC = () => {
     const { t } = useTranslation();
 
     return (
+        <WaitlistPageShell>
         <main>
             <section className="business-hero">
                 <div className="business-hero__blob-1" />
@@ -237,5 +239,6 @@ export const CareersPage: React.FC = () => {
                 </div>
             </section>
         </main>
+        </WaitlistPageShell>
     );
 };
