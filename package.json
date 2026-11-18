@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "test:cart-storage": "node --test tests/cart-storage.test.mjs",
     "build": "next build",
     "build:dev": "next build",
     "build:stage": "next build",

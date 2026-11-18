@@ -1,11 +1,24 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import type { Product, CartItem } from '../types/product';
 import { CartContext } from './CartContext';
+import { loadCart, saveCart } from './cartStorage.js';
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [items, setItems] = useState<CartItem[]>([]);
+    const [storageReady, setStorageReady] = useState(false);
+
+    useEffect(() => {
+        // Read after hydration so server HTML and the first client render stay identical.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setItems(loadCart(window.localStorage));
+        setStorageReady(true);
+    }, []);
+
+    useEffect(() => {
+        if (storageReady) saveCart(window.localStorage, items);
+    }, [items, storageReady]);
 
     const addToCart = useCallback((product: Product, quantity: number = 1) => {
         setItems(prev => {

@@ -29,7 +29,7 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
         <CheckoutHeader onBack={onClose} title="Cart preview" showShare={false} />
         <div className="checkout-panel__content px-5 py-4">
           <p className="mb-5 rounded-xl border border-border bg-muted p-4 text-sm text-muted-foreground" role="status">
-            Booking and payment are unavailable in this preview while the rental checkout workflow is being verified. No order will be placed.
+            This guest cart is saved on this device. Prices are display-only; booking and payment are unavailable in this preview, and no order will be placed.
           </p>
           {items.length ? <ul className="space-y-4">{items.map(({ id, product, quantity }) => (
             <li key={id} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
