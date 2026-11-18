@@ -18,8 +18,8 @@
     z-index: 100;
     border: 1px solid color-mix(in oklch, var(--primary-foreground) 20%, transparent);
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
-    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform var(--motion-selection-change) cubic-bezier(0.16, 1, 0.3, 1), box-shadow var(--motion-selection-change);
+    animation: slideUp var(--motion-slow) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .floating-cart:hover {

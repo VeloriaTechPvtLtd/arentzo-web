@@ -1188,8 +1188,12 @@
 
     .customer-home__content {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 0;
+    }
+
+    .customer-home__content > * {
+        min-width: 0;
     }
 
     .home-header {
