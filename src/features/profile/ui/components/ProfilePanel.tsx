@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { X, ArrowLeft, Edit3, Wallet, CreditCard, Tag, MapPin, Shield, Globe, Bell, Lightbulb, MessageCircle } from 'lucide-react';
 import { ProfileUserInfo } from './ProfileUserInfo';
+import { EditProfileForm } from './EditProfileForm';
 import { ProfileQuickActions } from './ProfileQuickActions';
 import { BecomeProviderCta } from './BecomeProviderCta';
 import { ProfileMenuSection } from './ProfileMenuSection';
@@ -21,7 +22,6 @@ import { ForgotPasswordForm } from '../../../auth/ui/components/ForgotPasswordFo
 import { useAuth } from '../../../auth/ui/context/AuthContext';
 import { OnboardingStepper, ProviderOnboardingProvider, useProviderOnboarding } from '../../../provider-onboarding';
 import type { UserRole, MenuSection, ProfileView } from '../../domain/entities';
-import { mockUserProfile } from '../../infrastructure/api/mockData';
 import '../styles/Profile.css';
 
 interface ProfilePanelProps {
@@ -57,12 +57,22 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
     const { currentStep, providerType } = useProviderOnboarding();
     const [view, setView] = useState<ProfileView>(authUser ? 'profile' : 'login');
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const [profileName, setProfileName] = useState<string | null>(null);
 
-    // Use useMemo for the active profile user to avoid unnecessary state sync
+    // Build the profile from the authenticated account, never placeholder data.
     const effectiveProfileUser = React.useMemo(() => ({
-        ...mockUserProfile,
-        activeRole: activeRole || 'customer'
-    }), [activeRole]);
+        id: authUser?.id || '',
+        name: profileName || authUser?.name?.trim() || authUser?.email?.split('@')[0] || 'Account',
+        email: authUser?.email || '',
+        avatarUrl: authUser?.avatarUrl,
+        isVerified: authUser?.isVerified === true,
+        roles: authUser?.role === 'service_provider'
+            ? ['customer', 'service_provider'] as UserRole[]
+            : ['customer'] as UserRole[],
+        activeRole: authUser?.role === 'service_provider' && activeRole === 'service_provider'
+            ? 'service_provider' as UserRole
+            : 'customer' as UserRole,
+    }), [authUser, activeRole, profileName]);
 
     // Close on escape key
     useEffect(() => {
@@ -141,7 +151,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'edit-profile',
                     icon: <Edit3 size={20} />,
                     label: 'Edit Profile',
-                    onClick: () => console.log('Edit Profile'),
+                    onClick: () => setView('edit-profile'),
                 },
                 {
                     id: 'wallet',
@@ -216,6 +226,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
     const renderHeaderTitle = () => {
         switch (view) {
             case 'language-theme': return 'Appearance';
+            case 'edit-profile': return 'Edit Profile';
             case 'notification-settings': return 'Appearance';
             case 'notifications': return 'Notifications';
             case 'bugs': return 'Feedback';
@@ -341,6 +352,13 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
 
                     {view === 'language-theme' && (
                         <LanguageThemeSettings onSave={() => setView('profile')} />
+                    )}
+
+                    {view === 'edit-profile' && (
+                        <EditProfileForm onSaved={(profile) => {
+                            setProfileName(profile.fullName);
+                            setView('profile');
+                        }} />
                     )}
 
                     {view === 'notification-settings' && (

@@ -1021,6 +1021,11 @@
 }
 
 .saved-address-card {
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    appearance: none;
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -1029,6 +1034,17 @@
     transition: all 0.2s;
     position: relative;
     box-shadow: var(--shadow-sm);
+}
+
+.saved-address-search {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--foreground);
+    font: inherit;
+    margin-bottom: 16px;
 }
 
 .saved-address-card:hover {

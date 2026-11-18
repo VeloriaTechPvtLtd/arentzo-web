@@ -11,6 +11,12 @@ interface ProviderRecord {
   onboarding_status?: string | null;
 }
 
+interface UserProfileRecord {
+  full_name?: string | null;
+  avatar_url?: string | null;
+  is_verified?: boolean | null;
+}
+
 export class SupabaseAuthAdapter implements AuthPort {
   async login(dto: LoginDTO): Promise<Session> {
     const { data, error } = await getSupabaseClient().auth.signInWithPassword(dto);
@@ -124,16 +130,34 @@ export class SupabaseAuthAdapter implements AuthPort {
   }
 
   private async mapUser(authUser: AuthUser): Promise<User> {
-    const provider = await this.findProvider(authUser.id);
+    const [provider, profile] = await Promise.all([
+      this.findProvider(authUser.id),
+      this.findUserProfile(authUser.id),
+    ]);
     return {
       id: authUser.id,
       email: authUser.email ?? '',
-      name: this.getDisplayName(authUser),
-      avatarUrl: this.getAvatarUrl(authUser),
+      name: profile?.full_name?.trim() || this.getDisplayName(authUser),
+      avatarUrl: profile?.avatar_url || this.getAvatarUrl(authUser),
+      isVerified: profile?.is_verified === true,
       role: this.getRole(authUser, provider),
       providerId: provider?.id,
       providerStatus: this.getProviderStatus(provider),
     };
+  }
+
+  private async findUserProfile(userId: string): Promise<UserProfileRecord | null> {
+    try {
+      const { data, error } = await getSupabaseClient()
+        .from('users')
+        .select('full_name, avatar_url, is_verified')
+        .eq('id', userId)
+        .maybeSingle();
+      if (error) return null;
+      return data as UserProfileRecord | null;
+    } catch {
+      return null;
+    }
   }
 
   private async findProvider(userId: string): Promise<ProviderRecord | null> {
