@@ -9,6 +9,7 @@ import { deliverEn } from '../features/business-pages/ui/translations/deliverEn'
 import { resourcesEn } from '../features/business-pages/ui/translations/resourcesEn';
 import { careersEn } from '../features/business-pages/ui/translations/careersEn';
 import { blogEn } from '../features/business-pages/ui/translations/blogEn';
+import { authEn } from '../features/auth/ui/translations/en';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -26,6 +27,7 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: {
+        auth: authEn,
         nav: {
           categories: 'Categories',
           how_it_works: 'How it Works',

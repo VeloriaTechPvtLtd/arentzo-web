@@ -6,6 +6,8 @@ export interface User {
     role: UserRole;
     name?: string;
     avatarUrl?: string;
+    providerId?: string;
+    providerStatus?: string;
 }
 
 export interface Session {

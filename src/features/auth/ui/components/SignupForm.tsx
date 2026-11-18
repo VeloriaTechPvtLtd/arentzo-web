@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/useAuth';
 import { AuthInput } from '../components/AuthInput';
 
@@ -8,6 +9,7 @@ interface SignupFormProps {
 }
 
 export const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onLoginClick }) => {
+    const { t } = useTranslation();
     const { signUp, loading } = useAuth();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -18,20 +20,19 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onLoginClick 
     const handleSignup = async () => {
         setError('');
         if (!name || !email || !password || !confirmPassword) {
-            setError('All fields are required');
+            setError(t('auth.errors.required'));
             return;
         }
         if (password !== confirmPassword) {
-            setError('Passwords do not match');
+            setError(t('auth.errors.passwordMismatch'));
             return;
         }
 
         try {
-            await signUp(email, name);
+            await signUp(email, name, password);
             onSuccess(email);
-        } catch (err) {
-            console.error(err);
-            setError('Failed to create account');
+        } catch {
+            setError(t('auth.errors.signup'));
         }
     };
 
@@ -39,28 +40,28 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onLoginClick 
         <div className="space-y-6 pt-4">
             <div className="space-y-4">
                 <AuthInput
-                    label="Full Name"
-                    placeholder="John Doe"
+                    label={t('auth.signup.fullName')}
+                    placeholder={t('auth.signup.fullNamePlaceholder')}
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
                 <AuthInput
-                    label="Email Address"
-                    placeholder="name@company.com"
+                    label={t('auth.signup.email')}
+                    placeholder={t('auth.signup.emailPlaceholder')}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <AuthInput
-                    label="Password"
+                    label={t('auth.signup.password')}
                     placeholder="••••••••"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <AuthInput
-                    label="Confirm Password"
+                    label={t('auth.signup.confirmPassword')}
                     placeholder="••••••••"
                     type="password"
                     value={confirmPassword}
@@ -75,16 +76,16 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onLoginClick 
                 disabled={loading}
                 className="w-full bg-primary text-primary-foreground py-4 rounded-lg font-bold text-lg hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-                {loading ? 'Creating Account...' : 'Sign Up'}
+                {loading ? t('auth.signup.submitting') : t('auth.signup.submit')}
             </button>
 
             <p className="text-center text-sm text-muted-foreground font-medium">
-                Already have an account?{' '}
+                {t('auth.signup.hasAccount')}{' '}
                 <button
                     onClick={onLoginClick}
                     className="text-primary hover:text-primary/80 font-bold transition-colors"
                 >
-                    Log in
+                    {t('auth.signup.loginLink')}
                 </button>
             </p>
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 // import { useRouter } from 'next/navigation';
 import { CategoryTabs } from '../components/CategoryTabs';
 import { HeroBanner } from '../components/HeroBanner';
@@ -22,6 +22,7 @@ import {
 } from '../../infrastructure/api/mockData';
 import categoriesData from '../../../../app_content/categories.json';
 import '../styles/CustomerHome.css';
+import { SupabaseCatalogRepository } from '@/features/catalog/infrastructure/SupabaseCatalogRepository';
 
 interface Category {
     id: string;
@@ -36,6 +37,15 @@ interface Category {
 export const CustomerHomePage: React.FC = () => {
     const [activeCategory, setActiveCategory] = useState<string>('all');
     const [localProducts, setLocalProducts] = useState<Product[]>(mockProducts);
+    const [catalogError, setCatalogError] = useState(false);
+
+    useEffect(() => {
+        let active = true;
+        void new SupabaseCatalogRepository().getAvailableProducts().then((items) => {
+            if (active && items.length) setLocalProducts(items);
+        }).catch(() => { if (active) setCatalogError(true); });
+        return () => { active = false; };
+    }, []);
 
     const { items: cartItems, addToCart, updateQuantity } = useCart();
     // Layout-related state is now handled in CustomerLayout
@@ -166,7 +176,8 @@ export const CustomerHomePage: React.FC = () => {
                         />
                     )}
 
-                    <ProductsGrid
+            {catalogError ? <p role="status" className="mx-auto max-w-7xl px-4 text-sm text-muted-foreground">Live listings are temporarily unavailable.</p> : null}
+            <ProductsGrid
                         title={sectionTitle}
                         products={products}
                         onFavoriteToggle={handleFavoriteToggle}

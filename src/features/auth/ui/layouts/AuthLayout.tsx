@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 interface AuthLayoutProps {
     children: React.ReactNode;
@@ -20,6 +21,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
     headerIcon,
     imageSrc = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=2000" // Fallback premium image
 }) => {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-background font-sans">
             {/* Left side: Content */}
@@ -60,16 +62,16 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10" />
                 <img
                     src={imageSrc}
-                    alt="Auth illustration"
+                    alt={t('auth.layout.illustrationAlt')}
                     className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute bottom-16 left-16 right-16 z-20 space-y-4 text-white">
                     <div className="backdrop-blur-xl bg-white/10 p-8 rounded-[2rem] border border-white/20 shadow-2xl">
                         <div className="text-3xl font-bold leading-tight drop-shadow-sm">
-                            Experience the future of <span className="text-accent">premium rentals</span> with Arentzo.
+                            {t('auth.layout.heroTitle')}
                         </div>
                         <p className="text-white/80 text-lg mt-4 font-medium">
-                            Join thousands of users who have found their perfect temporary space.
+                            {t('auth.layout.heroSubtitle')}
                         </p>
                     </div>
                 </div>
