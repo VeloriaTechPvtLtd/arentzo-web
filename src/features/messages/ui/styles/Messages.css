@@ -122,6 +122,17 @@
     position: relative;
 }
 
+.conversation-item__avatar-placeholder {
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: var(--muted);
+    color: var(--foreground);
+    font-weight: 700;
+}
+
 .conversation-item__avatar {
     width: 56px;
     height: 56px;

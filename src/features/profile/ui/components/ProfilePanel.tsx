@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDrawer } from '@/shared/hooks/useDrawer';
 import { X, ArrowLeft, Edit3, Wallet, CreditCard, Tag, MapPin, Shield, Globe, Bell, Lightbulb, MessageCircle } from 'lucide-react';
 import { ProfileUserInfo } from './ProfileUserInfo';
 import { EditProfileForm } from './EditProfileForm';
@@ -53,6 +54,7 @@ const OnboardingHeader: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
 const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => {
     const router = useRouter();
+    const { openMessages } = useDrawer();
     const { user: authUser, signOut, activeRole, switchRole } = useAuth();
     const { currentStep, providerType } = useProviderOnboarding();
     const [view, setView] = useState<ProfileView>(authUser ? 'profile' : 'login');
@@ -157,19 +159,22 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'wallet',
                     icon: <Wallet size={20} />,
                     label: 'My Wallet / Credits',
-                    onClick: () => console.log('Wallet'),
+                    disabled: true,
+                    hasArrow: false,
                 },
                 {
                     id: 'payment-methods',
                     icon: <CreditCard size={20} />,
                     label: 'Payment Methods',
-                    onClick: () => console.log('Payment Methods'),
+                    disabled: true,
+                    hasArrow: false,
                 },
                 {
                     id: 'coupons',
                     icon: <Tag size={20} />,
                     label: 'Coupons & Offers',
-                    onClick: () => console.log('Coupons'),
+                    disabled: true,
+                    hasArrow: false,
                 },
                 {
                     id: 'addresses',
@@ -181,7 +186,8 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'kyc',
                     icon: <Shield size={20} />,
                     label: 'KYC / Id Verification',
-                    onClick: () => console.log('KYC'),
+                    disabled: true,
+                    hasArrow: false,
                 },
             ],
         },
@@ -215,7 +221,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'chat-support',
                     icon: <MessageCircle size={20} />,
                     label: 'Chat with Support',
-                    onClick: () => console.log('Chat'),
+                    onClick: openMessages,
                 },
             ],
         },
@@ -376,9 +382,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     {view === 'saved-addresses' && (
                         <SelectDeliveryLocation
                             showActions={false}
-                            onSelect={(addr) => {
-                                console.log('Selected address in profile:', addr);
-                            }}
+                            onSelect={() => undefined}
                         />
                     )}
 
@@ -400,8 +404,6 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     {view === 'forgot-password' && (
                         <ForgotPasswordForm
                             onBack={() => setView('login')}
-                            onEmailSet={(email) => console.log('Reset link sent to', email)}
-                            onSuccess={() => setView('login')}
                         />
                     )}
 

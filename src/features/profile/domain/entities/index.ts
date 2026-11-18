@@ -19,6 +19,7 @@ export interface MenuItem {
     onClick?: () => void;
     href?: string;
     hasArrow?: boolean;
+    disabled?: boolean;
 }
 
 export interface MenuSection {

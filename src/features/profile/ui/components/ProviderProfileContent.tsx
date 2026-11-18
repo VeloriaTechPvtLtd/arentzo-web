@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useDrawer } from '@/shared/hooks/useDrawer';
 import {
     Boxes,
     Truck,
@@ -33,6 +35,8 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
     onLogout,
     hideSwitcher = false
 }) => {
+    const router = useRouter();
+    const { openMessages } = useDrawer();
     const [listingImgError, setListingImgError] = useState(false);
     const [bookingImgError, setBookingImgError] = useState(false);
     const [notifImgError, setNotifImgError] = useState(false);
@@ -40,19 +44,19 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
     const rentalOverview: MenuSection = {
         title: 'Rental Overview',
         items: [
-            { id: 'my-listings', icon: <Boxes size={20} />, label: 'My Listings', hasArrow: true },
-            { id: 'active-rentals', icon: <Truck size={20} />, label: 'Active Rentals', hasArrow: true },
-            { id: 'extension-requests', icon: <History size={20} />, label: 'Extension Requests', hasArrow: true },
-            { id: 'upcoming-bookings', icon: <CalendarClock size={20} />, label: 'Upcoming Bookings', hasArrow: true },
-            { id: 'rental-history', icon: <History size={20} />, label: 'Rental History', hasArrow: true },
-            { id: 'pending-returns', icon: <RotateCcw size={20} />, label: 'Pending Returns', hasArrow: true },
+            { id: 'my-listings', icon: <Boxes size={20} />, label: 'My Listings', hasArrow: true, onClick: () => router.push('/provider-dashboard/products') },
+            { id: 'active-rentals', icon: <Truck size={20} />, label: 'Active Rentals', hasArrow: true, onClick: () => router.push('/provider-dashboard/orders') },
+            { id: 'extension-requests', icon: <History size={20} />, label: 'Extension Requests', hasArrow: false, disabled: true },
+            { id: 'upcoming-bookings', icon: <CalendarClock size={20} />, label: 'Upcoming Bookings', hasArrow: true, onClick: () => router.push('/provider-dashboard/orders') },
+            { id: 'rental-history', icon: <History size={20} />, label: 'Rental History', hasArrow: true, onClick: () => router.push('/provider-dashboard/orders') },
+            { id: 'pending-returns', icon: <RotateCcw size={20} />, label: 'Pending Returns', hasArrow: false, disabled: true },
         ]
     };
 
     const paymentsOthers: MenuSection = {
         title: 'Payments & Others',
         items: [
-            { id: 'manage-banks', icon: <Landmark size={20} />, label: 'Manage Bank Accounts', hasArrow: true },
+            { id: 'manage-banks', icon: <Landmark size={20} />, label: 'Manage Bank Accounts', hasArrow: false, disabled: true },
         ]
     };
 
@@ -68,7 +72,7 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
         title: 'Support & Policies',
         items: [
             { id: 'bugs', icon: <Lightbulb size={20} />, label: 'Bugs & Suggestions', onClick: () => onViewChange('bugs') },
-            { id: 'chat-support', icon: <MessageCircle size={20} />, label: 'Chat with Support', onClick: () => console.log('Chat') },
+            { id: 'chat-support', icon: <MessageCircle size={20} />, label: 'Messages', onClick: openMessages },
         ]
     };
 
@@ -88,7 +92,7 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
             {/* Quick Actions / Stats Row (3 columns) */}
             <div className="profile-quick-actions-container">
                 <div className="profile-quick-actions profile-quick-actions--three">
-                    <button className="profile-quick-action">
+                    <button className="profile-quick-action" onClick={() => router.push('/provider-dashboard/products')}>
                         <div className="profile-quick-action__icon">
                             {!listingImgError ? (
                                 <img
@@ -105,7 +109,7 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
                         <span className="profile-quick-action__label">Active Listing</span>
                     </button>
 
-                    <button className="profile-quick-action">
+                    <button className="profile-quick-action" onClick={() => router.push('/provider-dashboard/orders')}>
                         <div className="profile-quick-action__icon">
                             {!bookingImgError ? (
                                 <img
