@@ -235,7 +235,8 @@ export const AddOfferForm: React.FC<AddOfferFormProps> = ({ onClose, onSuccess, 
     );
 };
 
-const FormInput = ({ label, placeholder, value, onChange, type = 'text' }: any) => (
+interface FormInputProps { label: string; placeholder: string; value: string | number; onChange: (value: string) => void; type?: string }
+const FormInput = ({ label, placeholder, value, onChange, type = 'text' }: FormInputProps) => (
     <div className="space-y-2">
         <label className="text-sm font-bold text-foreground">{label}</label>
         <input
@@ -248,7 +249,7 @@ const FormInput = ({ label, placeholder, value, onChange, type = 'text' }: any) 
     </div>
 );
 
-const SelectedProductCard = ({ product, onRemove }: any) => (
+const SelectedProductCard = ({ product, onRemove }: { product: (typeof mockProducts)[number]; onRemove: (id: string) => void }) => (
     <div className="flex items-center gap-4 p-3 bg-red-50/50 border border-red-100 rounded-2xl relative">
         <img src={product.image} className="w-16 h-16 rounded-xl object-cover" alt="" />
         <div className="flex-1 min-w-0">

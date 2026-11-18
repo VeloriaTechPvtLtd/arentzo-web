@@ -1,6 +1,5 @@
 import { Minus, Plus, Share2, Heart, Star } from 'lucide-react';
 import { ProductSpecs } from './ProductSpecs';
-import { RentalOptions } from './RentalOptions';
 import { SellerProfile } from './SellerProfile';
 import { RentalTerms } from './RentalTerms';
 import { CustomerReviews } from './CustomerReviews';
@@ -11,15 +10,17 @@ interface ProductInfoProps {
     quantity: number;
     onQuantityChange: (newQuantity: number) => void;
     onAddToCart: () => void;
+    onFavoriteToggle: () => void;
+    isAvailable: boolean;
 }
 
-export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQuantityChange }) => {
+export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQuantityChange, onAddToCart, onFavoriteToggle, isAvailable }) => {
 
     return (
         <div className="product-info-column">
             <div className="product-header">
                 <div className="title-section">
-                    <div className="product-rating-small">
+                    {product.reviewCount > 0 ? <div className="product-rating-small">
                         <div className="stars">
                             {[...Array(5)].map((_, i) => (
                                 <Star
@@ -31,25 +32,24 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
                             ))}
                         </div>
                         <span className="review-count">({product.reviewCount} reviews)</span>
-                    </div>
+                    </div> : null}
                     <h1 className="product-title">{product.name}</h1>
                 </div>
                 <div className="product-actions-top">
                     <button className="action-btn" aria-label="Share">
                         <Share2 size={20} />
                     </button>
-                    <button className="action-btn" aria-label="Add to favorites">
+                    <button className="action-btn" aria-label={product.isFavorite ? 'Remove from favorites' : 'Add to favorites'} onClick={onFavoriteToggle}>
                         <Heart size={20} fill={product.isFavorite ? 'var(--home-primary)' : 'none'} color={product.isFavorite ? 'var(--home-primary)' : 'currentColor'} />
                     </button>
                 </div>
             </div>
 
-            <ProductSpecs
-                overview={product.overview || 'Experience premium quality with this product.'}
-                specifications={product.specifications || []}
-            />
+            {product.overview || product.specifications?.length ? <ProductSpecs overview={product.overview || ''} specifications={product.specifications || []} /> : null}
 
-            <RentalOptions />
+            <button className="product-detail-add-button" onClick={onAddToCart} disabled={!isAvailable}>
+                {isAvailable ? 'Add to cart' : 'Unavailable'}
+            </button>
 
             {product.seller && <SellerProfile seller={product.seller} />}
 
@@ -61,10 +61,10 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
             <div className="purchase-actions-container">
                 <div className="purchase-actions-content">
                     <div className="price-info">
-                        <span className="duration-label">For 3 Days</span>
+                        <span className="duration-label">Daily rental rate</span>
                         <div className="price-value">
-                            <span className="amount">₹{product.price.toLocaleString()}</span>
-                            <span className="tax-label">Total Incl. all taxes</span>
+                            <span className="amount">{new Intl.NumberFormat('en-IN', { style: 'currency', currency: product.currency || 'INR' }).format(product.price)}</span>
+                            <span className="tax-label">per day</span>
                         </div>
                     </div>
                     <div className="action-buttons">
@@ -77,9 +77,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
                                 <Plus size={18} />
                             </button>
                         </div>
-                        <button className="buy-now-btn-alt">
-                            BUY NOW
-                        </button>
                     </div>
                 </div>
             </div>

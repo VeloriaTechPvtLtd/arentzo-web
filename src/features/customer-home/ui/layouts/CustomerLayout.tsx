@@ -3,6 +3,7 @@ import { Footer } from '../../../../shared/components/layout/Footer';
 import { FloatingCart } from '../../../../shared/components/cart/FloatingCart';
 import { useCart } from '../../../../shared/hooks/useCart';
 import { useDrawer } from '../../../../shared/hooks/useDrawer';
+import { CustomerBottomNav } from '../../../../shared/components/layout/CustomerBottomNav';
 import '../styles/CustomerHome.css';
 
 interface CustomerLayoutProps {
@@ -25,6 +26,8 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children, classN
                     onViewCart={openCheckout}
                 />
             )}
+
+            <CustomerBottomNav />
 
             <Footer />
         </div>

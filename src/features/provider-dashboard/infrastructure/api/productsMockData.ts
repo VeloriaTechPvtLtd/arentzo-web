@@ -3,6 +3,7 @@ export interface Product {
     name: string;
     category: string;
     price: number;
+    currency?: string;
     stock: number;
     status: 'active' | 'out_of_stock' | 'draft' | 'archived';
     condition: 'new' | 'like_new' | 'good' | 'fair';

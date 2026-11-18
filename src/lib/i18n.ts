@@ -34,6 +34,11 @@ i18n.use(initReactI18next).init({
           list_item: 'List an Item',
           login: 'Login',
           signup: 'Sign Up',
+          marketplace: 'Browse',
+          saved: 'Saved',
+          rentals: 'Rentals',
+          account: 'Account',
+          customerNavigation: 'Customer navigation',
         },
         hero: {
           title: 'Rent Everything, Own Nothing.',

@@ -1,382 +1,56 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Truck, Store, MapPin, Package, Percent, ChevronRight, Info, Loader2 } from 'lucide-react';
+'use client';
+
+import { useEffect } from 'react';
+import { Minus, Plus, Trash2 } from 'lucide-react';
+import { useCart } from '@/shared/hooks/useCart';
 import { CheckoutHeader } from './CheckoutHeader';
-import { CartItem } from './CartItem';
-import { BillDetails } from './BillDetails';
-import { CheckoutFooter } from './CheckoutFooter';
-import { SelectDeliveryLocation, type AddressItem } from './SelectDeliveryLocation';
-import { CouponsView } from './CouponsView';
 import '../styles/Checkout.css';
 
-interface CheckoutPanelProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
-
-type CheckoutView = 'cart' | 'address-selection' | 'coupons';
+interface CheckoutPanelProps { isOpen: boolean; onClose: () => void; }
 
 export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose }) => {
-    const [view, setView] = useState<CheckoutView>('cart');
-    const [quantity, setQuantity] = useState<Record<string, number>>({
-        '1': 1, '2': 1, '3': 1, '4': 1, '5': 1, '6': 1,
-    });
-    const [selectedAddress, setSelectedAddress] = useState<AddressItem>({
-        id: 'home',
-        label: 'Home',
-        address: 'Kalyani Business Centre, 3rd Floor, Office...',
-        phone: '1234567890'
-    });
-    const [couponApplied, setCouponApplied] = useState(true);
-    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const { items, updateQuantity, removeFromCart } = useCart();
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
 
-    // Demo state for dates
-    const [dates, setDates] = useState("Oct 12 - 14 (3 days)");
-
-    const handleChangeDates = () => {
-        const newDates = window.prompt("Enter new dates:", dates);
-        if (newDates) {
-            setDates(newDates);
-        }
-    };
-
-    const handleChangeMethod = (method: string) => {
-        alert(`Change ${method} clicked. This would open options to select a different delivery provider.`);
-    };
-
-    // Close on escape key
-    useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isOpen) {
-                if (view !== 'cart') {
-                    setView('cart');
-                } else {
-                    onClose();
-                }
-            }
-        };
-
-        document.addEventListener('keydown', handleEscape);
-        return () => document.removeEventListener('keydown', handleEscape);
-    }, [isOpen, onClose, view]);
-
-    // Reset view when closed
-    useEffect(() => {
-        if (!isOpen) {
-            const timer = setTimeout(() => {
-                setView('cart');
-                setIsPlacingOrder(false);
-            }, 300);
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen]);
-
-    // Lock body scroll when open
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [isOpen]);
-
-    const handleBackdropClick = useCallback((e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    }, [onClose]);
-
-    const handleQuantityChange = (id: string, delta: number) => {
-        setQuantity(prev => ({
-            ...prev,
-            [id]: Math.max(0, (prev[id] || 0) + delta)
-        }));
-    };
-
-    const handleBack = () => {
-        if (view !== 'cart') {
-            setView('cart');
-        } else {
-            onClose();
-        }
-    };
-
-    const handleAddressSelect = (addr: AddressItem) => {
-        setSelectedAddress(addr);
-        setView('cart');
-    };
-
-    const handlePlaceOrder = () => {
-        setIsPlacingOrder(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsPlacingOrder(false);
-            alert('Order placed successfully! Thank you for shopping with us.');
-            onClose();
-        }, 2000);
-    };
-
-    const toggleCoupon = () => {
-        setCouponApplied(!couponApplied);
-    };
-
-    const calculateTotal = () => {
-        // Mock calculation
-        let total = 99999;
-        if (!couponApplied) total += 300;
-        return total;
-    };
-
-    const renderContent = () => {
-        switch (view) {
-            case 'address-selection':
-                return (
-                    <>
-                        <CheckoutHeader onBack={handleBack} title="Select Location" showShare={false} />
-                        <div className="checkout-panel__content" style={{ padding: 0 }}>
-                            <SelectDeliveryLocation onSelect={handleAddressSelect} />
-                        </div>
-                    </>
-                );
-            case 'coupons':
-                return (
-                    <>
-                        <CheckoutHeader onBack={handleBack} title="Coupons" showShare={false} />
-                        <div className="checkout-panel__content" style={{ padding: 0 }}>
-                            <CouponsView
-                                onApply={() => {
-                                    setCouponApplied(true);
-                                    setView('cart');
-                                }}
-                                onRemove={() => {
-                                    setCouponApplied(false);
-                                    setView('cart');
-                                }}
-                            />
-                        </div>
-                    </>
-                );
-            default:
-                return (
-                    <>
-                        <CheckoutHeader onBack={onClose} />
-
-                        <div className="checkout-panel__content">
-                            <div className="delivery-alert">
-                                <div className="delivery-alert__icon">
-                                    <Percent size={20} color="var(--destructive)" />
-                                </div>
-                                <div className="delivery-alert__content">
-                                    <h4 className="delivery-alert__title">Partial delivery or collection alert</h4>
-                                    <p className="delivery-alert__text">Include multiple pickup or delivery methods.</p>
-                                </div>
-                            </div>
-
-                            {/* Providers Delivery */}
-                            <section className="checkout-section">
-                                <div className="section-header">
-                                    <div className="section-header__title">
-                                        <Package size={20} />
-                                        <span>Providers Delivery</span>
-                                    </div>
-                                    <button className="section-header__change" onClick={() => handleChangeMethod("Providers Delivery")}>Change</button>
-                                </div>
-                                <CartItem
-                                    id="1"
-                                    name="Range Rover Sports Special Edition.."
-                                    image="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80&w=200"
-                                    quantity={quantity['1']}
-                                    price={9999}
-                                    originalPrice={13636}
-                                    dates={dates}
-                                    onQuantityChange={handleQuantityChange}
-                                    onChangeDates={handleChangeDates}
-                                />
-                            </section>
-
-                            {/* Courier Delivery */}
-                            <section className="checkout-section">
-                                <div className="section-header">
-                                    <div className="section-header__title">
-                                        <Truck size={20} />
-                                        <span>Courier Delivery</span>
-                                    </div>
-                                    <button className="section-header__change" onClick={() => handleChangeMethod("Courier Delivery")}>Change</button>
-                                </div>
-                                <CartItem
-                                    id="2"
-                                    name="Toyota Land Cruiser 4WD.."
-                                    image="https://images.unsplash.com/photo-1594502184342-2e12f877aa73?auto=format&fit=crop&q=80&w=200"
-                                    quantity={quantity['2']}
-                                    price={9000}
-                                    originalPrice={13636}
-                                    dates={dates}
-                                    onQuantityChange={handleQuantityChange}
-                                    onChangeDates={handleChangeDates}
-                                />
-                            </section>
-
-                            {/* Self-pickup */}
-                            <section className="checkout-section">
-                                <div className="section-header">
-                                    <div className="section-header__title">
-                                        <Store size={20} />
-                                        <span>Self-pickup</span>
-                                    </div>
-                                    <button className="section-header__change" onClick={() => handleChangeMethod("Pickup Location")}>Change</button>
-                                </div>
-                                <CartItem
-                                    id="3"
-                                    name="Fancy Chair for parties and.."
-                                    image="https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=200"
-                                    quantity={quantity['3']}
-                                    price={999}
-                                    originalPrice={13636}
-                                    dates={dates}
-                                    onQuantityChange={handleQuantityChange}
-                                    onChangeDates={handleChangeDates}
-                                />
-
-                                <div className="pickup-location">
-                                    <div className="pickup-location__header">
-                                        <span className="pickup-location__title">Pickup Location</span>
-                                        <div className="pickup-pin-container">
-                                            <MapPin size={18} />
-                                        </div>
-                                    </div>
-                                    <h5 className="pickup-location__name">AutoParts Store - Main Branch</h5>
-                                    <p className="pickup-location__address">
-                                        123 industrial road, sector 5 Mumbai,<br />
-                                        Maharashtra 400001
-                                    </p>
-                                </div>
-                            </section>
-
-                            {/* Wishlist Section */}
-                            <section className="checkout-section">
-                                <CartItem
-                                    id="4"
-                                    name="Range Rover Sports Special Edition.."
-                                    image="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80&w=200"
-                                    quantity={quantity['4']}
-                                    price={9999}
-                                    originalPrice={13636}
-                                    isWishlistMode
-                                    onQuantityChange={handleQuantityChange}
-                                />
-                                <CartItem
-                                    id="5"
-                                    name="Toyota Land Cruiser 4WD.."
-                                    image="https://images.unsplash.com/photo-1594502184342-2e12f877aa73?auto=format&fit=crop&q=80&w=200"
-                                    quantity={quantity['5']}
-                                    price={9000}
-                                    originalPrice={13636}
-                                    isWishlistMode
-                                    onQuantityChange={handleQuantityChange}
-                                />
-                            </section>
-
-                            {/* Self-pickup only alert section */}
-                            <section className="checkout-section">
-                                <div className="pickup-only-badge">
-                                    <Info size={16} />
-                                    <span>This product is available for self-pickup only</span>
-                                </div>
-                                <CartItem
-                                    id="6"
-                                    name="Fancy Chair for parties and.."
-                                    image="https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=200"
-                                    quantity={quantity['6']}
-                                    price={9999}
-                                    originalPrice={13636}
-                                    dates={dates}
-                                    onQuantityChange={handleQuantityChange}
-                                    onChangeDates={handleChangeDates}
-                                />
-                                <div className="pickup-location">
-                                    <div className="pickup-location__header">
-                                        <span className="pickup-location__title">Pickup Location</span>
-                                        <div className="pickup-pin-container">
-                                            <MapPin size={18} />
-                                        </div>
-                                    </div>
-                                    <h5 className="pickup-location__name">AutoParts Store - Main Branch</h5>
-                                    <p className="pickup-location__address">
-                                        123 industrial road, sector 5 Mumbai,<br />
-                                        Maharashtra 400001
-                                    </p>
-                                </div>
-                            </section>
-
-                            {/* Coupon Section */}
-                            <div className="coupon-container">
-                                {couponApplied ? (
-                                    <>
-                                        <div className="coupon-section">
-                                            <div className="coupon-info">
-                                                <div className="coupon-icon-wrapper">
-                                                    <Percent size={28} strokeWidth={3} />
-                                                </div>
-                                                <div className="coupon-text">
-                                                    <h4 className="coupon-text__title">Yay! You saved ₹300</h4>
-                                                    <p className="coupon-text__subtitle">Coupon Applied!</p>
-                                                </div>
-                                            </div>
-                                            <button className="coupon-remove" onClick={toggleCoupon}>Remove</button>
-                                        </div>
-                                        <button className="see-all-coupons" onClick={() => setView('coupons')}>
-                                            See all coupons <ChevronRight size={20} strokeWidth={2.5} />
-                                        </button>
-                                    </>
-                                ) : (
-                                    <button className="see-all-coupons" style={{ margin: 0 }} onClick={() => setView('coupons')}>
-                                        Apply Coupon <ChevronRight size={20} strokeWidth={2.5} />
-                                    </button>
-                                )}
-                            </div>
-
-                            <BillDetails
-                                itemsTotal={112345}
-                                deliveryCharge={112}
-                                handlingCharge={12345}
-                                totalSavings={couponApplied ? 9999 : 9699}
-                            />
-
-                            <section className="cancellation-policy">
-                                <h3 className="cancellation-policy__title">Cancellation Policy</h3>
-                                <p className="cancellation-policy__text">
-                                    You can cancel your booking anytime before 24 hrs of pickup or delivery for a full refund. After that, a fee may apply. If we cancel due to an issue on our side, you'll get your money back in full.
-                                </p>
-                            </section>
-                        </div>
-
-                        <CheckoutFooter
-                            address={selectedAddress.address}
-                            totalAmount={calculateTotal()}
-                            onPlaceOrder={handlePlaceOrder}
-                            onAddressChange={() => setView('address-selection')}
-                        />
-                        {isPlacingOrder && (
-                            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-                                <div className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center gap-4">
-                                    <Loader2 className="animate-spin text-primary" size={48} />
-                                    <p className="font-semibold text-lg">Placing your order...</p>
-                                </div>
-                            </div>
-                        )}
-                    </>
-                );
-        }
-    };
-
-    return (
-        <div className={`checkout-overlay ${isOpen ? 'checkout-overlay--open' : ''}`}>
-            <div className="checkout-overlay__backdrop" onClick={handleBackdropClick} />
-            <div className="checkout-panel">
-                {renderContent()}
-            </div>
+  return (
+    <div className={`checkout-overlay ${isOpen ? 'checkout-overlay--open' : ''}`}>
+      <button className="checkout-overlay__backdrop" onClick={onClose} aria-label="Close cart" />
+      <section className="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="cart-preview-title">
+        <CheckoutHeader onBack={onClose} title="Cart preview" showShare={false} />
+        <div className="checkout-panel__content px-5 py-4">
+          <p className="mb-5 rounded-xl border border-border bg-muted p-4 text-sm text-muted-foreground" role="status">
+            Booking and payment are unavailable in this preview while the rental checkout workflow is being verified. No order will be placed.
+          </p>
+          {items.length ? <ul className="space-y-4">{items.map(({ id, product, quantity }) => (
+            <li key={id} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
+              <img src={product.image} alt="" className="size-16 rounded-lg object-cover bg-muted" />
+              <div className="min-w-0 flex-1">
+                <h2 className="truncate font-semibold text-foreground">{product.name}</h2>
+                <p className="text-sm text-muted-foreground">₹{product.price.toLocaleString('en-IN')} per day</p>
+                <div className="mt-2 flex items-center gap-3">
+                  <button className="rounded border border-border p-1" aria-label={`Decrease ${product.name} quantity`} onClick={() => updateQuantity(id, quantity - 1)}><Minus size={14} /></button>
+                  <span aria-label="Quantity">{quantity}</span>
+                  <button className="rounded border border-border p-1" aria-label={`Increase ${product.name} quantity`} onClick={() => updateQuantity(id, quantity + 1)}><Plus size={14} /></button>
+                  <button className="ml-auto rounded p-1 text-destructive" aria-label={`Remove ${product.name}`} onClick={() => removeFromCart(id)}><Trash2 size={16} /></button>
+                </div>
+              </div>
+            </li>
+          ))}</ul> : <p className="py-12 text-center text-muted-foreground">Your cart is empty. Browse listings to add items.</p>}
         </div>
-    );
+        <footer className="border-t border-border p-5">
+          <button className="w-full rounded-xl bg-muted px-4 py-3 font-semibold text-muted-foreground" disabled aria-disabled="true">Checkout unavailable</button>
+        </footer>
+      </section>
+    </div>
+  );
 };

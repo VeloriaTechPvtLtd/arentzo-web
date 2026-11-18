@@ -5,6 +5,7 @@ export interface Order {
     productName: string;
     quantity: number;
     totalAmount: number;
+    currency?: string;
     rentalStatus: 'requested' | 'approved' | 'booked' | 'active' | 'overdue' | 'returned' | 'completed' | 'cancelled';
     paymentStatus: 'paid' | 'pending' | 'refunded';
     deliveryMethod: 'pickup' | 'delivery';

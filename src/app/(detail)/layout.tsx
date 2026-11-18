@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { GlobalDrawers } from '@/shared/components/layout/GlobalDrawers';
 import { useAuth } from '@/features/auth/ui/context/useAuth';
+import { CustomerBottomNav } from '@/shared/components/layout/CustomerBottomNav';
 
 export default function DetailGroupLayout({
   children,
@@ -25,6 +26,7 @@ export default function DetailGroupLayout({
   return (
     <>
       {requiresAccount && (loading || !user) ? <main className="min-h-screen" aria-busy="true" /> : children}
+      {!loading && user?.role !== 'service_provider' && (pathname.startsWith('/my-rentals/') || pathname.startsWith('/product/') || pathname === '/search') ? <CustomerBottomNav /> : null}
       <GlobalDrawers />
     </>
   );

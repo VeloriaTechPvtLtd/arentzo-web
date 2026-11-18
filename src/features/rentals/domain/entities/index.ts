@@ -9,6 +9,7 @@ export interface Rental {
     endDate: string;
     status: RentalStatus;
     totalAmount: number;
+    currency?: string;
     rentalTerm: string;
     location: string;
     orderDate: string;

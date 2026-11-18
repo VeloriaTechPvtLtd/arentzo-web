@@ -5,16 +5,15 @@ import {
     Search,
     Filter
 } from 'lucide-react';
-import { mockOrders } from '../../infrastructure/api/ordersMockData';
 import { useProviderFilters } from '../hooks/useProviderFilters';
 import { ProviderFilterModal, type FilterDefinition } from '../components/ProviderFilterModal';
 import { OrderDetailsDrawer } from '../components/OrderDetailsDrawer';
-import { type Order } from '../../infrastructure/api/ordersMockData';
 import { OrderCard } from '../components/OrderCard';
 import '../styles/ProviderOrdersPage.css';
+import { useProviderOrders } from '../hooks/useProviderRecords';
 
 export const ProviderOrdersPage: React.FC = () => {
-    const [orders, setOrders] = React.useState<Order[]>(mockOrders);
+    const { items: orders, loading, error } = useProviderOrders();
     const [selectedOrderId, setSelectedOrderId] = React.useState<string | null>(null);
 
     const {
@@ -131,12 +130,6 @@ export const ProviderOrdersPage: React.FC = () => {
         return matchesSearch && matchesRentalStatus && matchesPaymentStatus && matchesAmount && matchesReturnDate && matchesDelivery && matchesDeposit;
     });
 
-    const handleStatusChange = (orderId: string, newStatus: Order['rentalStatus']) => {
-        setOrders(prev => prev.map(order =>
-            order.id === orderId ? { ...order, rentalStatus: newStatus } : order
-        ));
-    };
-
     const selectedOrder = orders.find(o => o.id === selectedOrderId);
 
     return (
@@ -168,16 +161,18 @@ export const ProviderOrdersPage: React.FC = () => {
 
             {/* Order Grid View */}
             <div className="orders-grid">
-                {filteredOrders.map((order) => (
+                {loading ? <p role="status">Loading provider bookings…</p> : null}
+                {error ? <p role="alert">We couldn’t load provider bookings. Refresh and try again.</p> : null}
+                {!loading && !error ? filteredOrders.map((order) => (
                     <OrderCard
                         key={order.id}
                         order={order}
                         onClick={() => setSelectedOrderId(order.id)}
                     />
-                ))}
+                )) : null}
             </div>
 
-            {filteredOrders.length === 0 && (
+            {!loading && !error && filteredOrders.length === 0 && (
                 <div className="no-results">
                     <p>No rentals found matching your criteria.</p>
                     <button onClick={resetFilters} className="text-primary hover:underline mt-2">
@@ -199,7 +194,6 @@ export const ProviderOrdersPage: React.FC = () => {
                 <OrderDetailsDrawer
                     order={selectedOrder}
                     onClose={() => setSelectedOrderId(null)}
-                    onStatusChange={handleStatusChange}
                 />
             )}
         </div>

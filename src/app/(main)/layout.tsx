@@ -6,6 +6,7 @@ import { AppHeaderWithSuspense } from '@/shared/components/layout/AppHeaderWithS
 import { GlobalDrawers } from '@/shared/components/layout/GlobalDrawers';
 import { isWaitlistMarketingPath } from '@/features/landing/ui/components/WaitlistPageShell';
 import { useAuth } from '@/features/auth/ui/context/AuthContext';
+import { CustomerBottomNav } from '@/shared/components/layout/CustomerBottomNav';
 
 export default function MainGroupLayout({
   children,
@@ -30,6 +31,7 @@ export default function MainGroupLayout({
     <>
       {!hideAppHeader && <AppHeaderWithSuspense />}
       {requiresAccount && (loading || !user) ? <main className="min-h-screen" aria-busy="true" /> : children}
+      {!loading && user?.role !== 'service_provider' && (pathname === '/favorites' || pathname === '/my-rentals') ? <CustomerBottomNav /> : null}
       <GlobalDrawers />
     </>
   );

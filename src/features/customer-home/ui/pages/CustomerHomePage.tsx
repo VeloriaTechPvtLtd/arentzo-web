@@ -1,213 +1,41 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
-// import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import { CategoryTabs } from '../components/CategoryTabs';
-import { HeroBanner } from '../components/HeroBanner';
-import { SubcategoryCards } from '../components/SubcategoryCards';
 import { ProductsGrid } from '../components/ProductsGrid';
-import { TopSelections } from '../components/TopSelections';
 import { CustomerLayout } from '../layouts/CustomerLayout';
-import { useCart } from '../../../../shared/hooks/useCart';
-import { useDrawer } from '../../../../shared/hooks/useDrawer';
-import { FloatingCart } from '../../../../shared/components/cart/FloatingCart';
-import type { CategoryTheme } from '../../domain/entities/types';
-import type { Product } from '../../../../shared/types/product';
-import {
-    categoryThemes,
-    featuredBrands,
-    mockProducts,
-    topSelections,
-    sportsSelections,
-} from '../../infrastructure/api/mockData';
-import categoriesData from '../../../../app_content/categories.json';
+import { useCart } from '@/shared/hooks/useCart';
+import { useCatalogProducts } from '@/features/catalog/ui/hooks/useCatalogProducts';
+import { useCatalogCategories } from '@/features/catalog/ui/hooks/useCatalogCategories';
 import '../styles/CustomerHome.css';
-import { SupabaseCatalogRepository } from '@/features/catalog/infrastructure/SupabaseCatalogRepository';
 
-interface Category {
-    id: string;
-    name: string;
-    icon: string;
-    subcategories: {
-        name: string;
-        examples: string[];
-    }[];
+export function CustomerHomePage() {
+  const [activeCategory, setActiveCategory] = useState('all');
+  const { products, loading, error, favoritesError, toggleFavorite } = useCatalogProducts();
+  const categories = useCatalogCategories();
+  const { items: cartItems, addToCart, updateQuantity } = useCart();
+  const visibleProducts = useMemo(() => products
+    .filter((product) => activeCategory === 'all' || product.category === activeCategory)
+    .map((product) => ({ ...product, quantity: cartItems.find((item) => item.product.id === product.id)?.quantity || 0 })), [activeCategory, cartItems, products]);
+
+  const addProductToCart = (productId: string) => {
+    const product = visibleProducts.find((item) => item.id === productId);
+    if (product?.isAvailable) addToCart(product);
+  };
+  const changeQuantity = (productId: string, quantity: number) => updateQuantity(productId, quantity);
+  const selectedName = categories.categories.find((category) => category.id === activeCategory)?.name;
+
+  return <CustomerLayout className="customer-home--all">
+    <main className="customer-home__content mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <header className="mb-5 sm:mb-7"><h1 className="text-2xl font-bold text-foreground sm:text-3xl">Browse rentals</h1><p className="mt-1 text-sm text-muted-foreground">Explore currently available listings.</p></header>
+      <CategoryTabs categories={categories.categories.map(({ id, name, icon }) => ({ id, name, icon }))} activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+      {categories.loading ? <p role="status" className="py-4 text-sm text-muted-foreground">Loading categories…</p> : null}
+      {categories.error ? <p role="status" className="py-4 text-sm text-muted-foreground">Categories are temporarily unavailable.</p> : null}
+      {loading ? <p role="status" className="py-4 text-sm text-muted-foreground">Loading current listings…</p> : null}
+      {error ? <p role="alert" className="py-4 text-sm text-destructive">Current listings are temporarily unavailable.</p> : null}
+      {favoritesError ? <p role="status" className="py-2 text-sm text-muted-foreground">Saved-list status could not be loaded.</p> : null}
+      {!loading && !error ? <ProductsGrid title={selectedName ? `${selectedName} listings` : 'Available listings'} products={visibleProducts} onFavoriteToggle={toggleFavorite} onAddToCart={addProductToCart} onQuantityChange={changeQuantity} /> : null}
+      {!loading && !error && visibleProducts.length === 0 ? <p className="mx-auto max-w-7xl px-4 py-10 text-center text-muted-foreground">No listings are available in this category yet.</p> : null}
+    </main>
+  </CustomerLayout>;
 }
-
-export const CustomerHomePage: React.FC = () => {
-    const [activeCategory, setActiveCategory] = useState<string>('all');
-    const [localProducts, setLocalProducts] = useState<Product[]>(mockProducts);
-    const [catalogError, setCatalogError] = useState(false);
-
-    useEffect(() => {
-        let active = true;
-        void new SupabaseCatalogRepository().getAvailableProducts().then((items) => {
-            if (active && items.length) setLocalProducts(items);
-        }).catch(() => { if (active) setCatalogError(true); });
-        return () => { active = false; };
-    }, []);
-
-    const { items: cartItems, addToCart, updateQuantity } = useCart();
-    // Layout-related state is now handled in CustomerLayout
-
-    // const router = useRouter();
-
-    // Sync products with cart state
-    const products = useMemo(() => {
-        return localProducts.map(product => {
-            const cartItem = cartItems.find(item => item.product.id === product.id);
-            return {
-                ...product,
-                quantity: cartItem ? cartItem.quantity : 0
-            };
-        });
-    }, [localProducts, cartItems]);
-
-    const categories = categoriesData as Category[];
-
-    const currentCategory = useMemo(() => {
-        if (activeCategory === 'all') {
-            return categories[0]; // Default to Travel for "All"
-        }
-        return categories.find((cat) => cat.id === activeCategory) || categories[0];
-    }, [activeCategory, categories]);
-
-    const currentTheme = useMemo((): CategoryTheme => {
-        return categoryThemes[activeCategory] || categoryThemes.all;
-    }, [activeCategory]);
-
-    const currentBrand = useMemo(() => {
-        return featuredBrands[activeCategory] || null;
-    }, [activeCategory]);
-
-    const currentSelections = useMemo(() => {
-        if (activeCategory === 'sports_leisure') {
-            return sportsSelections;
-        }
-        return topSelections;
-    }, [activeCategory]);
-
-    const sectionTitle = useMemo(() => {
-        switch (activeCategory) {
-            case 'sports_leisure':
-                return 'Sports Bestsellers';
-            case 'tech_gadgets':
-                return 'Tech Essentials';
-            case 'travel_transport':
-            case 'all':
-                return 'Similar Searches';
-            default:
-                return 'Popular Picks';
-        }
-    }, [activeCategory]);
-
-    const selectionsTitle = useMemo(() => {
-        switch (activeCategory) {
-            case 'sports_leisure':
-                return 'Sports Bestsellers';
-            case 'tech_gadgets':
-                return 'Tech Collections';
-            default:
-                return 'Top Selections';
-        }
-    }, [activeCategory]);
-
-    const handleFavoriteToggle = (productId: string) => {
-        setLocalProducts((prev) =>
-            prev.map((p) =>
-                p.id === productId ? { ...p, isFavorite: !p.isFavorite } : p
-            )
-        );
-    };
-
-    const handleAddToCart = (productId: string) => {
-        const product = products.find((p) => p.id === productId);
-        if (product) {
-            addToCart(product);
-        }
-    };
-
-    const handleQuantityChange = (productId: string, quantity: number) => {
-        updateQuantity(productId, quantity);
-    };
-
-    // Determine if we show featured brand variant
-    const showFeaturedBrand = currentBrand && (
-        activeCategory === 'travel_transport' ||
-        activeCategory === 'sports_leisure'
-    );
-
-    const { openCheckout } = useDrawer();
-
-    return (
-        <CustomerLayout className={`customer-home--${activeCategory}`}>
-            <div className="customer-home__content">
-                <CategoryTabs
-                    categories={categories.map((cat) => ({
-                        id: cat.id,
-                        name: cat.name,
-                        icon: cat.icon,
-                    }))}
-                    activeCategory={activeCategory}
-                    onCategoryChange={setActiveCategory}
-                />
-
-                <div className="customer-home__hero-section">
-                    <HeroBanner
-                        theme={currentTheme}
-                        brandName={currentBrand?.name}
-                        brandImage={currentBrand?.image}
-                        cta={currentBrand?.cta}
-                        variant={showFeaturedBrand ? 'featured' : 'simple'}
-                    />
-
-                    <SubcategoryCards
-                        subcategories={currentCategory.subcategories}
-                        categoryColor={currentTheme.primary}
-                    />
-                </div>
-
-                {/* Main Action Section */}
-                <div className="flex flex-col gap-2">
-                    {showFeaturedBrand && (
-                        <TopSelections
-                            title={selectionsTitle}
-                            selections={currentSelections}
-                        />
-                    )}
-
-            {catalogError ? <p role="status" className="mx-auto max-w-7xl px-4 text-sm text-muted-foreground">Live listings are temporarily unavailable.</p> : null}
-            <ProductsGrid
-                        title={sectionTitle}
-                        products={products}
-                        onFavoriteToggle={handleFavoriteToggle}
-                        onAddToCart={handleAddToCart}
-                        onQuantityChange={handleQuantityChange}
-                    />
-
-                    {/* Discovery Section - only show if not in a specific brand focus */}
-                    {!showFeaturedBrand && (
-                        <ProductsGrid
-                            title="You May Also Like"
-                            products={[...products].reverse()}
-                            onFavoriteToggle={handleFavoriteToggle}
-                            onAddToCart={handleAddToCart}
-                            onQuantityChange={handleQuantityChange}
-                        />
-                    )}
-                </div>
-            </div>
-
-            {cartItems.length > 0 && (
-                <FloatingCart
-                    items={cartItems.map(item => ({
-                        id: item.id,
-                        image: item.product.image
-                    }))}
-                    totalItems={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                    onViewCart={openCheckout}
-                />
-            )}
-        </CustomerLayout>
-    );
-};
