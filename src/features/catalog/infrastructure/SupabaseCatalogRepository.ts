@@ -63,11 +63,17 @@ export class SupabaseCatalogRepository implements CatalogRepository {
   }
 
   async getAvailableProducts(): Promise<Product[]> {
-    const { data, error } = await getSupabaseClient().from('products')
-      .select('id,title,name,daily_rate,discounted_rate_per_day,price,currency,original_price_per_day,rating,average_rating,review_count,total_reviews,images,media,image_url,thumbnail_url,brand,description,category_id,quantity_available')
-      .eq('is_active', true).is('deleted_at', null).limit(30);
-    if (error) throw error;
-    return ((data || []) as ProductRow[]).map(mapProduct);
+    const rows: ProductRow[] = [];
+    for (let offset = 0; ; offset += 20) {
+      const { data, error } = await getSupabaseClient().from('products')
+        .select('id,title,name,daily_rate,discounted_rate_per_day,price,currency,original_price_per_day,rating,average_rating,review_count,total_reviews,images,media,image_url,thumbnail_url,brand,description,category_id,quantity_available,created_at')
+        .eq('is_active', true).is('deleted_at', null).order('created_at', { ascending: false }).range(offset, offset + 19);
+      if (error) throw error;
+      const page = (data || []) as ProductRow[];
+      rows.push(...page);
+      if (page.length < 20) break;
+    }
+    return rows.map(mapProduct);
   }
 
   async getFavoriteProductIds(userId: string): Promise<string[]> {

@@ -58,21 +58,39 @@ function mapOffer(row: OfferRow): Offer {
 
 export class SupabaseProviderRepository implements ProviderRepository {
   async getProducts(providerId: string): Promise<Product[]> {
-    const { data, error } = await getSupabaseClient().from('products').select(productColumns)
-      .eq('provider_id', providerId).is('deleted_at', null).order('created_at', { ascending: false }).limit(100);
-    if (error) throw error;
-    return ((data || []) as ProductRow[]).map(mapProduct);
+    const rows: ProductRow[] = [];
+    for (let offset = 0; ; offset += 20) {
+      const { data, error } = await getSupabaseClient().from('products').select(productColumns)
+        .eq('provider_id', providerId).is('deleted_at', null).order('created_at', { ascending: false }).range(offset, offset + 19);
+      if (error) throw error;
+      const page = (data || []) as ProductRow[];
+      rows.push(...page);
+      if (page.length < 20) break;
+    }
+    return rows.map(mapProduct);
   }
   async getOrders(providerId: string): Promise<Order[]> {
-    const { data, error } = await getSupabaseClient().from('bookings').select(bookingColumns)
-      .eq('provider_id', providerId).order('created_at', { ascending: false }).limit(100);
-    if (error) throw error;
-    return ((data || []) as BookingRow[]).map(mapOrder);
+    const rows: BookingRow[] = [];
+    for (let offset = 0; ; offset += 20) {
+      const { data, error } = await getSupabaseClient().from('bookings').select(bookingColumns)
+        .eq('provider_id', providerId).order('created_at', { ascending: false }).range(offset, offset + 19);
+      if (error) throw error;
+      const page = (data || []) as BookingRow[];
+      rows.push(...page);
+      if (page.length < 20) break;
+    }
+    return rows.map(mapOrder);
   }
   async getOffers(providerId: string): Promise<Offer[]> {
-    const { data, error } = await getSupabaseClient().from('offers').select(offerColumns)
-      .eq('provider_id', providerId).order('created_at', { ascending: false }).limit(100);
-    if (error) throw error;
-    return ((data || []) as OfferRow[]).map(mapOffer);
+    const rows: OfferRow[] = [];
+    for (let offset = 0; ; offset += 20) {
+      const { data, error } = await getSupabaseClient().from('offers').select(offerColumns)
+        .eq('provider_id', providerId).order('created_at', { ascending: false }).range(offset, offset + 19);
+      if (error) throw error;
+      const page = (data || []) as OfferRow[];
+      rows.push(...page);
+      if (page.length < 20) break;
+    }
+    return rows.map(mapOffer);
   }
 }
