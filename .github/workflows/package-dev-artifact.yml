@@ -25,7 +25,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
       RESPONSIVE_BASE_URL: http://127.0.0.1:3005
-      RESPONSIVE_ARTIFACT_DIR: ${{ runner.temp }}/arentzo-responsive-evidence
+      RESPONSIVE_ARTIFACT_DIR: /tmp/arentzo-responsive-evidence
       CI: true
     steps:
       - name: Check out source

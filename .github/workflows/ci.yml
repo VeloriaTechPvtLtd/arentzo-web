@@ -24,7 +24,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-public-anon-placeholder
       NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3005
       RESPONSIVE_BASE_URL: http://127.0.0.1:3005
-      RESPONSIVE_ARTIFACT_DIR: ${{ runner.temp }}/arentzo-responsive-evidence
+      RESPONSIVE_ARTIFACT_DIR: /tmp/arentzo-responsive-evidence
       CI: true
     steps:
       - name: Check out source
@@ -79,6 +79,6 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: responsive-browser-evidence-${{ github.run_id }}
-          path: ${{ runner.temp }}/arentzo-responsive-evidence
+          path: /tmp/arentzo-responsive-evidence
           if-no-files-found: ignore
           retention-days: 7
