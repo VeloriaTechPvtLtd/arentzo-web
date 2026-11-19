@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Heart, Plus, Minus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import React, { useState } from 'react';
+import { Heart, Plus, Minus, ImageOff } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import type { Product } from '../../types/product';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     className,
     variant = 'default',
 }) => {
+    const { t } = useTranslation();
     const router = useRouter();
+    const [failedImage, setFailedImage] = useState<string | null>(null);
+    const hasPhoto = Boolean(product.image && product.image !== "/placeholder.svg" && failedImage !== product.image);
     const quantity = product.quantity || 0;
     const isOutOfStock = product.isAvailable === false;
 
@@ -60,13 +64,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
         >
             {/* Image Section */}
-            <div className={cn("relative overflow-hidden bg-[var(--muted)]/30", variant === 'compact' ? 'aspect-square' : 'aspect-[4/5]')}>
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+            <div className={cn("relative overflow-hidden bg-[var(--muted)]/30", variant === 'compact' ? 'aspect-square' : 'aspect-[4/3]')}>
+                {hasPhoto ? <img
+                    src={product.image} alt={product.name}
+                    onError={() => setFailedImage(product.image)}
+                    className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
-                />
+                /> : <div className="h-full flex flex-col items-center justify-center gap-2 text-muted-foreground p-3 text-center"><ImageOff size={24} aria-hidden="true" /><span className="text-xs">{t('mobileRental.photoMissing')}</span></div>}
+
 
                 {/* Badges Overlay */}
                 <div className="absolute top-2 left-2 flex flex-col gap-1.5 pointer-events-none">
@@ -134,9 +139,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 </div>
 
                 {/* Pricing & Actions */}
-                <div className="mt-auto flex items-end justify-between">
+                <div className="mt-auto flex flex-col items-stretch justify-between gap-2 sm:flex-row sm:flex-wrap sm:items-end">
                     <div className="flex flex-col">
-                        <span className="text-lg font-bold text-[var(--foreground)] flex items-baseline leading-none">
+                        <span className="text-base font-bold text-[var(--foreground)] flex flex-wrap items-baseline gap-1 leading-tight">
                             {formatPrice(product.price)} <span className="text-xs font-medium text-muted-foreground">/ day</span>
                         </span>
                         {product.originalPrice && (
@@ -150,6 +155,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     {quantity > 0 ? (
                         <div className="flex items-center gap-2 bg-[var(--muted)]/50 rounded-full p-1 border border-[var(--border)] shadow-inner">
                             <button
+                                aria-label={`${t('mobileRental.removeOne')}: ${product.name}`}
                                 onClick={(e) => handleAction(e, () => onQuantityChange?.(product.id, quantity - 1))}
                                 className="p-1 rounded-full hover:bg-[var(--card)] transition-colors text-[var(--foreground)]"
                             >
@@ -157,6 +163,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                             </button>
                             <span className="text-xs font-bold min-w-[1.2rem] text-center">{quantity}</span>
                             <button
+                                aria-label={`${t('mobileRental.addOne')}: ${product.name}`}
                                 onClick={(e) => handleAction(e, () => onQuantityChange?.(product.id, quantity + 1))}
                                 className="p-1 rounded-full hover:bg-[var(--card)] transition-colors text-[var(--foreground)]"
                             >
@@ -166,12 +173,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     ) : isOutOfStock ? (
                         <span className="text-[10px] font-bold text-[var(--destructive)] uppercase">Out of Stock</span>
                     ) : (
-                        <div className="sm:hidden">
+                        <div className="sm:hidden w-full">
                             <button
                                 onClick={(e) => handleAction(e, () => onAddToCart?.(product.id))}
-                                className="p-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-lg shadow-sm active:scale-95"
+                                aria-label={t('mobileRental.addItem', { name: product.name })}
+                                className="w-full min-w-10 min-h-10 flex items-center justify-center gap-1 p-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-lg shadow-sm active:scale-95"
                             >
-                                <Plus size={16} />
+                                <Plus size={16} aria-hidden="true" /><span className="text-xs font-semibold">Add</span>
                             </button>
                         </div>
                     )}

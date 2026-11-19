@@ -53,7 +53,7 @@ export function WaitlistNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 shadow-2xs backdrop-blur-md">
+    <header className="waitlist-nav sticky top-0 z-50 border-b border-border/60 bg-background/90 shadow-2xs backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 sm:h-16 sm:gap-4 sm:px-6 lg:h-[72px] lg:px-8">
         <Link href="/" className="flex min-w-0 shrink items-center gap-2 sm:gap-2.5">
           <img src="/logo.svg" alt="" className="size-8 shrink-0 rounded-full object-cover shadow-xs sm:size-9" />
@@ -96,9 +96,9 @@ export function WaitlistNavbar() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link href="/login" className="hidden rounded-full px-3 py-2 text-sm font-semibold text-foreground hover:text-primary min-[900px]:inline-flex">Sign in</Link>
-          <Link href="/signup" className="hidden rounded-full border border-border px-3 py-2 text-sm font-semibold text-foreground hover:bg-muted min-[900px]:inline-flex">Create account</Link>
+        <div className="waitlist-nav__actions flex shrink-0 items-center gap-2 sm:gap-3">
+          <Link href="/login" className="waitlist-nav__signin inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-foreground hover:text-primary">Sign in</Link>
+          <Link href="/signup" className="waitlist-nav__signup whitespace-nowrap rounded-full border border-border px-3 py-2 text-sm font-semibold text-foreground hover:bg-muted">Create account</Link>
           <Button
             type="button"
             onClick={goToWaitlist}
@@ -109,9 +109,10 @@ export function WaitlistNavbar() {
 
           <button
             type="button"
-            className="waitlist-nav__menu-btn size-10 items-center justify-center rounded-full border border-border bg-card"
+            className="waitlist-nav__menu-btn size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card"
             onClick={() => setMobileOpen((o) => !o)}
             aria-expanded={mobileOpen}
+            aria-controls="waitlist-mobile-menu"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
             {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -120,8 +121,9 @@ export function WaitlistNavbar() {
       </div>
 
       {mobileOpen ? (
-        <div className="waitlist-nav__mobile border-t border-border bg-background px-4 py-4">
+        <div id="waitlist-mobile-menu" className="waitlist-nav__mobile border-t border-border bg-background px-4 py-4">
           <nav className="flex flex-col gap-1" aria-label="Mobile">
+            <Link href="/browse" onClick={() => setMobileOpen(false)} className="rounded-xl bg-primary px-3 py-3 text-sm font-semibold text-primary-foreground">Browse rentals</Link>
             {navLinks.map((link) => (
               <a
                 key={link.label}

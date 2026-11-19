@@ -26,7 +26,7 @@ export default function DetailGroupLayout({
   return (
     <>
       {requiresAccount && (loading || !user) ? <main className="min-h-screen" aria-busy="true" /> : children}
-      {!loading && user?.role !== 'service_provider' && (pathname.startsWith('/my-rentals/') || pathname.startsWith('/product/') || pathname === '/product' || pathname === '/search') ? <CustomerBottomNav /> : null}
+      {!loading && user?.role !== 'service_provider' && (pathname.startsWith('/my-rentals/') || pathname === '/search') ? <CustomerBottomNav /> : null}
       <GlobalDrawers />
     </>
   );

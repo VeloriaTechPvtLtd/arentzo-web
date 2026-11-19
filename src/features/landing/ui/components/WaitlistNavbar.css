@@ -1,49 +1,26 @@
-/* Waitlist landing navbar — slim pre-launch chrome */
-
-.waitlist-nav__links {
-  display: none;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.waitlist-nav__cta {
+/* Scoped navigation keeps auth reachable without overflowing compact screens. */
+.waitlist-nav .waitlist-nav__links,
+.waitlist-nav .waitlist-nav__signup,
+.waitlist-nav .waitlist-nav__cta {
   display: none;
 }
-
-.waitlist-nav__menu-btn {
-  display: inline-flex;
-}
-
+.waitlist-nav__links { align-items: center; gap: 1.25rem; }
+.waitlist-nav .waitlist-nav__menu-btn { display: inline-flex; }
+.waitlist-nav .waitlist-nav__signin { flex-shrink: 0; }
+.waitlist-nav__tagline { display: none; }
 .waitlist-nav__mobile {
   display: block;
+  max-height: calc(100dvh - 56px);
+  overflow-y: auto;
 }
-
-.waitlist-nav__tagline {
-  display: none;
-}
-
 @media (min-width: 640px) {
-  .waitlist-nav__tagline {
-    display: block;
-  }
+  .waitlist-nav__tagline { display: block; }
+  .waitlist-nav__mobile { max-height: calc(100dvh - 64px); }
 }
-
-@media (min-width: 900px) {
-  .waitlist-nav__cta {
-    display: inline-flex;
-  }
-}
-
-@media (min-width: 900px) {
-  .waitlist-nav__links {
-    display: flex;
-  }
-
-  .waitlist-nav__menu-btn {
-    display: none;
-  }
-
-  .waitlist-nav__mobile {
-    display: none;
-  }
+@media (min-width: 1024px) {
+  .waitlist-nav .waitlist-nav__links { display: flex; }
+  .waitlist-nav .waitlist-nav__signup,
+  .waitlist-nav .waitlist-nav__cta { display: inline-flex; }
+  .waitlist-nav .waitlist-nav__menu-btn,
+  .waitlist-nav .waitlist-nav__mobile { display: none; }
 }
