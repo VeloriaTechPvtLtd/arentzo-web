@@ -117,7 +117,8 @@ export const PrivacyPolicyPage = () => {
                         <p>Your consent to this Privacy Policy followed by Your submission of such information represents Your agreement to that transfer.</p>
                         <p>The Company will take all steps reasonably necessary to ensure that Your data is treated securely and in accordance with this Privacy Policy and no transfer of Your Personal Data will take place to an organization or a country unless there are adequate controls in place including the security of Your data and other personal information.</p>
 
-                        <h3>Delete Your Personal Data</h3>
+                        <h3 id="delete-your-personal-data">Delete Your Personal Data</h3>
+                        <p>To delete your Arentzo account in the app or request deletion without the app, visit our <a href="/account-deletion">account deletion page</a>.</p>
                         <p>You have the right to delete or request that We assist in deleting the Personal Data that We have collected about You.</p>
                         <p>Our Service may give You the ability to delete certain information about You from within the Service.</p>
                         <p>You may update, amend, or delete Your information at any time by signing in to Your Account, if you have one, and visiting the account settings section that allows you to manage Your personal information. You may also contact Us to request access to, correct, or delete any personal information that You have provided to Us.</p>
