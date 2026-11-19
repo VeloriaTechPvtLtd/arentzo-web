@@ -46,8 +46,9 @@ jobs:
       - name: Run deterministic unit tests
         run: npm run test:unit
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install pinned headless Chromium
+        timeout-minutes: 5
+        run: npx playwright install --only-shell chromium
 
       - name: Build Development static export
         run: npm run build:dev
@@ -102,8 +103,9 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install pinned headless Chromium
+        timeout-minutes: 5
+        run: npx playwright install --only-shell chromium
 
       - name: Authenticate Firebase deployment
         env:

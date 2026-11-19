@@ -55,8 +55,9 @@ jobs:
       - name: Run deterministic unit tests
         run: npm run test:unit
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install pinned headless Chromium
+        timeout-minutes: 5
+        run: npx playwright install --only-shell chromium
 
       - name: Build standalone Next.js server
         run: npm run build
