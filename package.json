@@ -7,6 +7,7 @@
     "dev": "next dev",
     "test:cart-storage": "node --test tests/cart-storage.test.mjs",
     "test:additional-charge-disclosure": "node --test tests/additional-charge-disclosure.test.mjs",
+    "test:request-timeout": "node --test tests/request-with-timeout.test.mjs",
     "build": "next build",
     "build:dev": "next build",
     "build:stage": "next build",

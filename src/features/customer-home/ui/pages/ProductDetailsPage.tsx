@@ -15,14 +15,14 @@ export const ProductDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { addToCart, items: cartItems, updateQuantity } = useCart();
-  const { product, related, loading, error, favoriteError, toggleFavorite } = useProductDetails(id);
+  const { product, related, loading, error, favoriteError, toggleFavorite, retry } = useProductDetails(id);
   const quantity = useMemo(() => cartItems.find((item) => item.product.id === id)?.quantity || 0, [cartItems, id]);
   const handleAddToCart = () => { if (product?.isAvailable) addToCart(product); };
   const handleQuantityChange = (newQuantity: number) => { if (product) updateQuantity(product.id, newQuantity); };
   const handleRelatedAdd = (productId: string) => { const item = related.find((entry) => entry.id === productId); if (item?.isAvailable) addToCart(item); };
 
   if (loading) return <div className="product-details-page"><BackHeader title="Product Details" /><p role="status" className="p-6">Loading listing…</p></div>;
-  if (error || !product) return <div className="product-details-page"><BackHeader title="Product Details" /><div className="product-not-found"><h2>{error ? 'Listing unavailable' : 'Listing not found'}</h2><p>{error ? 'We could not load this listing. Refresh and try again.' : 'This listing is no longer available.'}</p><button onClick={() => router.push('/browse')} className="back-button"><ArrowLeft size={20} />Browse Listings</button></div></div>;
+  if (error || !product) return <div className="product-details-page"><BackHeader title="Product Details" /><div className="product-not-found"><h2>{error === 'not_found' ? 'Listing not found' : 'Listing unavailable'}</h2><p>{error === 'timeout' ? 'The listing is taking longer than expected to load.' : error === 'request_failed' ? 'We could not load this listing right now.' : 'This listing is no longer available.'}</p>{error && error !== 'not_found' ? <button onClick={retry} className="back-button">Try again</button> : null}<button onClick={() => router.push('/browse')} className="back-button"><ArrowLeft size={20} />Browse Listings</button></div></div>;
 
   return <div className="product-details-page">
     <BackHeader title="Product Details" />
