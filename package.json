@@ -17,7 +17,8 @@
     "deploy:dev": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
     "deploy:stage": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
     "deploy:prod": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
-    "test:responsive": "node --test tests/responsive-smoke.test.mjs"
+    "test:responsive": "node --test tests/responsive-smoke.test.mjs",
+    "test:active-attribute-capabilities": "node --test tests/active-subcategory-attributes.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.11",

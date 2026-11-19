@@ -17,6 +17,14 @@ test('discloses configured petrol motorcycle rates and limits only when eligible
     assert.equal(row(disclosures, 'fuel_refill_fee_per_litre').displayValue, '₹110 per missing litre');
     assert.equal(row(disclosures, 'required_fuel_percent').displayValue, '80%');
     assert.equal(row(disclosures, 'cleaning_fee'), undefined);
+    assert.deepEqual(disclosures.map(({ key }) => key), [
+        'late_fee_per_hour',
+        'late_grace_minutes',
+        'included_km_per_day',
+        'overage_fee_per_km',
+        'fuel_refill_fee_per_litre',
+        'required_fuel_percent',
+    ]);
 });
 
 test('does not disclose fuel fields for an electric scooter, even if stale fuel values exist', () => {

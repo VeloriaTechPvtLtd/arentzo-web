@@ -3,6 +3,7 @@ import type { CatalogRepository } from '../application/ports/CatalogRepository';
 import type { Category } from '@/features/customer-home/domain/entities/types';
 import { getSupabaseClient } from '@/shared/infrastructure/supabase/client';
 import { mapAdditionalChargeDisclosure } from '../domain/additionalChargeDisclosure.js';
+import { groupActiveSubcategoryAttributes } from './groupActiveSubcategoryAttributes.js';
 
 type ProductRow = {
   id: string; title: string | null; name: string | null; daily_rate: number | null; discounted_rate_per_day: number | null;
@@ -102,13 +103,9 @@ export class SupabaseCatalogRepository implements CatalogRepository {
     if (subcategoryIds.length) {
       try {
         const { data: attributes } = await getSupabaseClient().from('subcategory_attributes')
-          .select('subcategory_id,attribute_key').in('subcategory_id', subcategoryIds);
-        for (const attribute of attributes || []) {
-          if (typeof attribute.subcategory_id !== 'string' || typeof attribute.attribute_key !== 'string') continue;
-          attributesBySubcategory.set(attribute.subcategory_id, [
-            ...(attributesBySubcategory.get(attribute.subcategory_id) || []),
-            attribute.attribute_key,
-          ]);
+          .select('subcategory_id,attribute_key,is_active').in('subcategory_id', subcategoryIds).eq('is_active', true);
+        for (const [subcategoryId, keys] of groupActiveSubcategoryAttributes(attributes || [])) {
+          attributesBySubcategory.set(subcategoryId, keys);
         }
       } catch {
         // Keep product detail usable if public capability metadata is unavailable.
