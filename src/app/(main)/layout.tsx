@@ -13,16 +13,17 @@ export default function MainGroupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
+  const currentPath = usePathname();
+  const pathname = currentPath.replace(/\/+$/, '') || '/';
   const router = useRouter();
   const { user, loading } = useAuth();
   const requiresAccount = pathname === '/favorites' || pathname === '/my-rentals' || pathname.startsWith('/my-rentals/') || pathname === '/provider-onboarding';
   useEffect(() => {
     if (!loading && requiresAccount && !user) {
-      const next = `${pathname}${window.location.search}`;
+      const next = `${currentPath}${window.location.search}`;
       router.replace(`/login?next=${encodeURIComponent(next)}`);
     }
-  }, [loading, pathname, requiresAccount, router, user]);
+  }, [currentPath, loading, pathname, requiresAccount, router, user]);
   const hideAppHeader =
     pathname === '/' ? !user : isWaitlistMarketingPath(pathname);
 
