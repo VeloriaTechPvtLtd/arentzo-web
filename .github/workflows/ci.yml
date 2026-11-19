@@ -2,10 +2,10 @@ name: Web CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, dev, prod]
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [main]
+    branches: [main, dev, prod]
 
 permissions:
   contents: read
