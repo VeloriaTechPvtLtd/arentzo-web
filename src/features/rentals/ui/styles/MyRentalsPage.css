@@ -220,3 +220,4 @@
     transform: translateY(-2px);
     box-shadow: var(--shadow);
 }
+@media (max-width: 767px) { .my-rentals-page { padding-bottom: 5.5rem; } }

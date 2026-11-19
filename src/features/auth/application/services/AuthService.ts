@@ -21,9 +21,9 @@ export class AuthService {
         return this.authPort.verifyOtp(dto.email, dto.otp);
     }
 
-    async signUp(email: string, name: string): Promise<void> {
-         if (!email || !name) throw new AuthValidationError('Email and Name are required');
-         return this.authPort.signUp(email, name);
+    async signUp(email: string, password: string, name: string): Promise<Session | null> {
+         if (!email || !name || !password) throw new AuthValidationError('Name, email, and password are required');
+         return this.authPort.signUp(email, password, name);
     }
 
     async forgotPassword(email: string): Promise<void> {
@@ -41,11 +41,25 @@ export class AuthService {
         return this.authPort.resetPassword(email, otp, password);
     }
 
+    async updatePassword(password: string): Promise<void> {
+        if (!password) throw new AuthValidationError('Password is required');
+        return this.authPort.updatePassword(password);
+    }
+
     async signOut(): Promise<void> {
         return this.authPort.signOut();
     }
 
     async getSession(): Promise<Session | null> {
         return this.authPort.getSession();
+    }
+
+    subscribeToAuthChanges(listener: (session: Session | null) => void): () => void {
+        return this.authPort.subscribeToAuthChanges(listener);
+    }
+
+    async completeAuthCallback(code: string): Promise<Session> {
+        if (!code) throw new AuthValidationError('Authentication code is required');
+        return this.authPort.completeAuthCallback(code);
     }
 }

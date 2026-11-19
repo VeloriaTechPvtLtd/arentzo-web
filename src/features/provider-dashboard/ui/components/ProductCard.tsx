@@ -16,7 +16,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: 'INR',
+            currency: product.currency || 'INR',
             maximumFractionDigits: 0
         }).format(amount);
     };
@@ -64,7 +64,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
 
                 <div className="product-stats-bar">
                     <div className="product-price-stock">
-                        <p className="product-price">{formatCurrency(product.price)}</p>
+                        <p className="product-price">{formatCurrency(product.price)} / day</p>
                         <div className="product-stock-tag">
                             <span className="stock-label">Stock:</span>
                             <span className="stock-value">{product.stock} Units</span>
@@ -73,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
                 </div>
 
                 <div className="product-card-footer">
-                    <button className="edit-action-btn">Edit Details</button>
+                    <button className="edit-action-btn" disabled>View details</button>
                 </div>
             </div>
         </div>

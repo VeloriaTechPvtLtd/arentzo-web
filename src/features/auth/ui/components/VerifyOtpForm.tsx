@@ -62,8 +62,8 @@ export const VerifyOtpForm: React.FC<VerifyOtpFormProps> = ({ email, onSuccess }
         try {
             await verifyOtp(email, fullOtp);
             onSuccess();
-        } catch (err: any) {
-            setError(err.message || 'The OTP you entered is incorrect. Please try again.');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'The OTP you entered is incorrect. Please try again.');
         }
     };
 

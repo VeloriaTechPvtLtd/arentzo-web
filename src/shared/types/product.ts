@@ -3,6 +3,7 @@ export interface Product {
     name: string;
     image: string;
     price: number;
+    currency?: string;
     originalPrice?: number;
     discount?: number;
     rating: number;
@@ -18,6 +19,7 @@ export interface Product {
     specifications?: Specification[];
     overview?: string;
     terms?: RentalTerm[];
+    additionalChargeDisclosures?: Array<{ key: string; label: string; displayValue: string }>;
     reviews?: Review[];
     // Additional fields from original shared/product.ts if needed
     brand?: string;

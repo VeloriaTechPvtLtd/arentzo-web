@@ -3,6 +3,16 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Shared motion scale mirrors the mobile theme source. */
+  --motion-instant: 0ms;
+  --motion-fast: 150ms;
+  --motion-standard: 300ms;
+  --motion-slow: 500ms;
+  --motion-expressive: 750ms;
+  /* Existing workflow timings retained while feature styles migrate. */
+  --motion-selection-change: 200ms;
+  --motion-calendar-navigation: 280ms;
+
   --background: oklch(0.9856 0.0084 56.3169);
   --foreground: oklch(0.3353 0.0132 2.7676);
   --card: oklch(1.0000 0 0);
@@ -200,5 +210,16 @@
     padding: 0;
     font-family: var(--font-sans);
     letter-spacing: var(--tracking-normal);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

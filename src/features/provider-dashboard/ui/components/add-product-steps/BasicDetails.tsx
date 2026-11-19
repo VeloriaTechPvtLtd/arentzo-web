@@ -1,15 +1,16 @@
 import React from 'react';
 import { Search, ChevronDown, Edit2 } from 'lucide-react';
+import type { ProductDraftFields } from '../AddProductForm';
 
 interface BasicDetailsProps {
     data: {
-        categoryName: string;
-        categoryImage: string;
-        subcategoryName: string;
-        subcategoryImage: string;
+        categoryName?: string;
+        categoryImage?: string;
+        subcategoryName?: string;
+        subcategoryImage?: string;
     };
-    form: any;
-    setForm: (form: any) => void;
+    form: ProductDraftFields;
+    setForm: React.Dispatch<React.SetStateAction<ProductDraftFields>>;
     onNext: () => void;
     onEditCategory: () => void;
 }

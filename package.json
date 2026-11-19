@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "test:cart-storage": "node --test tests/cart-storage.test.mjs",
+    "test:additional-charge-disclosure": "node --test tests/additional-charge-disclosure.test.mjs",
+    "test:request-timeout": "node --test tests/request-with-timeout.test.mjs",
     "build": "next build",
     "build:dev": "next build",
     "build:stage": "next build",
@@ -13,7 +16,9 @@
     "lint": "eslint .",
     "deploy:dev": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
     "deploy:stage": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
-    "deploy:prod": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'"
+    "deploy:prod": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
+    "test:responsive": "node --test tests/responsive-smoke.test.mjs",
+    "test:active-attribute-capabilities": "node --test tests/active-subcategory-attributes.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.11",
@@ -46,6 +51,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "firebase-tools": "^15.4.0",
     "globals": "^16.5.0",
+    "playwright": "1.62.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",

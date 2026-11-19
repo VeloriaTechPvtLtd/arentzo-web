@@ -64,8 +64,8 @@ export const ResetPasswordOtpForm: React.FC<ResetPasswordOtpFormProps> = ({ emai
             } else {
                 setError('Invalid code. Please try again.');
             }
-        } catch (err: any) {
-            setError(err.message || 'Verification failed');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Verification failed');
         }
     };
 

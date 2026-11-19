@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Heart, Star, Plus, Minus } from 'lucide-react';
+import { Heart, Plus, Minus } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import type { Product } from '../../types/product';
 import { useRouter } from 'next/navigation';
@@ -30,10 +30,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: 'INR',
+            currency: product.currency || 'INR',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
-        }).format(price / 100);
+        }).format(price);
     };
 
     const handleCardClick = () => {
@@ -45,28 +45,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         action();
     };
 
-    const renderStars = (rating: number) => {
-        return (
-            <div className="flex items-center gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                    <Star
-                        key={i}
-                        size={variant === 'compact' ? 10 : 12}
-                        className={cn(
-                            "transition-colors",
-                            i < Math.floor(rating)
-                                ? "fill-[var(--chart-2)] text-[var(--chart-2)]"
-                                : "text-[var(--muted-foreground)]/30"
-                        )}
-                    />
-                ))}
-            </div>
-        );
-    };
-
     return (
         <div
             onClick={handleCardClick}
+            onKeyDown={(event) => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); handleCardClick(); } }}
+            role="link"
+            tabIndex={0}
+            aria-label={`View ${product.name}`}
             className={cn(
                 "group relative bg-[var(--card)] rounded-[var(--radius)] border border-[var(--border)]",
                 "transition-all duration-300 ease-out hover:shadow-xl hover:border-[var(--primary)]/30",
@@ -75,7 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
         >
             {/* Image Section */}
-            <div className="relative aspect-[4/5] overflow-hidden bg-[var(--muted)]/30">
+            <div className={cn("relative overflow-hidden bg-[var(--muted)]/30", variant === 'compact' ? 'aspect-square' : 'aspect-[4/5]')}>
                 <img
                     src={product.image}
                     alt={product.name}
@@ -100,6 +85,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 {/* Favorite Toggle */}
                 <button
                     onClick={(e) => handleAction(e, () => onFavoriteToggle?.(product.id))}
+                    aria-label={`${product.isFavorite || product.isWishlisted ? 'Remove' : 'Add'} ${product.name} ${product.isFavorite || product.isWishlisted ? 'from' : 'to'} favorites`}
+                    aria-pressed={Boolean(product.isFavorite || product.isWishlisted)}
                     className={cn(
                         "absolute top-2 right-2 p-2 rounded-full backdrop-blur-md transition-all duration-300",
                         "bg-[var(--card)]/80 border border-[var(--border)] group/fav",
@@ -137,14 +124,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                         <span className="text-[10px] font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
-                            {product.brand || 'Premium Quality'}
+                            {product.brand || 'Rental listing'}
                         </span>
-                        <div className="flex items-center gap-1">
-                            {renderStars(product.rating)}
-                            <span className="text-[10px] text-[var(--muted-foreground)] font-semibold">
-                                ({product.reviewCount})
-                            </span>
-                        </div>
+                        {product.reviewCount > 0 && <span className="text-[10px] text-[var(--muted-foreground)] font-semibold">{product.rating.toFixed(1)} · {product.reviewCount} reviews</span>}
                     </div>
                     <h3 className="text-sm font-semibold text-[var(--foreground)] line-clamp-2 min-h-[2.5rem] leading-tight group-hover:text-[var(--primary)] transition-colors">
                         {product.name}
@@ -155,11 +137,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <div className="mt-auto flex items-end justify-between">
                     <div className="flex flex-col">
                         <span className="text-lg font-bold text-[var(--foreground)] flex items-baseline leading-none">
-                            {formatPrice(product.price)}
+                            {formatPrice(product.price)} <span className="text-xs font-medium text-muted-foreground">/ day</span>
                         </span>
                         {product.originalPrice && (
                             <span className="text-[10px] text-[var(--muted-foreground)] line-through">
-                                {formatPrice(product.originalPrice)}
+                                {formatPrice(product.originalPrice)} / day
                             </span>
                         )}
                     </div>

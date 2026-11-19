@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/shared/infrastructure/supabase/client';
 
 const STORAGE_KEY = 'arentzo-waitlist-emails';
 
@@ -44,7 +44,7 @@ export async function submitWaitlistEmail(
   }
 
   try {
-    const { error } = await supabase.from('waitlist_signups').insert({
+  const { error } = await getSupabaseClient().from('waitlist_signups').insert({
       email: normalized,
       source,
     });

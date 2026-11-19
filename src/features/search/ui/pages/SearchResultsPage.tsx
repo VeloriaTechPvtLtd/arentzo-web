@@ -1,202 +1,117 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Search as SearchIcon, X } from 'lucide-react';
 import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { ProductCard } from '../../../../shared/components/ui/ProductCard';
-import { FilterBar } from '../components/FilterBar';
 import { RecentSearches } from '../components/RecentSearches';
-import { ContinueBrowsing } from '../components/ContinueBrowsing';
-import { PriceDrop } from '../components/PriceDrop';
-import type { Product } from '../../../customer-home/domain/entities/types';
 import { useCart } from '../../../../shared/hooks/useCart';
 import { useDrawer } from '../../../../shared/hooks/useDrawer';
 import { FloatingCart } from '../../../../shared/components/cart/FloatingCart';
+import { useCatalogProducts } from '@/features/catalog/ui/hooks/useCatalogProducts';
+import { useCatalogCategories } from '@/features/catalog/ui/hooks/useCatalogCategories';
+import type { Product } from '@/shared/types/product';
 import '../styles/Search.css';
 
-// Mock Data
-const MOCK_PRODUCTS = [
-    {
-        id: '1',
-        name: 'White King Size Bed with Premium Velvet Headboard',
-        image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=300',
-        rating: 5,
-        reviewCount: 142,
-        price: 3299900,
-        isImported: true,
-        isFavorite: false,
-    },
-    {
-        id: '2',
-        name: 'Single Bed with soft padding and built-in storage',
-        image: 'https://images.unsplash.com/photo-1505693416388-b25c5396650f?auto=format&fit=crop&q=80&w=300',
-        rating: 5,
-        reviewCount: 122,
-        price: 2599900,
-        isImported: true,
-        isFavorite: false,
-    },
-    {
-        id: '3',
-        name: 'Double Bed With long-lasting teak wood finish',
-        image: 'https://images.unsplash.com/photo-1522771753062-588773b18d87?auto=format&fit=crop&q=80&w=300',
-        rating: 5,
-        reviewCount: 212,
-        price: 3599900,
-        isImported: true,
-        isFavorite: true,
-    },
-    {
-        id: '4',
-        name: 'Modern double Bed with minimalistic design',
-        image: 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&q=80&w=300',
-        rating: 5,
-        reviewCount: 142,
-        price: 3399900,
-        isImported: false,
-        isFavorite: true,
-    },
-    {
-        id: '5',
-        name: 'White fabric Bed with soft cushion and elegant lines',
-        image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=300',
-        rating: 5,
-        reviewCount: 242,
-        price: 4499900,
-        isImported: true,
-        isFavorite: false,
-    },
-    {
-        id: '6',
-        name: 'Premium Off-White Bed with contemporary style',
-        image: 'https://images.unsplash.com/photo-1616594039964-ea8082018eac?auto=format&fit=crop&q=80&w=300',
-        rating: 5,
-        reviewCount: 132,
-        price: 3299900,
-        isImported: false,
-        isFavorite: false,
-    },
-];
-
-const MOCK_RECENT_SEARCHES = [
-    { id: '1', label: 'White Bed' },
-    { id: '2', label: 'Recliner Sofa', icon: '🛋️' },
-    { id: '3', label: 'Beds', icon: '🛏️' },
-];
-
-const MOCK_BROWSING_ITEMS = [
-    {
-        id: '1',
-        title: 'Premium Chairs',
-        productCount: 120,
-        image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=300&h=300',
-        viewedAt: '4 Days Ago'
-    }
-];
+type RecentSearch = { id: string; label: string };
 
 export const SearchResultsPage: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
-    const showResults = searchValue.length > 0;
-
-    const { items, totalItems } = useCart();
+    const query = searchParams.get('q') || '';
+    const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
+    const [sortOrder, setSortOrder] = useState<'relevance' | 'price-asc' | 'price-desc' | 'rating'>('relevance');
+    const { products, loading, error, toggleFavorite } = useCatalogProducts();
+    const { categories } = useCatalogCategories();
+    const { items: cartItems, totalItems, addToCart, updateQuantity } = useCart();
     const { openCheckout } = useDrawer();
 
-    const replaceQuery = (next: URLSearchParams) => {
-        const qs = next.toString();
-        router.replace(qs ? `${pathname}?${qs}` : pathname);
+    const recordRecentSearch = (value: string) => {
+        const normalized = value.trim();
+        if (normalized.length < 2) return;
+        const updated = [{ id: normalized.toLowerCase(), label: normalized }, ...recentSearches.filter((entry) => entry.label.toLowerCase() !== normalized.toLowerCase())].slice(0, 8);
+        setRecentSearches(updated);
     };
 
-    const handleSearchChange = (value: string) => {
-        setSearchValue(value);
-        const newParams = new URLSearchParams(searchParams.toString());
-        if (value) {
-            newParams.set('q', value);
-        } else {
-            newParams.delete('q');
-        }
-        replaceQuery(newParams);
+    const results = useMemo(() => {
+        const normalized = query.trim().toLocaleLowerCase();
+        if (!normalized) return [];
+        const matches = products.filter((product) => {
+            const categoryName = categories.find((category) => category.id === product.category)?.name || '';
+            return `${product.name} ${product.brand || ''} ${categoryName} ${product.overview || ''}`.toLocaleLowerCase().includes(normalized);
+        });
+        if (sortOrder === 'price-asc') return matches.sort((a, b) => a.price - b.price);
+        if (sortOrder === 'price-desc') return matches.sort((a, b) => b.price - a.price);
+        if (sortOrder === 'rating') return matches.sort((a, b) => b.rating - a.rating);
+        return matches;
+    }, [categories, products, query, sortOrder]);
+
+    const setQuery = (value: string) => {
+        const next = new URLSearchParams(searchParams.toString());
+        if (value.trim()) next.set('q', value);
+        else next.delete('q');
+        const suffix = next.toString();
+        router.replace(suffix ? `${pathname}?${suffix}` : pathname, { scroll: false });
     };
 
-    const handleClearSearch = () => {
-        setSearchValue('');
-        const newParams = new URLSearchParams(searchParams.toString());
-        newParams.delete('q');
-        replaceQuery(newParams);
+    const clearHistory = () => {
+        setRecentSearches([]);
     };
 
     const renderSearchInput = () => (
         <div className="search-header-input">
             <div className="search-header-input__field">
-                {!searchValue && <SearchIcon className="search-header-input__icon" size={18} />}
+                {!query && <SearchIcon className="search-header-input__icon" size={18} />}
                 <input
-                    type="text"
-                    value={searchValue}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    placeholder="Search for furniture, mattresses..."
+                    type="search"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    onKeyDown={(event) => { if (event.key === 'Enter') recordRecentSearch(query); }}
+                    placeholder="Search current rental listings"
                     className="search-header-input__input"
-                    autoFocus
+                    aria-label="Search listings"
                 />
-                {searchValue && (
-                    <button
-                        onClick={handleClearSearch}
-                        className="search-header-input__clear"
-                        aria-label="Clear search"
-                    >
-                        <X size={18} />
-                    </button>
-                )}
+                {query && <button type="button" onClick={() => setQuery('')} className="search-header-input__clear" aria-label="Clear search"><X size={18} /></button>}
             </div>
         </div>
     );
 
     return (
         <div className="search-results-page">
-            <BackHeader
-                title=""
-                rightElement={renderSearchInput()}
-                onBack={() => router.back()}
-            />
-
+            <BackHeader title="" rightElement={renderSearchInput()} onBack={() => router.back()} />
             <main className="search-results-page__content">
-                {!showResults ? (
-                    <div className="search-results-page__suggestions">
-                        <RecentSearches
-                            searches={MOCK_RECENT_SEARCHES}
-                            onSelect={(s) => handleSearchChange(s.label)}
-                            onClear={() => { }}
-                        />
-                        <ContinueBrowsing items={MOCK_BROWSING_ITEMS} />
-                        <PriceDrop items={[]} />
-                    </div>
+                {!query.trim() ? (
+                    <section className="search-results-page__suggestions" aria-label="Recent searches">
+                        <RecentSearches searches={recentSearches} onSelect={(item) => setQuery(item.label)} onClear={clearHistory} />
+                        <p className="px-4 py-8 text-center text-sm text-muted-foreground">Search current rental listings by name, brand, or category.</p>
+                    </section>
                 ) : (
-                    <div className="search-results-page__results">
-                        <div className="search-results-page__filter-bar">
-                            <FilterBar />
+                    <section className="search-results-page__results" aria-live="polite">
+                        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Results for <span className="font-bold normal-case text-primary">“{query}”</span></p>
+                            <label className="flex items-center gap-2 text-sm text-muted-foreground">Sort by
+                                <select aria-label="Sort search results" value={sortOrder} onChange={(event) => setSortOrder(event.target.value as typeof sortOrder)} className="rounded-lg border border-border bg-background px-3 py-2 text-foreground">
+                                    <option value="relevance">Relevance</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="rating">Rating</option>
+                                </select>
+                            </label>
                         </div>
-
-                        <div className="search-results-page__grid">
-                            {MOCK_PRODUCTS.map((product) => (
-                                <ProductCard key={product.id} product={product as Product} />
-                            ))}
-                        </div>
-                    </div>
+                        {loading ? <p role="status" className="px-4 py-8 text-center text-sm text-muted-foreground">Loading current listings…</p> : null}
+                        {error ? <p role="alert" className="px-4 py-8 text-center text-sm text-destructive">Current listings could not be loaded. Try again later.</p> : null}
+                        {!loading && !error && results.length > 0 ? (
+                            <div className="grid grid-cols-2 gap-4 px-4 pb-20 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                                {results.map((product) => {
+                                    const cartQuantity = cartItems.find((item) => item.product.id === product.id)?.quantity || 0;
+                                    return <ProductCard key={product.id} product={{ ...product, quantity: cartQuantity } as Product} onFavoriteToggle={toggleFavorite} onAddToCart={(id) => { const match = products.find((item) => item.id === id); if (match?.isAvailable) addToCart(match); }} onQuantityChange={updateQuantity} />;
+                                })}
+                            </div>
+                        ) : null}
+                        {!loading && !error && results.length === 0 ? <div className="px-6 py-20 text-center"><h2 className="text-lg font-semibold">No current listings found</h2><p className="mt-2 text-sm text-muted-foreground">Try another search term or browse all available rentals.</p><button type="button" onClick={() => router.push('/browse')} className="mt-5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Browse rentals</button></div> : null}
+                    </section>
                 )}
             </main>
-
-            {items.length > 0 && (
-                <FloatingCart
-                    items={items.map(item => ({
-                        id: item.id,
-                        image: item.product.image
-                    }))}
-                    totalItems={totalItems}
-                    onViewCart={openCheckout}
-                />
-            )}
+            {cartItems.length > 0 ? <FloatingCart items={cartItems.map((item) => ({ id: item.id, image: item.product.image }))} totalItems={totalItems} onViewCart={openCheckout} /> : null}
         </div>
     );
 };

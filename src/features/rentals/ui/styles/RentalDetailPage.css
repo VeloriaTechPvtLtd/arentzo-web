@@ -310,3 +310,4 @@
     background: var(--destructive);
     color: var(--destructive-foreground);
 }
+@media (max-width: 767px) { .rental-detail-page { padding-bottom: 5.5rem; } }

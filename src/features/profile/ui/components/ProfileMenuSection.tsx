@@ -16,10 +16,12 @@ export const ProfileMenuSection: React.FC<ProfileMenuSectionProps> = ({ section 
                         key={item.id}
                         className="profile-menu-item"
                         onClick={item.onClick}
+                        disabled={item.disabled}
+                        aria-disabled={item.disabled || undefined}
                     >
                         <span className="profile-menu-item__icon">{item.icon}</span>
                         <span className="profile-menu-item__label">{item.label}</span>
-                        {item.hasArrow !== false && (
+                        {item.disabled ? <span className="profile-menu-item__unavailable">Unavailable</span> : item.hasArrow !== false && (
                             <span className="profile-menu-item__arrow">
                                 <ChevronRight size={20} />
                             </span>

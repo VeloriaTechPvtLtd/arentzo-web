@@ -1,9 +1,10 @@
 import React from 'react';
 import { CheckCircle2, MapPin, Calendar, CreditCard, ShieldCheck } from 'lucide-react';
+import type { ProductDraftFields } from '../AddProductForm';
 
 interface ReviewPublishProps {
     onPublish: () => void;
-    data: any;
+    data: { form: ProductDraftFields; categoryName?: string; subcategoryName?: string; subcategoryImage?: string; rates?: { price?: number } };
 }
 
 export const ReviewPublish: React.FC<ReviewPublishProps> = ({ onPublish, data }) => {
@@ -27,9 +28,9 @@ export const ReviewPublish: React.FC<ReviewPublishProps> = ({ onPublish, data })
                     <div className="product-summary mt-3">
                         <img src={data.subcategoryImage} alt="Product" className="summary-img" />
                         <div className="summary-info">
-                            <h3 className="font-700">{data.form.title || 'Land Rover Sport'}</h3>
+                            <h3 className="font-700">{data.form.title || 'Untitled listing'}</h3>
                             <p className="text-sm text-muted-foreground">{data.categoryName} • {data.subcategoryName}</p>
-                            <span className="price-tag mt-2">₹{data.rates?.price || '2,500'}/day</span>
+                            {data.rates?.price ? <span className="price-tag mt-2">₹{data.rates.price}/day</span> : null}
                         </div>
                     </div>
                 </div>
@@ -43,8 +44,8 @@ export const ReviewPublish: React.FC<ReviewPublishProps> = ({ onPublish, data })
                     <div className="icon-detail-row mt-3">
                         <MapPin size={18} className="text-primary" />
                         <div>
-                            <p className="font-600">123 Main St, New York</p>
-                            <p className="text-xs text-muted-foreground">Self Pickup & Provider Delivery Available</p>
+                        <p className="font-600">No saved location</p>
+                        <p className="text-xs text-muted-foreground">Location details are not yet connected.</p>
                         </div>
                     </div>
                 </div>
@@ -60,14 +61,14 @@ export const ReviewPublish: React.FC<ReviewPublishProps> = ({ onPublish, data })
                             <CreditCard size={18} className="text-primary" />
                             <div>
                                 <p className="text-xs text-muted-foreground">Security Deposit</p>
-                                <p className="font-600">₹5,000</p>
+                                <p className="font-600">Not configured</p>
                             </div>
                         </div>
                         <div className="icon-detail-row">
                             <ShieldCheck size={18} className="text-primary" />
                             <div>
                                 <p className="text-xs text-muted-foreground">Terms</p>
-                                <p className="font-600">Standard, No Smoking</p>
+                                <p className="font-600">Not configured</p>
                             </div>
                         </div>
                     </div>
@@ -82,8 +83,8 @@ export const ReviewPublish: React.FC<ReviewPublishProps> = ({ onPublish, data })
                     <div className="icon-detail-row mt-3">
                         <Calendar size={18} className="text-primary" />
                         <div>
-                            <p className="font-600">Instantly Bookable</p>
-                            <p className="text-xs text-muted-foreground">Oct 2025 Calendar Configured</p>
+                            <p className="font-600">Not configured</p>
+                            <p className="text-xs text-muted-foreground">Availability settings are not connected.</p>
                         </div>
                     </div>
                 </div>

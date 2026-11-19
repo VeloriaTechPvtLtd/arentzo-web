@@ -29,7 +29,7 @@ export const RentalCard: React.FC<RentalCardProps> = ({ rental, onClick }) => {
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: 'INR',
+            currency: rental.currency || 'INR',
             maximumFractionDigits: 0
         }).format(amount);
     };
