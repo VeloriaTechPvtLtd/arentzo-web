@@ -28,7 +28,7 @@ export const MyRentalsPage: React.FC = () => {
     ];
 
     const handleRentalClick = (rentalId: string) => {
-        router.push(`/my-rentals/${rentalId}`);
+        router.push(`/my-rentals/?id=${encodeURIComponent(rentalId)}`);
     };
 
     return (

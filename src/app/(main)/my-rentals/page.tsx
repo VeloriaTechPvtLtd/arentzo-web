@@ -1,8 +1,13 @@
+import { Suspense } from 'react';
 import { createPageMetadata, PAGE_SEO } from '@/lib/seo';
-import { MyRentalsPage } from '@/features/rentals/ui/pages/MyRentalsPage';
+import { MyRentalsRoute } from './MyRentalsRoute';
 
 export const metadata = createPageMetadata(PAGE_SEO.myRentals);
 
 export default function Page() {
-  return <MyRentalsPage />;
+  return (
+    <Suspense fallback={<main className="min-h-screen" aria-busy="true" />}>
+      <MyRentalsRoute />
+    </Suspense>
+  );
 }
