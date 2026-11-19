@@ -1,0 +1,145 @@
+name: Development CI/CD
+
+on:
+  pull_request:
+    branches: [dev]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [dev]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dev-ci-cd-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Lint, tests, and static export
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      SUPABASE_URL: https://ci.invalid
+      SUPABASE_ANON_KEY: ci-public-anon-placeholder
+      SITE_URL: http://127.0.0.1:3005
+      RESPONSIVE_ARTIFACT_DIR: /tmp/arentzo-responsive-evidence
+      CI: true
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run deterministic unit tests
+        run: npm run test:unit
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build Development static export
+        run: npm run build:dev
+
+      - name: Check responsive layouts on temporary CI server
+        run: npx --no-install firebase emulators:exec --only hosting --project demo-arentzo "npm run test:responsive && npm run test:hosting-routes"
+        env:
+          RESPONSIVE_BASE_URL: http://127.0.0.1:5105
+
+      - name: Upload browser screenshots after failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: responsive-browser-evidence-${{ github.run_id }}
+          path: /tmp/arentzo-responsive-evidence
+          if-no-files-found: ignore
+          retention-days: 7
+
+  deploy:
+    name: Deploy Development
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    environment:
+      name: dev
+      url: ${{ vars.SITE_URL }}
+    concurrency:
+      group: deploy-dev
+      cancel-in-progress: false
+    env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+      SITE_URL: ${{ vars.SITE_URL }}
+      DEPLOY_ENVIRONMENT: dev
+      FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+    steps:
+      - name: Check out verified commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Validate deployment configuration
+        run: node .github/scripts/prepare-deployment.mjs
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Authenticate Firebase deployment
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          node --input-type=module <<'JS'
+          import { writeFileSync, appendFileSync } from 'node:fs';
+          const credentials = process.env.FIREBASE_SERVICE_ACCOUNT;
+          if (!credentials) throw new Error('Missing development secret: FIREBASE_SERVICE_ACCOUNT');
+          const parsed = JSON.parse(credentials);
+          if (parsed.project_id !== process.env.FIREBASE_PROJECT_ID) {
+            throw new Error('Firebase credential project does not match FIREBASE_PROJECT_ID');
+          }
+          const file = `${process.env.RUNNER_TEMP}/firebase-service-account.json`;
+          writeFileSync(file, credentials, { mode: 0o600 });
+          appendFileSync(process.env.GITHUB_ENV, `GOOGLE_APPLICATION_CREDENTIALS=${file}\n`);
+          JS
+
+      - name: Write deployment identity
+        run: node .github/scripts/write-deployment.mjs
+
+      - name: Build configured Development static export
+        run: npm run build:dev
+
+      - name: Verify configured export against Firebase Hosting emulator
+        run: npx --no-install firebase emulators:exec --only hosting --project demo-arentzo "npm run test:responsive && npm run test:hosting-routes"
+        env:
+          RESPONSIVE_BASE_URL: http://127.0.0.1:5105
+          CI: true
+
+      - name: Deploy verified export to Firebase Hosting
+        run: npx --no-install firebase deploy --only hosting --project "$FIREBASE_PROJECT_ID" --non-interactive
+
+      - name: Remove deployment credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/firebase-service-account.json"
+
+      - name: Verify deployed commit and routes
+        run: node .github/scripts/check-deployment.mjs

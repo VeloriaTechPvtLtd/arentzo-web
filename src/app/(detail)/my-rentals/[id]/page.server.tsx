@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default function RentalDetailRoute() {
-  return <RentalDetailPage />;
+export default async function RentalDetailRoute({ params }: Props) {
+  const { id } = await params;
+  return <RentalDetailPage rentalId={id} />;
 }
