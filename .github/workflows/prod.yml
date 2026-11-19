@@ -1,0 +1,143 @@
+name: Production CI/CD
+
+on:
+  pull_request:
+    branches: [prod]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [prod]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prod-ci-cd-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Lint, tests, and production build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: prod
+    env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+      SITE_URL: ${{ vars.SITE_URL }}
+      RESPONSIVE_ARTIFACT_DIR: /tmp/arentzo-responsive-evidence
+      CI: true
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Require GitHub Actions application variables
+        run: |
+          node --input-type=module <<'JS'
+          for (const name of ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'SITE_URL']) {
+            if (!process.env[name]?.trim()) throw new Error(`Missing GitHub Actions variable: ${name}`);
+          }
+          JS
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run deterministic unit tests
+        run: npm run test:unit
+
+      - name: Install pinned headless Chromium
+        timeout-minutes: 5
+        run: npx playwright install --only-shell chromium
+
+      - name: Build standalone Next.js server
+        run: npm run build
+
+      - name: Check responsive layouts on temporary CI server
+        run: bash .github/scripts/check-responsive.sh
+
+      - name: Upload browser screenshots after failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: responsive-browser-evidence-${{ github.run_id }}
+          path: /tmp/arentzo-responsive-evidence
+          if-no-files-found: ignore
+          retention-days: 7
+
+  deploy:
+    name: Deploy Production
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/prod'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    environment:
+      name: prod
+      url: ${{ vars.SITE_URL }}
+    concurrency:
+      group: deploy-prod
+      cancel-in-progress: false
+    env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+      SITE_URL: ${{ vars.SITE_URL }}
+      DEPLOY_ENVIRONMENT: prod
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Check out verified commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Validate deployment configuration
+        run: node .github/scripts/prepare-deployment.mjs
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Require Vercel authentication
+        run: |
+          test -n "$VERCEL_TOKEN" || { echo 'Missing production secret: VERCEL_TOKEN'; exit 1; }
+
+      - name: Pull Vercel production settings
+        run: npm exec --yes --package=vercel@66.2.0 -- vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Apply GitHub Production application variables
+        run: |
+          node --input-type=module <<'JS'
+          import { appendFileSync } from 'node:fs';
+          const names = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'SITE_URL'];
+          const entries = names.map(name => `${name}=${JSON.stringify(process.env[name])}`).join('\n');
+          appendFileSync('.vercel/.env.production.local', `\n${entries}\n`);
+          JS
+
+      - name: Write deployment identity
+        run: node .github/scripts/write-deployment.mjs
+
+      - name: Build Vercel production artifact
+        run: npm exec --yes --package=vercel@66.2.0 -- vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy Vercel production artifact
+        run: |
+          npm exec --yes --package=vercel@66.2.0 -- vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" \
+            --env SUPABASE_URL="$SUPABASE_URL" --env SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" --env SITE_URL="$SITE_URL"
+
+      - name: Verify deployed commit and routes
+        run: node .github/scripts/check-deployment.mjs

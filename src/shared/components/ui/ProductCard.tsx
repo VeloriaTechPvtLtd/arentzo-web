@@ -37,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     };
 
     const handleCardClick = () => {
-        router.push(`/product/${product.id}`);
+    router.push(`/product/?id=${encodeURIComponent(product.id)}`);
     };
 
     const handleAction = (e: React.MouseEvent, action: () => void) => {

@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Calendar, MapPin, Store, Clock, CreditCard } from 'lucide-react';
 import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { useCustomerRentals } from '../hooks/useCustomerRentals';
 import '../styles/RentalDetailPage.css';
 
-export const RentalDetailPage: React.FC = () => {
+export const RentalDetailPage: React.FC<{ rentalId: string }> = ({ rentalId }) => {
     const router = useRouter();
-    const { id } = useParams() as { id: string };
-    const { rentals, loading, error } = useCustomerRentals(id);
+    const { rentals, loading, error } = useCustomerRentals(rentalId);
     const rental = useMemo(() => rentals[0], [rentals]);
 
     if (loading) return <div className="rental-detail-page"><BackHeader title="Rental Details" /><p role="status">Loading rental…</p></div>;
