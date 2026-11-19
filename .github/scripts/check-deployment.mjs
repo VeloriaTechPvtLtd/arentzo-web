@@ -17,10 +17,14 @@ for (let attempt = 0; attempt < 12; attempt++) {
   }
 }
 assert(verified);
-for (const path of ['/', '/browse/', '/login/', '/signup/', '/product/?id=qa-smoke', '/my-rentals/?id=qa-smoke', '/robots.txt', '/sitemap.xml', '/.well-known/assetlinks.json', '/.well-known/apple-app-site-association']) {
+for (const path of ['/', '/browse/', '/login/', '/signup/', '/about-us/', '/contact-us/', '/product/?id=qa-smoke', '/my-rentals/?id=qa-smoke', '/robots.txt', '/sitemap.xml', '/.well-known/assetlinks.json', '/.well-known/apple-app-site-association']) {
   const response = await fetch(new URL(path, origin), { signal: AbortSignal.timeout(20000) });
   assert(response.ok, `${path} returned ${response.status}`);
   if (path.startsWith('/.well-known/')) await response.json();
+  if (path === '/about-us/' || path === '/contact-us/') {
+    assert.match(response.headers.get('cache-control') ?? '', /no-transform/, `${path} must prevent CDN HTML rewriting`);
+    assert.doesNotMatch(await response.text(), /__cf_email__|data-cfemail/, `${path} contains rewritten React markup`);
+  }
   console.log(`PASS ${path}`);
 }
 console.log(`Verified ${environment} deployment at commit ${commit}`);

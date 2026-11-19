@@ -116,7 +116,13 @@ jobs:
         run: |
           test -n "$VERCEL_TOKEN" || { echo 'Missing production secret: VERCEL_TOKEN'; exit 1; }
 
+      - name: Resolve the exact Vercel project owner
+        id: vercel-project
+        run: node .github/scripts/resolve-vercel-project.mjs
+
       - name: Pull Vercel production settings
+        env:
+          VERCEL_ORG_ID: ${{ steps.vercel-project.outputs.org_id }}
         run: npm exec --yes --package=vercel@66.2.0 -- vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Apply GitHub Production application variables
@@ -132,9 +138,13 @@ jobs:
         run: node .github/scripts/write-deployment.mjs
 
       - name: Build Vercel production artifact
+        env:
+          VERCEL_ORG_ID: ${{ steps.vercel-project.outputs.org_id }}
         run: npm exec --yes --package=vercel@66.2.0 -- vercel build --prod --token="$VERCEL_TOKEN"
 
       - name: Deploy Vercel production artifact
+        env:
+          VERCEL_ORG_ID: ${{ steps.vercel-project.outputs.org_id }}
         run: |
           npm exec --yes --package=vercel@66.2.0 -- vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" \
             --env SUPABASE_URL="$SUPABASE_URL" --env SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" --env SITE_URL="$SITE_URL"
