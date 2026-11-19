@@ -55,6 +55,7 @@ export const WAITLIST_MARKETING_PATHS = [
 ] as const;
 
 export function isWaitlistMarketingPath(pathname: string): boolean {
+  pathname = pathname.replace(/\/+$/, '') || '/';
   if (WAITLIST_MARKETING_PATHS.includes(pathname as (typeof WAITLIST_MARKETING_PATHS)[number])) {
     return true;
   }
