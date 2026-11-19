@@ -34,7 +34,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
             <div className="product-image-section">
                 <img src={product.image} alt={product.name} className="product-image" />
                 <div className={`status-overlay ${product.status}`}>
-                    {getStatusLabel(product.status)}
+                    {getStatusLabel(product.sourceStatus || product.status)}
                 </div>
             </div>
 
@@ -64,7 +64,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
 
                 <div className="product-stats-bar">
                     <div className="product-price-stock">
-                        <p className="product-price">{formatCurrency(product.price)} / day</p>
+                        <p className="product-price">{product.hasDailyRate === false ? 'Daily rate not set' : `${formatCurrency(product.price)} / day`}</p>
                         <div className="product-stock-tag">
                             <span className="stock-label">Stock:</span>
                             <span className="stock-value">{product.stock} Units</span>
@@ -73,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
                 </div>
 
                 <div className="product-card-footer">
-                    <button className="edit-action-btn" disabled>View details</button>
+                    <button className="edit-action-btn" onClick={event => { event.stopPropagation(); onClick?.(); }}>View details</button>
                 </div>
             </div>
         </div>

@@ -58,6 +58,10 @@ export interface Review {
 }
 
 export interface CartItem {
+    saved?: boolean;
+    start?: string;
+    end?: string;
+    rentalType?: string;
     id: string;
     product: Product;
     quantity: number;

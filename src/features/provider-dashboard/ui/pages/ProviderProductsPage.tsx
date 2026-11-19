@@ -6,7 +6,6 @@ import {
     Filter,
     Plus
 } from 'lucide-react';
-import type { Product } from '../../infrastructure/api/productsMockData';
 import { useProviderFilters } from '../hooks/useProviderFilters';
 import { ProviderFilterModal, type FilterDefinition } from '../components/ProviderFilterModal';
 import { ProductCard } from '../components/ProductCard';
@@ -33,9 +32,10 @@ export const ProviderProductsPage: React.FC = () => {
         stockRange: { min: null, max: null } as { min: number | null; max: number | null }
     });
 
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const { items: products, loading, error } = useProviderProducts();
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const { items: products, loading, error, retry } = useProviderProducts();
 
+    const selectedProduct = !loading && !error ? products.find(p => p.id === selectedId) : undefined;
     const uniqueCategories = useMemo(() => Array.from(new Set(products.map(p => p.category))), [products]);
 
     const filterDefinitions: FilterDefinition[] = [
@@ -60,12 +60,7 @@ export const ProviderProductsPage: React.FC = () => {
             id: 'status',
             label: 'Status',
             type: 'checkbox',
-            options: [
-                { id: 'active', label: 'Active' },
-                { id: 'out_of_stock', label: 'Out of Stock' },
-                { id: 'draft', label: 'Draft' },
-                { id: 'archived', label: 'Archived' }
-            ]
+            options: Array.from(new Set(products.map(p => p.sourceStatus || p.status))).map(status => ({ id: status, label: status.replaceAll('_', ' ') }))
         },
         {
             id: 'priceRange',
@@ -90,7 +85,7 @@ export const ProviderProductsPage: React.FC = () => {
             product.category.toLowerCase().includes(searchQuery.toLowerCase());
 
         const matchesCategory = filters.categories.length === 0 || filters.categories.includes(product.category);
-        const matchesStatus = filters.status.length === 0 || filters.status.includes(product.status);
+        const matchesStatus = filters.status.length === 0 || filters.status.includes(product.sourceStatus || product.status);
         const matchesCondition = filters.condition.length === 0 || filters.condition.includes(product.condition);
 
         const matchesPrice =
@@ -138,21 +133,21 @@ export const ProviderProductsPage: React.FC = () => {
 
             {/* Product Grid View */}
             {loading ? <p role="status">Loading provider listings…</p> : null}
-            {error ? <p role="alert">We couldn’t load provider listings. Refresh and try again.</p> : null}
+            {error ? <div role="alert">We couldn’t load provider listings. <button onClick={retry}>Try again</button></div> : null}
             {!loading && !error ? <p role="status" className="mb-3 text-sm text-muted-foreground">Listing changes are disabled until provider-write workflows are verified.</p> : null}
             <div className="products-grid">
                 {!loading && !error ? filteredProducts.map((product) => (
                     <ProductCard
                         key={product.id}
                         product={product}
-                        onClick={() => setSelectedProduct(product)}
+                        onClick={() => setSelectedId(product.id)}
                     />
                 )) : null}
             </div>
 
             {!loading && !error && filteredProducts.length === 0 && (
                 <div className="no-results">
-                    <p>No products found matching your criteria.</p>
+                    <p>{products.length ? 'No listings match these filters.' : 'You have no saved listings yet.'}</p>
                     <button onClick={resetFilters} className="text-primary hover:underline mt-2">
                         Clear all filters
                     </button>
@@ -171,7 +166,7 @@ export const ProviderProductsPage: React.FC = () => {
             {selectedProduct && (
                 <ProductDetailsDrawer
                     product={selectedProduct}
-                    onClose={() => setSelectedProduct(null)}
+                    onClose={() => setSelectedId(null)}
                 />
             )}
         </div>
