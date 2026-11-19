@@ -150,3 +150,23 @@ function assertSafeRentalReturnPath(page, origin) {
   assert.match(next, /utm_source=legacy/);
   assert.doesNotMatch(next, /evil\.example/);
 }
+
+
+test('trailing-slash protected routes redirect signed-out visitors and marketing pages hydrate cleanly', async () => {
+  const page = await newFixturePage(viewports[0]);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  try {
+    for (const path of ['/favorites/', '/provider-onboarding/']) {
+      await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
+      await page.waitForURL(url => url.pathname.replace(/\/$/, '') === '/login');
+      assert.equal(new URL(page.url()).searchParams.get('next'), path);
+    }
+    for (const path of ['/about-us/', '/contact-us/']) {
+      const response = await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+      assert.match(response.headers()['cache-control'] ?? '', /no-transform/, 'the origin must prevent CDN HTML rewriting');
+      assert.equal(await page.locator('.app-header').count(), 0, 'marketing pages must not gain a second app header');
+    }
+    assert.deepEqual(errors, [], 'exported pages must hydrate without runtime errors');
+  } finally { await page.close(); }
+});
