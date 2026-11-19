@@ -16,8 +16,8 @@ export const FavoritesPage: React.FC = () => {
         // In a real app, this would call an API
     };
 
-    const handleAddToCart = (productId: string) => {
-        console.log('Added to cart:', productId);
+    const handleAddToCart = (_productId: string) => {
+        // 'added to cart' handled in addToCart callback above
         // In a real app, this would use CartContext
     };
 

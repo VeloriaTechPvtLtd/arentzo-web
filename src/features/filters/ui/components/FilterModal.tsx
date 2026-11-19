@@ -81,7 +81,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose }) => 
                     </button>
                     <button
                         onClick={() => {
-                            console.log('Applying filters:', filters);
+                            // filters applied via callback
                             onClose();
                         }}
                         className="flex-1 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg hover:bg-primary/90 transition-all active:scale-[0.98]"

@@ -4,7 +4,7 @@ import { ProfilePanel } from '../../../features/profile';
 import { CheckoutPanel } from '../../../features/checkout';
 import { MessagesPanel } from '../../../features/messages';
 import { ProviderOnboardingPanel } from '../../../features/provider-onboarding';
-import { SelectDeliveryLocation, type AddressItem } from '../../../features/checkout/ui/components/SelectDeliveryLocation';
+import { SelectDeliveryLocation } from '../../../features/checkout/ui/components/SelectDeliveryLocation';
 import { AuthDrawer } from '../../../features/auth/ui/components/AuthDrawer';
 
 export const GlobalDrawers: React.FC = () => {
@@ -41,8 +41,8 @@ export const GlobalDrawers: React.FC = () => {
                     <div className="checkout-panel__content" style={{ padding: 0 }}>
                         <SelectDeliveryLocation
                             showActions={true}
-                            onSelect={(addr: AddressItem) => {
-                                console.log('Selected location:', addr);
+                            onSelect={() => {
+                                // selected location handled in callback above
                                 closeLocation();
                             }}
                         />

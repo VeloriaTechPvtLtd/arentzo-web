@@ -1,0 +1,9 @@
+# Keep secrets and local tooling out of CLI uploads
+.env
+.env.*
+!.env.example
+.vercel
+.next
+node_modules
+.cursor
+*.log

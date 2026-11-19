@@ -68,7 +68,7 @@ export const ProviderProfileContent: React.FC<ProviderProfileContentProps> = ({
         title: 'Support & Policies',
         items: [
             { id: 'bugs', icon: <Lightbulb size={20} />, label: 'Bugs & Suggestions', onClick: () => onViewChange('bugs') },
-            { id: 'chat-support', icon: <MessageCircle size={20} />, label: 'Chat with Support', onClick: () => console.log('Chat') },
+            { id: 'chat-support', icon: <MessageCircle size={20} />, label: 'Chat with Support', onClick: () => undefined },
         ]
     };
 

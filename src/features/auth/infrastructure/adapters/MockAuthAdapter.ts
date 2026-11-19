@@ -7,14 +7,14 @@ const STORAGE_KEY_SESSION = 'arentzo_auth_session';
 
 export class MockAuthAdapter implements AuthPort {
     async login(dto: LoginDTO): Promise<Session> {
-        console.log(`[MockAuth] Logging in user: ${dto.email}`);
+        
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
         return this.createMockSession(dto.email);
     }
 
     async verifyOtp(email: string, otp: string): Promise<Session> {
-        console.log(`[MockAuthAdapter] Verifying OTP for ${email}: ${otp}`);
+        // mock verification logic (replace with real OTP provider)
         await new Promise(resolve => setTimeout(resolve, 500)); // Keep original delay
 
         // Mock verification logic
@@ -24,28 +24,28 @@ export class MockAuthAdapter implements AuthPort {
         throw new AuthError('Invalid OTP');
     }
 
-    async signUp(email: string, name: string): Promise<void> {
-        console.log(`[MockAuthAdapter] Signing up user: ${email}, Name: ${name}`);
+    async signUp(_email: string, _name: string): Promise<void> {
+        // mock signup — wire to Supabase auth.signUp
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 800));
         return Promise.resolve();
     }
 
-    async forgotPassword(email: string): Promise<void> {
-        console.log(`[MockAuthAdapter] Sending password reset email to: ${email}`);
+    async forgotPassword(_email: string): Promise<void> {
+        // mock forgot-password — wire to Supabase auth.resetPasswordForEmail
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 800));
         return Promise.resolve();
     }
 
-    async verifyResetOtp(email: string, otp: string): Promise<boolean> {
-        console.log(`[MockAuthAdapter] Verifying Reset OTP for ${email}: ${otp}`);
+    async verifyResetOtp(_email: string, otp: string): Promise<boolean> {
+        // mock OTP verification
         await new Promise(resolve => setTimeout(resolve, 600));
         return otp === '123456';
     }
 
-    async resetPassword(email: string, otp: string, password: string): Promise<void> {
-        console.log(`[MockAuthAdapter] Resetting password for ${email} with OTP ${otp} to new password length ${password.length}`);
+    async resetPassword(_email: string, otp: string, _password: string): Promise<void> {
+        // mock password reset — wire to Supabase auth.updateUserById
         await new Promise(resolve => setTimeout(resolve, 800));
         if (otp !== '123456') throw new AuthError('Invalid or expired session');
         return Promise.resolve();
@@ -73,7 +73,7 @@ export class MockAuthAdapter implements AuthPort {
     }
 
     async signOut(): Promise<void> {
-        console.log('[MockAuthAdapter] Signing out');
+        // mock signOut — wire to Supabase auth.signOut
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
         try {

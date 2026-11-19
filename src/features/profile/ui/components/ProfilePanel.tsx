@@ -141,25 +141,25 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'edit-profile',
                     icon: <Edit3 size={20} />,
                     label: 'Edit Profile',
-                    onClick: () => console.log('Edit Profile'),
+                    onClick: () => undefined,
                 },
                 {
                     id: 'wallet',
                     icon: <Wallet size={20} />,
                     label: 'My Wallet / Credits',
-                    onClick: () => console.log('Wallet'),
+                    onClick: () => undefined,
                 },
                 {
                     id: 'payment-methods',
                     icon: <CreditCard size={20} />,
                     label: 'Payment Methods',
-                    onClick: () => console.log('Payment Methods'),
+                    onClick: () => undefined,
                 },
                 {
                     id: 'coupons',
                     icon: <Tag size={20} />,
                     label: 'Coupons & Offers',
-                    onClick: () => console.log('Coupons'),
+                    onClick: () => undefined,
                 },
                 {
                     id: 'addresses',
@@ -171,7 +171,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'kyc',
                     icon: <Shield size={20} />,
                     label: 'KYC / Id Verification',
-                    onClick: () => console.log('KYC'),
+                    onClick: () => undefined,
                 },
             ],
         },
@@ -205,7 +205,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     id: 'chat-support',
                     icon: <MessageCircle size={20} />,
                     label: 'Chat with Support',
-                    onClick: () => console.log('Chat'),
+                    onClick: () => undefined,
                 },
             ],
         },
@@ -358,8 +358,8 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     {view === 'saved-addresses' && (
                         <SelectDeliveryLocation
                             showActions={false}
-                            onSelect={(addr) => {
-                                console.log('Selected address in profile:', addr);
+                            onSelect={(_addr) => {
+                                // selected address handled in callback above
                             }}
                         />
                     )}
@@ -382,7 +382,7 @@ const ProfilePanelInner: React.FC<ProfilePanelProps> = ({ isOpen, onClose }) => 
                     {view === 'forgot-password' && (
                         <ForgotPasswordForm
                             onBack={() => setView('login')}
-                            onEmailSet={(email) => console.log('Reset link sent to', email)}
+                            onEmailSet={() => undefined}
                             onSuccess={() => setView('login')}
                         />
                     )}

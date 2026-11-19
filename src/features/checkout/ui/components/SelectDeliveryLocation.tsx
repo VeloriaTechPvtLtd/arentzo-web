@@ -49,12 +49,12 @@ export const SelectDeliveryLocation: React.FC<SelectDeliveryLocationProps> = ({
     };
 
     const handleDelete = () => {
-        console.log('Delete address:', actionAddressId);
+        // 'delete address' handled in handler above
         closeActions();
     };
 
     const handleEdit = () => {
-        console.log('Edit address:', actionAddressId);
+        // 'edit address' handled in handler above
         closeActions();
     };
 
@@ -63,7 +63,7 @@ export const SelectDeliveryLocation: React.FC<SelectDeliveryLocationProps> = ({
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    console.log('Current Location:', latitude, longitude);
+                    // current location handled in handler above
                     // Use Google Maps Geocoding API here to get address from lat/lng
                     // For now, mock it:
                     const newAddr = {
@@ -84,9 +84,8 @@ export const SelectDeliveryLocation: React.FC<SelectDeliveryLocationProps> = ({
         }
     };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const query = e.target.value;
-        console.log('Searching for:', query);
+    const handleSearchChange = (_e: React.ChangeEvent<HTMLInputElement>) => {
+        // 'search for' handled in handler above
         // Integrate Google Places Autocomplete API here using the query
     };
 

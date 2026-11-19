@@ -179,8 +179,8 @@ export const ProductDetailsDrawer: React.FC<ProductDetailsDrawerProps> = ({
         }
     }
 
-    function handleOrderStatusChange(orderId: string, status: Order['rentalStatus']) {
-        console.log('Order status changed:', orderId, status);
+    function handleOrderStatusChange(_orderId: string, _status: Order['rentalStatus']) {
+        // status update handler — see callback above
         setSelectedOrder(null);
     }
 

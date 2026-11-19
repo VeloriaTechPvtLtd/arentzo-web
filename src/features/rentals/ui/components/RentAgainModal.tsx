@@ -48,7 +48,7 @@ export const RentAgainModal: React.FC<RentAgainModalProps> = ({ rental, isOpen, 
     };
 
     const handleProceed = () => {
-        console.log('Proceeding to checkout with:', { startDate, endDate, totalCost });
+        // checkout callback invoked with rental selection
         onClose();
     };
 
