@@ -4,5 +4,14 @@
     "stage": "arentzo-stage",
     "prod": "arentzo0",
     "default": "arentzo0"
+  },
+  "targets": {
+    "rental-2c497": {
+      "hosting": {
+        "dev": [
+          "rental-2c497"
+        ]
+      }
+    }
   }
 }

@@ -74,7 +74,7 @@ export function useProductDetails(productId: string) {
   const retry = useCallback(() => setRetryCount((count) => count + 1), []);
 
   const toggleFavorite = useCallback(async (targetId: string) => {
-    if (!user) { router.push(`/login?next=${encodeURIComponent(`/product/${productId}`)}`); return; }
+    if (!user) { router.push(`/login?next=${encodeURIComponent(`/product/?id=${productId}`)}`); return; }
     const target = data.product?.id === targetId ? data.product : data.related.find((item) => item.id === targetId);
     if (!target) return;
     try {

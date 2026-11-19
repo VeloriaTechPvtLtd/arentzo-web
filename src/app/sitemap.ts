@@ -1,4 +1,6 @@
 import type { MetadataRoute } from 'next';
+
+export const dynamic = 'force-static';
 import {
   BLOG_SLUGS,
   PUBLIC_SEO_PATHS,

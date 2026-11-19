@@ -1,7 +1,6 @@
-import { LoginPage } from '@/features/auth/ui/pages/LoginPage';
-import { getSafeReturnPath } from '@/features/auth/ui/utils/getSafeReturnPath';
+import { Suspense } from 'react';
+import { LoginRoute } from './LoginRoute';
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
-  const { next } = await searchParams;
-  return <LoginPage returnTo={getSafeReturnPath(next)} />;
+export default function Page() {
+  return <Suspense fallback={<main className="min-h-screen" aria-busy="true" />}><LoginRoute /></Suspense>;
 }

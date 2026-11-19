@@ -1,36 +1,60 @@
 {
-    "hosting": {
-        "public": "dist",
-        "ignore": [
-            "firebase.json",
-            "**/.*",
-            "**/node_modules/**"
-        ],
-        "rewrites": [
-            {
-                "source": "**",
-                "destination": "/index.html"
-            }
-        ],
+  "hosting": {
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.git/**",
+      "**/.firebase/**",
+      "**/.github/**",
+      "**/.env*",
+      "**/.npmrc",
+      "**/.netrc",
+      "**/*credentials*",
+      "**/*service-account*",
+      "**/*.pem",
+      "**/*.key",
+      "**/*.p12",
+      "**/*.pfx",
+      "**/*.jks",
+      "**/*.keystore",
+      "**/node_modules/**"
+    ],
+    "redirects": [
+      {
+        "source": "/home",
+        "destination": "/",
+        "type": 301
+      }
+    ],
+    "rewrites": [
+      {
+        "regex": "^/product/[^/]+$",
+        "destination": "/legacy-product-route.html"
+      },
+      {
+        "regex": "^/my-rentals/[^/]+$",
+        "destination": "/legacy-rental-route.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/.well-known/assetlinks.json",
         "headers": [
-            {
-                "source": "/.well-known/assetlinks.json",
-                "headers": [
-                    {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                    }
-                ]
-            },
-            {
-                "source": "/.well-known/apple-app-site-association",
-                "headers": [
-                    {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                    }
-                ]
-            }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
         ]
-    }
+      },
+      {
+        "source": "/.well-known/apple-app-site-association",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      }
+    ]
+  }
 }

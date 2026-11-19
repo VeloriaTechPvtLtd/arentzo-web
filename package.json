@@ -15,10 +15,11 @@
     "build:prod": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "deploy:dev": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
-    "deploy:stage": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
-    "deploy:prod": "npm run build && echo 'Deploy with Vercel or Firebase App Hosting — Next.js needs a Node server (not static Firebase Hosting/dist).'",
+    "deploy:dev": "npm run build && echo 'Dev deploy runs only after the dev-push workflow is configured and verified.'",
+    "deploy:stage": "echo 'No stage deployment is configured.'",
+    "deploy:prod": "echo 'No production deployment is configured.'",
     "test:responsive": "node --test tests/responsive-smoke.test.mjs",
+    "test:hosting-routes": "node --test tests/hosting-compat.test.mjs",
     "test:active-attribute-capabilities": "node --test tests/active-subcategory-attributes.test.mjs"
   },
   "dependencies": {

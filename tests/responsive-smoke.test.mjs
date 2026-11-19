@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 
 const baseURL = process.env.RESPONSIVE_BASE_URL ?? 'http://127.0.0.1:3005';
 const fixtureId = 'qa-fixture-product-0001';
-const fixturePath = `/product/${fixtureId}`;
+const fixturePath = `/product/?id=${encodeURIComponent(fixtureId)}`;
 const evidenceDir = process.env.RESPONSIVE_ARTIFACT_DIR ?? '/tmp/arentzo-web-responsive-evidence';
 const viewports = [
   { name: 'phone', width: 390, height: 844 },
@@ -54,10 +54,11 @@ test('launch local Chromium for responsive preview checks', async () => {
 
 for (const viewport of viewports) {
   test(`${viewport.name}: landing and browse expose readable key content without page overflow`, async () => {
-    const page = await browser.newPage({ viewport });
+    const page = await newResponsivePage(viewport);
     await installEmptyCatalogFixture(page);
     try {
       await page.goto(`${baseURL}/`, { waitUntil: 'domcontentloaded' });
+      await assertDeterministicFontFallback(page);
       const hero = page.getByRole('heading', { name: 'Everything you need, on rent.' });
       await hero.waitFor();
       assert.ok(await hero.isVisible());
@@ -71,6 +72,7 @@ for (const viewport of viewports) {
       await page.screenshot({ path: `${evidenceDir}/landing-${viewport.name}.png`, fullPage: true });
 
       await page.goto(`${baseURL}/browse`, { waitUntil: 'domcontentloaded' });
+      await assertDeterministicFontFallback(page);
       const heading = page.getByRole('heading', { name: 'Browse rentals' });
       await heading.waitFor();
       assert.ok(await heading.isVisible());
@@ -83,10 +85,11 @@ for (const viewport of viewports) {
   });
 
   test(`${viewport.name}: product detail renders a complete synthetic QA fixture`, async () => {
-    const page = await browser.newPage({ viewport });
+    const page = await newResponsivePage(viewport);
     await installProductFixture(page);
     try {
       await page.goto(`${baseURL}${fixturePath}`, { waitUntil: 'domcontentloaded' });
+      await assertDeterministicFontFallback(page);
       const title = page.getByRole('heading', { name: fixtureProduct.title });
       await title.waitFor();
       assert.ok(await title.isVisible());
@@ -114,10 +117,11 @@ for (const viewport of viewports) {
   });
 
   test(`${viewport.name}: account rentals redirect to login when logged out`, async () => {
-    const page = await browser.newPage({ viewport });
+    const page = await newResponsivePage(viewport);
     try {
       await page.goto(`${baseURL}/my-rentals`, { waitUntil: 'domcontentloaded' });
-      await page.waitForURL(/\/login\?next=/);
+      await page.waitForURL(/\/login\/?\?next=/);
+      await assertDeterministicFontFallback(page);
       const heading = page.getByRole('heading', { name: 'Welcome back' });
       await heading.waitFor();
       assert.ok(await heading.isVisible());
@@ -132,16 +136,36 @@ for (const viewport of viewports) {
 
 test('product failure shows retry and a subsequent successful fixture load clears the fault', async () => {
   const viewport = viewports[0];
-  const page = await browser.newPage({ viewport });
+  const page = await newResponsivePage(viewport);
   const fixture = await installProductFixture(page, { failFirstDetailRequest: true });
   try {
     await page.goto(`${baseURL}${fixturePath}`, { waitUntil: 'domcontentloaded' });
+    await assertDeterministicFontFallback(page);
     await page.getByText('We could not load this listing right now.').waitFor();
     assert.ok(await page.getByRole('button', { name: 'Try again' }).isVisible());
     await page.getByRole('button', { name: 'Try again' }).click();
     await page.getByRole('heading', { name: fixtureProduct.title }).waitFor();
     assert.equal(fixture.detailRequests, 2);
     assert.equal(await page.getByText('Listing unavailable').count(), 0);
+  } finally {
+    await page.close();
+  }
+});
+
+test('Static query detail routes preserve listing IDs and login return paths', async () => {
+  const page = await newResponsivePage(viewports[0]);
+  await installProductFixture(page);
+  try {
+    await page.goto(`${baseURL}/home`, { waitUntil: 'domcontentloaded' });
+    await page.waitForURL((url) => url.pathname === '/');
+    await page.goto(`${baseURL}${fixturePath}`, { waitUntil: 'domcontentloaded' });
+    await page.getByRole('heading', { name: fixtureProduct.title }).waitFor();
+    assert.equal(new URL(page.url()).pathname.replace(/\/$/, ''), '/product');
+    assert.equal(new URL(page.url()).searchParams.get('id'), fixtureId);
+    await page.goto(`${baseURL}/my-rentals/?id=qa-booking-0001`, { waitUntil: 'domcontentloaded' });
+    await page.waitForURL((url) => url.pathname.replace(/\/$/, '') === '/login');
+    const next = new URL(page.url()).searchParams.get('next');
+    assert.equal(next, '/my-rentals/?id=qa-booking-0001');
   } finally {
     await page.close();
   }
@@ -164,7 +188,8 @@ async function installProductFixture(page, { failFirstDetailRequest = false } = 
     }
     const table = url.pathname.split('/').at(-1);
     let body = [];
-    if (table === 'products' && url.searchParams.has('id')) {
+    const requestedIds = url.searchParams.get('id') ?? '';
+    if (table === 'products' && requestedIds.includes(fixtureId)) {
       requests.detailRequests += 1;
       if (failFirstDetailRequest && requests.detailRequests === 1) {
         await route.fulfill({ status: 503, headers, contentType: 'application/json', body: JSON.stringify({ message: 'Synthetic fixture outage' }) });
@@ -180,6 +205,31 @@ async function installProductFixture(page, { failFirstDetailRequest = false } = 
     await route.fulfill({ status: 200, headers, contentType: 'application/json', body: JSON.stringify(body) });
   });
   return requests;
+}
+
+async function newResponsivePage(viewport) {
+  const page = await browser.newPage({ viewport });
+  page.deterministicFontStylesheetRequests = 0;
+  await page.route('https://fonts.googleapis.com/**', async (route) => {
+    page.deterministicFontStylesheetRequests += 1;
+    await route.fulfill({ status: 200, contentType: 'text/css; charset=utf-8', body: '' });
+  });
+  return page;
+}
+
+async function assertDeterministicFontFallback(page) {
+  assert.ok(page.deterministicFontStylesheetRequests > 0, 'The test must use its empty Google Fonts stylesheet fixture.');
+  await page.waitForFunction(() => getComputedStyle(document.body).fontFamily.includes('Montserrat'));
+  const style = await page.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    return {
+      fontFamily: getComputedStyle(document.body).fontFamily,
+      loadedMontserratFace: Array.from(document.fonts).some((fontFace) => fontFace.family.includes('Montserrat') && fontFace.status === 'loaded'),
+    };
+  });
+  assert.match(style.fontFamily, /Montserrat.*sans-serif/i, 'The project CSS fallback chain must include sans-serif after Montserrat.');
+  assert.equal(style.loadedMontserratFace, false, 'Fallback QA must not depend on a downloaded Montserrat font.');
 }
 
 async function installEmptyCatalogFixture(page) {

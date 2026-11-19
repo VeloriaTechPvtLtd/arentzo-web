@@ -1,11 +1,11 @@
-name: Web CI
+name: Dev Static CI and Firebase Hosting
 
 on:
   pull_request:
-    branches: [main, dev, prod]
+    branches: [dev]
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [main, dev, prod]
+    branches: [dev]
 
 permissions:
   contents: read
@@ -16,14 +16,15 @@ concurrency:
 
 jobs:
   verify:
-    name: Lint, tests, and production build
+    name: Lint, tests, and static export
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
-      NEXT_PUBLIC_SUPABASE_URL: https://ci.invalid
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-public-anon-placeholder
-      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3005
-      RESPONSIVE_BASE_URL: http://127.0.0.1:3005
+      NEXT_PUBLIC_SUPABASE_URL: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' && vars.NEXT_PUBLIC_SUPABASE_URL || 'https://ci.invalid' }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' && vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-public-anon-placeholder' }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' && vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || '' }}
+      NEXT_PUBLIC_SITE_URL: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' && vars.NEXT_PUBLIC_SITE_URL || 'http://127.0.0.1:5000' }}
+      RESPONSIVE_BASE_URL: http://127.0.0.1:5000
       RESPONSIVE_ARTIFACT_DIR: /tmp/arentzo-responsive-evidence
       CI: true
     steps:
@@ -35,7 +36,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 24
+          node-version: 24.18.0
           cache: npm
 
       - name: Install locked dependencies
@@ -47,32 +48,38 @@ jobs:
       - name: Run deterministic unit tests
         run: npm run test:unit
 
+      - name: Validate exact Development public config and Hosting target
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: node scripts/validate-dev-hosting.mjs
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Build standalone Next.js server
+      - name: Build static Next.js export
         run: npm run build
 
-      - name: Start standalone server and run responsive browser checks
+      - name: Run responsive browser checks against Firebase Hosting emulator
         shell: bash
         run: |
-          mkdir -p .next/standalone/.next
-          cp -a .next/static .next/standalone/.next/static
-          cp -a public .next/standalone/public
-          find .next/standalone -maxdepth 1 -type f -name '.env*' -delete
-          pushd .next/standalone >/dev/null
-          HOSTNAME=127.0.0.1 PORT=3005 node server.js >"$RUNNER_TEMP/arentzo-next.log" 2>&1 &
-          server_pid=$!
-          popd >/dev/null
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          for attempt in {1..60}; do
-            if curl --fail --silent http://127.0.0.1:3005/ >/dev/null; then
-              break
-            fi
-            sleep 2
-          done
-          curl --fail --silent http://127.0.0.1:3005/ >/dev/null
-          npm run test:responsive
+          npx firebase emulators:exec --only hosting --project demo-arentzo "npm run test:responsive"
+
+      - name: Verify legacy detail rewrites and app association files
+        shell: bash
+        run: |
+          npx firebase emulators:exec --only hosting --project demo-arentzo "npm run test:hosting-routes"
+
+      - name: Check Dev export uses only Rental Dev public config
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: node scripts/validate-dev-hosting.mjs --check-export
+
+      - name: Upload verified static export for Dev deployment
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: arentzo-dev-static-${{ github.sha }}
+          path: out
+          if-no-files-found: error
+          retention-days: 1
 
       - name: Upload browser screenshots after failure
         if: failure()
@@ -82,3 +89,70 @@ jobs:
           path: /tmp/arentzo-responsive-evidence
           if-no-files-found: ignore
           retention-days: 7
+
+  deploy-dev:
+    name: Deploy verified static export to Firebase Dev Hosting
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev' && needs.verify.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: dev
+    concurrency:
+      group: firebase-hosting-dev
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out deployment configuration
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install Firebase CLI from lockfile
+        run: npm ci
+
+      - name: Require configured Dev Workload Identity Federation
+        env:
+          GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT }}
+        run: |
+          test -n "$GCP_WORKLOAD_IDENTITY_PROVIDER" || { echo 'Missing Actions Variable: GCP_WORKLOAD_IDENTITY_PROVIDER'; exit 1; }
+          test -n "$GCP_SERVICE_ACCOUNT" || { echo 'Missing Actions Variable: GCP_SERVICE_ACCOUNT'; exit 1; }
+
+      - name: Authenticate to Google Cloud with GitHub OIDC
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
+        with:
+          project_id: rental-2c497
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Download the exact static export that passed verification
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: arentzo-dev-static-${{ github.sha }}
+          path: out
+
+      - name: Assert the exact Firebase Hosting site exists
+        shell: bash
+        run: |
+          npx firebase hosting:sites:list --project rental-2c497 --json > "$RUNNER_TEMP/hosting-sites.json"
+          node scripts/assert-dev-hosting-site.mjs "$RUNNER_TEMP/hosting-sites.json"
+
+      - name: Deploy only the mapped Dev Hosting site
+        run: npx firebase deploy --only hosting:dev --project rental-2c497 --non-interactive
+
+      - name: Smoke test the live Dev domain
+        shell: bash
+        run: |
+          for path in / /browse/ /login/ '/product?id=qa-smoke' '/my-rentals?id=qa-smoke'; do
+            curl --fail --silent --show-error --retry 8 --retry-delay 3 "https://dev.arentzo.com$path" -o /dev/null
+          done
