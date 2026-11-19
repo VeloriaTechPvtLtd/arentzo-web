@@ -16,6 +16,8 @@ concurrency:
 
 jobs:
   verify:
+    outputs:
+      static_sha256: ${{ steps.static-sha.outputs.sha256 }}
     name: Lint, tests, and static export
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -58,19 +60,35 @@ jobs:
       - name: Build static Next.js export
         run: npm run build
 
+      - name: Write non-secret build provenance
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: node scripts/write-build-provenance.mjs
+
       - name: Run responsive browser checks against Firebase Hosting emulator
         shell: bash
         run: |
           npx firebase emulators:exec --only hosting --project demo-arentzo "npm run test:responsive"
 
-      - name: Verify legacy detail rewrites and app association files
-        shell: bash
-        run: |
-          npx firebase emulators:exec --only hosting --project demo-arentzo "npm run test:hosting-routes"
-
       - name: Check Dev export uses only Rental Dev public config
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
         run: node scripts/validate-dev-hosting.mjs --check-export
+
+      - name: Compute and validate static artifact SHA
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        id: static-sha
+        shell: bash
+        run: |
+          SHA=$(node scripts/static-artifact.mjs write-sha out)
+          node scripts/static-artifact.mjs verify out "$SHA" "$GITHUB_SHA" .
+          echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
+
+
+      - name: Verify legacy detail rewrites and app association files
+        shell: bash
+        env:
+          EXPECTED_ARTIFACT_SHA: ${{ steps.static-sha.outputs.sha256 }}
+        run: |
+          npx firebase emulators:exec --only hosting --project demo-arentzo "npm run test:hosting-routes"
 
       - name: Upload verified static export for Dev deployment
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
@@ -79,6 +97,7 @@ jobs:
           name: arentzo-dev-static-${{ github.sha }}
           path: out
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 1
 
       - name: Upload browser screenshots after failure
@@ -141,6 +160,12 @@ jobs:
           name: arentzo-dev-static-${{ github.sha }}
           path: out
 
+      - name: Verify downloaded artifact shape, associations, provenance, and SHA
+        env:
+          EXPECTED_ARTIFACT_SHA: ${{ needs.verify.outputs.static_sha256 }}
+          EXPECTED_COMMIT_SHA: ${{ github.sha }}
+        run: node scripts/static-artifact.mjs verify out "$EXPECTED_ARTIFACT_SHA" "$EXPECTED_COMMIT_SHA" .
+
       - name: Assert the exact Firebase Hosting site exists
         shell: bash
         run: |
@@ -150,9 +175,8 @@ jobs:
       - name: Deploy only the mapped Dev Hosting site
         run: npx firebase deploy --only hosting:dev --project rental-2c497 --non-interactive
 
-      - name: Smoke test the live Dev domain
-        shell: bash
-        run: |
-          for path in / /browse/ /login/ '/product?id=qa-smoke' '/my-rentals?id=qa-smoke'; do
-            curl --fail --silent --show-error --retry 8 --retry-delay 3 "https://dev.arentzo.com$path" -o /dev/null
-          done
+      - name: Smoke test the live Dev release and reject stale provenance
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          EXPECTED_ARTIFACT_SHA: ${{ needs.verify.outputs.static_sha256 }}
+        run: node scripts/verify-live-dev.mjs

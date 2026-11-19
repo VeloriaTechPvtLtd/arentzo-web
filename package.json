@@ -8,7 +8,7 @@
     "test:cart-storage": "node --test tests/cart-storage.test.mjs",
     "test:additional-charge-disclosure": "node --test tests/additional-charge-disclosure.test.mjs",
     "test:request-timeout": "node --test tests/request-with-timeout.test.mjs",
-    "test:unit": "node --test tests/cart-storage.test.mjs tests/additional-charge-disclosure.test.mjs tests/request-with-timeout.test.mjs tests/active-subcategory-attributes.test.mjs",
+    "test:unit": "node --test tests/cart-storage.test.mjs tests/additional-charge-disclosure.test.mjs tests/request-with-timeout.test.mjs tests/active-subcategory-attributes.test.mjs tests/static-artifact.test.mjs tests/verify-live-dev.test.mjs",
     "build": "next build",
     "build:dev": "next build",
     "build:stage": "next build",
@@ -20,7 +20,8 @@
     "deploy:prod": "echo 'No production deployment is configured.'",
     "test:responsive": "node --test tests/responsive-smoke.test.mjs",
     "test:hosting-routes": "node --test tests/hosting-compat.test.mjs",
-    "test:active-attribute-capabilities": "node --test tests/active-subcategory-attributes.test.mjs"
+    "test:active-attribute-capabilities": "node --test tests/active-subcategory-attributes.test.mjs",
+    "test:static-artifact": "node --test tests/static-artifact.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.11",

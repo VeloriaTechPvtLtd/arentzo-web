@@ -40,6 +40,13 @@ const firebase = JSON.parse(await readFile('firebase.json', 'utf8'));
 assert.equal(firebaserc.projects?.dev, projectId, 'Firebase dev alias must remain rental-2c497.');
 assert.deepEqual(firebaserc.targets?.[projectId]?.hosting?.dev, [projectId], 'The dev hosting target must map only to the verified site ID.');
 assert.equal(firebase.hosting?.public, 'out', 'Firebase Hosting must serve only the static export directory.');
+for (const file of ['build-provenance.txt', 'artifact-sha256.txt']) {
+  const rule = firebase.hosting?.headers?.find((entry) => entry.source === `/${file}`);
+  assert.ok(rule, `Firebase Hosting must define no-cache headers for /${file}.`);
+  const cacheControl = rule.headers?.find((header) => header.key.toLowerCase() === 'cache-control')?.value ?? '';
+  assert.match(cacheControl, /no-store/i, `/${file} must not be cached.`);
+}
+
 assert.ok(
   !firebase.hosting?.ignore?.includes('**/.*'),
   'Do not exclude hidden association files: publish the two required .well-known JSON assets from the static export.',

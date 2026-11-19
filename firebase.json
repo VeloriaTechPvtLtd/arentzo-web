@@ -54,6 +54,32 @@
             "value": "application/json"
           }
         ]
+      },
+      {
+        "source": "/build-provenance.txt",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain; charset=utf-8"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-store, max-age=0, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/artifact-sha256.txt",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain; charset=utf-8"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-store, max-age=0, must-revalidate"
+          }
+        ]
       }
     ]
   }

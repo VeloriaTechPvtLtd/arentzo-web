@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { after, test } from 'node:test';
 import { chromium } from 'playwright';
 
@@ -82,11 +82,26 @@ test('invalid legacy IDs and nested detail paths are rejected without external r
   }
 });
 
+test('Dev provenance and artifact SHA are uncached and match the workflow commit when present', { skip: !process.env.EXPECTED_ARTIFACT_SHA || !process.env.GITHUB_SHA }, async () => {
+  const expectedSha = process.env.EXPECTED_ARTIFACT_SHA;
+  const expectedCommit = process.env.GITHUB_SHA;
+  const checks = [
+    { path: '/build-provenance.txt', expected: `${expectedCommit}\n` },
+    { path: '/artifact-sha256.txt', expected: `${expectedSha}\n` },
+  ];
+  for (const check of checks) {
+    const response = await fetch(`${baseURL}${check.path}`, { cache: 'no-store' });
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get('cache-control') ?? '', /no-store/i);
+    assert.equal(await response.text(), check.expected);
+  }
+});
+
 test('Android and Apple association paths serve their original JSON rather than the app fallback', async () => {
   const page = await browser.newPage();
   const checks = [
-    { path: '/.well-known/assetlinks.json', expected: 'delegate_permission/common.handle_all_urls' },
-    { path: '/.well-known/apple-app-site-association', expected: 'applinks' },
+    { path: '/.well-known/assetlinks.json', expected: 'delegate_permission/common.handle_all_urls', source: 'public/.well-known/assetlinks.json' },
+    { path: '/.well-known/apple-app-site-association', expected: 'applinks', source: 'public/.well-known/apple-app-site-association' },
   ];
   try {
     for (const check of checks) {
@@ -95,6 +110,8 @@ test('Android and Apple association paths serve their original JSON rather than 
       assert.match(response.headers()['content-type'] ?? '', /application\/json/i);
       const body = await response.text();
       assert.match(body, new RegExp(check.expected));
+      assert.equal(body, readFileSync(check.source, 'utf8'), `${check.path} must serve its complete checked-in JSON body.`);
+      JSON.parse(body);
       assert.doesNotMatch(body, /<!doctype html|<html/i);
     }
   } finally {
