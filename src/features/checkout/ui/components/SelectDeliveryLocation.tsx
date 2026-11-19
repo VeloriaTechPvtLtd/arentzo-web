@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { Search, Navigation, Home, MoreHorizontal, Share } from 'lucide-react';
+'use client';
+
+import React, { useEffect, useMemo, useState } from 'react';
+import { Home, MapPin } from 'lucide-react';
+import { getSupabaseClient } from '@/shared/infrastructure/supabase/client';
 
 export interface AddressItem {
     id: string;
@@ -14,178 +17,150 @@ interface SelectDeliveryLocationProps {
     showActions?: boolean;
 }
 
-const SAVED_ADDRESSES = [
-    {
-        id: '1',
-        label: 'Home',
-        address: 'Kalyani Business Centre,3rd Floor, Office No. 305, R. B. Kadam Marg, Opposite Mahalaxmi Garden, Shahupuri East, Kolhapur - 416012',
-        phone: '0231-9988776'
-    },
-    {
-        id: '2',
-        label: 'Home',
-        address: 'Shree Vasant Vihar, Flat No. 502, Tower B, S. R. Patil Road, Near Rajaram Maharaj Mandir, Gokul Nagar, Kolhapur - 416008',
-        phone: '0971-9656789'
-    }
-];
+type AddressRow = {
+    id: string;
+    label: string | null;
+    name: string | null;
+    address_type: string | null;
+    address: string | null;
+    address_line1: string | null;
+    address_line2: string | null;
+    landmark: string | null;
+    city: string | null;
+    state: string | null;
+    country: string | null;
+    pincode: string | null;
+    postal_code: string | null;
+    recipient_name: string | null;
+    recipient_phone: string | null;
+    full_name: string | null;
+    phone: string | null;
+    is_default: boolean | null;
+};
 
-
+function toAddress(row: AddressRow): AddressItem {
+    const address = row.address || [
+        row.address_line1,
+        row.address_line2,
+        row.landmark,
+        row.city,
+        row.state,
+        row.postal_code || row.pincode,
+        row.country,
+    ].filter(Boolean).join(', ');
+    return {
+        id: row.id,
+        label: row.label || row.address_type || row.name || 'Saved address',
+        address,
+        phone: row.recipient_phone || row.phone || '',
+    };
+}
 
 export const SelectDeliveryLocation: React.FC<SelectDeliveryLocationProps> = ({
-    currentAddressId = '1',
+    currentAddressId,
     onSelect,
     showActions = true,
 }) => {
-    const [selectedId, setSelectedId] = useState(currentAddressId);
-    const [actionAddressId, setActionAddressId] = useState<string | null>(null);
+    const [addresses, setAddresses] = useState<AddressItem[]>([]);
+    const [selectedId, setSelectedId] = useState(currentAddressId || '');
+    const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [signedIn, setSignedIn] = useState<boolean | null>(null);
 
-    const handleActionClick = (e: React.MouseEvent, id: string) => {
-        e.stopPropagation();
-        setActionAddressId(id);
-    };
-
-    const closeActions = () => {
-        setActionAddressId(null);
-    };
-
-    const handleDelete = () => {
-        console.log('Delete address:', actionAddressId);
-        closeActions();
-    };
-
-    const handleEdit = () => {
-        console.log('Edit address:', actionAddressId);
-        closeActions();
-    };
-
-    const handleUseCurrentLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    console.log('Current Location:', latitude, longitude);
-                    // Use Google Maps Geocoding API here to get address from lat/lng
-                    // For now, mock it:
-                    const newAddr = {
-                        id: 'current-loc',
-                        label: 'Current Location',
-                        address: `Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`,
-                        phone: ''
-                    };
-                    handleSelect(newAddr);
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                    alert('Unable to retrieve your location');
+    useEffect(() => {
+        let active = true;
+        const loadAddresses = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const client = getSupabaseClient();
+                const { data: { user }, error: authError } = await client.auth.getUser();
+                if (authError && !user) throw authError;
+                if (!user) {
+                    if (active) {
+                        setSignedIn(false);
+                        setAddresses([]);
+                    }
+                    return;
                 }
-            );
-        } else {
-            alert('Geolocation is not supported by this browser.');
-        }
-    };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const query = e.target.value;
-        console.log('Searching for:', query);
-        // Integrate Google Places Autocomplete API here using the query
-    };
+                const { data, error: queryError } = await client.from('user_addresses')
+                    .select('id,label,name,address_type,address,address_line1,address_line2,landmark,city,state,country,pincode,postal_code,recipient_name,recipient_phone,full_name,phone,is_default')
+                    .eq('user_id', user.id)
+                    .is('deleted_at', null)
+                    .order('is_default', { ascending: false })
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+                if (queryError) throw queryError;
+                if (active) {
+                    setSignedIn(true);
+                    setAddresses(((data || []) as AddressRow[]).map(toAddress));
+                }
+            } catch {
+                if (active) setError('Saved addresses could not be loaded. Please try again.');
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+        void loadAddresses();
+        return () => { active = false; };
+    }, []);
 
-    const handleSelect = (addr: AddressItem) => {
-        setSelectedId(addr.id);
-        // Optional: Call onSelect immediately or have a confirm button. 
-        // For this UI flow, clicking usually selects it.
-        onSelect(addr);
-    };
+    const visibleAddresses = useMemo(() => {
+        const query = search.trim().toLowerCase();
+        if (!query) return addresses;
+        return addresses.filter((address) => `${address.label} ${address.address} ${address.phone}`.toLowerCase().includes(query));
+    }, [addresses, search]);
 
     return (
-        <div className="select-location-panel">
-            <h2 className="select-location__title">Select Delivery Location</h2>
-
-            <div className="location-search">
-                <Search size={20} className="location-search__icon" />
+        <div className="select-location-panel" data-show-actions={showActions}>
+            <h2 className="select-location__title">Saved addresses</h2>
+            {signedIn && addresses.length > 1 ? (
                 <input
-                    type="text"
-                    placeholder="Search for area, street name..."
-                    className="location-search__input"
-                    onChange={handleSearchChange}
+                    type="search"
+                    aria-label="Search saved addresses"
+                    placeholder="Search saved addresses"
+                    className="saved-address-search"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
                 />
-            </div>
-
-            {showActions && (
-                <div className="location-actions">
-                    <button className="location-action-item" onClick={handleUseCurrentLocation}>
-                        <div className="location-action-item__icon location-action-item__icon--red">
-                            <Navigation size={20} />
-                        </div>
-                        <span className="location-action-item__text location-action-item__text--red">Use your current location</span>
-                        <span className="location-action-item__arrow">›</span>
-                    </button>
-                </div>
-            )}
-
-            <div className="saved-addresses">
-                <h3 className="saved-addresses__title">Your saved addresses</h3>
-
-                <div className="saved-addresses__list">
-                    {SAVED_ADDRESSES.map((addr) => {
-                        const isSelected = selectedId === addr.id;
-                        return (
-                            <div
-                                key={addr.id}
-                                className={`saved-address-card ${isSelected ? 'saved-address-card--selected' : ''}`}
-                                onClick={() => handleSelect(addr)}
-                            >
-                                <div className="saved-address-card__header">
-                                    <div className={`saved-address-card__icon ${isSelected ? 'saved-address-card__icon--selected' : ''}`}>
-                                        <Home size={20} />
+            ) : null}
+            {loading ? <p role="status">Loading addresses…</p> : null}
+            {error ? <p role="alert">{error}</p> : null}
+            {!loading && !error && signedIn === false ? <p>Sign in to view your saved addresses.</p> : null}
+            {!loading && !error && signedIn && addresses.length === 0 ? <p>You have no saved addresses yet.</p> : null}
+            {!loading && !error && signedIn && addresses.length > 0 ? (
+                <div className="saved-addresses">
+                    <h3 className="saved-addresses__title">Your saved addresses</h3>
+                    {visibleAddresses.length === 0 ? <p>No addresses match your search.</p> : null}
+                    <div className="saved-addresses__list">
+                        {visibleAddresses.map((address) => {
+                            const selected = address.id === selectedId;
+                            return (
+                                <button
+                                    type="button"
+                                    key={address.id}
+                                    className={`saved-address-card ${selected ? 'saved-address-card--selected' : ''}`}
+                                    onClick={() => {
+                                        setSelectedId(address.id);
+                                        onSelect(address);
+                                    }}
+                                >
+                                    <div className="saved-address-card__header">
+                                        <div className={`saved-address-card__icon ${selected ? 'saved-address-card__icon--selected' : ''}`}>
+                                            {address.label.toLowerCase().includes('home') ? <Home size={20} /> : <MapPin size={20} />}
+                                        </div>
+                                        <h4 className="saved-address-card__label">{address.label}</h4>
                                     </div>
-                                    <h4 className="saved-address-card__label">{addr.label}</h4>
-                                </div>
-
-                                <p className="saved-address-card__text">
-                                    {addr.address}
-                                </p>
-
-                                <p className="saved-address-card__phone">
-                                    Phone number: <span className="phone-value">{addr.phone}</span>
-                                </p>
-
-                                {isSelected && (
-                                    <div className="saved-address-card__actions">
-                                        <button
-                                            className="address-action-btn"
-                                            onClick={(e) => handleActionClick(e, addr.id)}
-                                        >
-                                            <MoreHorizontal size={20} />
-                                        </button>
-                                        <button className="address-action-btn">
-                                            <Share size={20} />
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-            {actionAddressId && (
-                <div className="address-action-overlay" onClick={closeActions}>
-                    <div className="address-action-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="address-action-modal__content">
-                            <button className="address-action-modal__btn address-action-modal__btn--delete" onClick={handleDelete}>
-                                Delete
-                            </button>
-                            <div className="address-action-modal__divider" />
-                            <button className="address-action-modal__btn" onClick={handleEdit}>
-                                Edit
-                            </button>
-                        </div>
-                        <button className="address-action-modal__cancel" onClick={closeActions}>
-                            Cancel
-                        </button>
+                                    <p className="saved-address-card__text">{address.address || 'Address details unavailable'}</p>
+                                    {address.phone ? <p className="saved-address-card__phone">Phone number: <span className="phone-value">{address.phone}</span></p> : null}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
-            )}
+            ) : null}
         </div>
     );
 };

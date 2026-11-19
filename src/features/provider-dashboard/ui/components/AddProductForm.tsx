@@ -18,11 +18,16 @@ interface AddProductFormProps {
     onSuccess: () => void;
 }
 
+export interface ProductDraftFields {
+    title: string; description: string; condition: string; brand: string; model: string; year: string; color: string;
+}
+interface ListingCategory { id: string; name: string; image: string }
+
 export const AddProductForm: React.FC<AddProductFormProps> = ({ onClose, onSuccess }) => {
     const [step, setStep] = useState(1);
-    const [selectedCategory, setSelectedCategory] = useState<any>(null);
-    const [selectedSubcategory, setSelectedSubcategory] = useState<any>(null);
-    const [form, setForm] = useState({
+    const [selectedCategory, setSelectedCategory] = useState<ListingCategory | null>(null);
+    const [selectedSubcategory, setSelectedSubcategory] = useState<ListingCategory | null>(null);
+    const [form, setForm] = useState<ProductDraftFields>({
         title: '',
         description: '',
         condition: '',
@@ -77,8 +82,8 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onClose, onSucce
             case 2:
                 return (
                     <SubcategorySelection
-                        categoryName={selectedCategory?.name}
-                        categoryImage={selectedCategory?.image}
+                        categoryName={selectedCategory?.name ?? ''}
+                        categoryImage={selectedCategory?.image ?? ''}
                         selectedSubcategory={selectedSubcategory}
                         onSelect={setSelectedSubcategory}
                         onNext={handleNext}

@@ -26,7 +26,9 @@
   .waitlist-nav__tagline {
     display: block;
   }
+}
 
+@media (min-width: 900px) {
   .waitlist-nav__cta {
     display: inline-flex;
   }

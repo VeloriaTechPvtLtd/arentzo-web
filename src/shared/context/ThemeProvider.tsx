@@ -16,7 +16,7 @@ function readStoredTheme(): Theme {
 }
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>('light');
+  const [theme, setThemeState] = useState<Theme>(() => FORCE_LIGHT_THEME ? 'light' : readStoredTheme());
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
   const setTheme = (next: Theme) => {
@@ -27,14 +27,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
     setThemeState(next);
   };
-
-  useEffect(() => {
-    if (FORCE_LIGHT_THEME) {
-      setThemeState('light');
-      return;
-    }
-    setThemeState(readStoredTheme());
-  }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;

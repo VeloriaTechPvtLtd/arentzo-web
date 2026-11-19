@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { GlobalDrawers } from '@/shared/components/layout/GlobalDrawers';
+import { useAuth } from '@/features/auth/ui/context/useAuth';
+import { CustomerBottomNav } from '@/shared/components/layout/CustomerBottomNav';
 
 export default function DetailGroupLayout({
   children,
@@ -10,6 +12,12 @@ export default function DetailGroupLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading } = useAuth();
+  const requiresAccount = pathname === '/my-rentals' || pathname.startsWith('/my-rentals/');
+  useEffect(() => {
+    if (!loading && requiresAccount && !user) router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+  }, [loading, pathname, requiresAccount, router, user]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -17,7 +25,8 @@ export default function DetailGroupLayout({
 
   return (
     <>
-      {children}
+      {requiresAccount && (loading || !user) ? <main className="min-h-screen" aria-busy="true" /> : children}
+      {!loading && user?.role !== 'service_provider' && (pathname.startsWith('/my-rentals/') || pathname.startsWith('/product/') || pathname === '/search') ? <CustomerBottomNav /> : null}
       <GlobalDrawers />
     </>
   );

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { CheckCircle2, Circle, KeyRound, ArrowLeft } from 'lucide-react';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthInput } from '../components/AuthInput';
+import { useAuth } from '../context/useAuth';
 
 const HeaderIcon = () => (
     <div className="relative">
@@ -22,6 +23,8 @@ export const ResetPasswordPage: React.FC = () => {
     const router = useRouter();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+    const { updatePassword, loading } = useAuth();
 
     const requirements = [
         { label: 'Minimum 8 characters', met: password.length >= 8 },
@@ -30,11 +33,12 @@ export const ResetPasswordPage: React.FC = () => {
         { label: 'At least one special character', met: /[^A-Za-z0-9]/.test(password) },
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const allMet = requirements.every(req => req.met);
         if (allMet && password === confirmPassword) {
-            router.push('/password-reset-success');
+            try { await updatePassword(password); router.push('/password-reset-success'); }
+            catch { setError('We could not update your password. Request a new recovery email and try again.'); }
         }
     };
 
@@ -89,11 +93,12 @@ export const ResetPasswordPage: React.FC = () => {
                 <div className="space-y-6">
                     <button
                         type="submit"
-                        disabled={!requirements.every(req => req.met) || password !== confirmPassword}
+                        disabled={!requirements.every(req => req.met) || password !== confirmPassword || loading}
                         className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
                     >
-                        Reset password
+                        {loading ? 'Updating…' : 'Reset password'}
                     </button>
+                    {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
 
                     <div className="text-center pt-2">
                         <Link href="/login" className="inline-flex items-center text-sm font-bold text-muted-foreground hover:text-primary transition-colors group">
