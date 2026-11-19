@@ -55,6 +55,21 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
 
             {product.terms && <RentalTerms terms={product.terms} />}
 
+            {product.additionalChargeDisclosures?.length ? (
+                <section className="section-container additional-charge-disclosures" aria-labelledby="additional-charge-disclosures-title">
+                    <h3 id="additional-charge-disclosures-title" className="section-title">Usage & return policy details</h3>
+                    <p className="additional-charge-disclosures__note">Provider-configured rates and limits are shown for reference only. They are not calculated, charged, or collected here.</p>
+                    <dl className="additional-charge-disclosures__list">
+                        {product.additionalChargeDisclosures.map((item) => (
+                            <div className="additional-charge-disclosures__row" key={item.key}>
+                                <dt>{item.label}</dt>
+                                <dd>{item.displayValue}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                </section>
+            ) : null}
+
             {product.reviews && <CustomerReviews reviews={product.reviews} />}
 
             {/* Sticky Bottom Actions */}

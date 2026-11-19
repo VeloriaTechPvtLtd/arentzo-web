@@ -2149,6 +2149,54 @@
 }
 
 /* Rental Terms */
+.additional-charge-disclosures {
+    border: 1px solid var(--home-border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 24px;
+}
+
+.additional-charge-disclosures__note {
+    color: var(--home-text-muted);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: -10px 0 16px;
+}
+
+.additional-charge-disclosures__list {
+    display: grid;
+    gap: 0;
+}
+
+.additional-charge-disclosures__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid var(--home-border);
+    padding: 12px 0;
+}
+
+.additional-charge-disclosures__row dt {
+    color: var(--home-text-muted);
+    font-size: 13px;
+}
+
+.additional-charge-disclosures__row dd {
+    color: var(--home-text);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+    text-align: right;
+}
+
+@media (max-width: 480px) {
+    .additional-charge-disclosures { padding: 16px; }
+    .additional-charge-disclosures__row { gap: 10px; }
+    .additional-charge-disclosures__row dt,
+    .additional-charge-disclosures__row dd { font-size: 12px; }
+}
+
 .terms-grid {
     display: grid;
     grid-template-columns: 1fr;
