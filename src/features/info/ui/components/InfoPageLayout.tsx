@@ -1,3 +1,5 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import { WaitlistPageShell } from '../../../landing/ui/components/WaitlistPageShell';
 
