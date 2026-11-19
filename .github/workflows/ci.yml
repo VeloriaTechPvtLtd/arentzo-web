@@ -1,0 +1,84 @@
+name: Web CI
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main, feat/mobile-parity-dev]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint, tests, and production build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://ci.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-public-anon-placeholder
+      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3005
+      RESPONSIVE_BASE_URL: http://127.0.0.1:3005
+      RESPONSIVE_ARTIFACT_DIR: ${{ runner.temp }}/arentzo-responsive-evidence
+      CI: true
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@1e60f620b9541d02f11c0590d6dd6c35c9fc0c32
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run deterministic unit tests
+        run: npm run test:unit
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build standalone Next.js server
+        run: npm run build
+
+      - name: Start standalone server and run responsive browser checks
+        shell: bash
+        run: |
+          mkdir -p .next/standalone/.next
+          cp -a .next/static .next/standalone/.next/static
+          cp -a public .next/standalone/public
+          find .next/standalone -maxdepth 1 -type f -name '.env*' -delete
+          pushd .next/standalone >/dev/null
+          HOSTNAME=127.0.0.1 PORT=3005 node server.js >"$RUNNER_TEMP/arentzo-next.log" 2>&1 &
+          server_pid=$!
+          popd >/dev/null
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:3005/ >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:3005/ >/dev/null
+          npm run test:responsive
+
+      - name: Upload browser screenshots after failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: responsive-browser-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/arentzo-responsive-evidence
+          if-no-files-found: ignore
+          retention-days: 7

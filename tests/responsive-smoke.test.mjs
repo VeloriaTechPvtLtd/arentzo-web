@@ -47,7 +47,7 @@ after(async () => browser?.close());
 
 test('launch local Chromium for responsive preview checks', async () => {
   const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
-    ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined);
+    ?? (!process.env.CI && existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined);
   browser = await chromium.launch({ headless: true, executablePath });
   mkdirSync(evidenceDir, { recursive: true });
 });
@@ -55,6 +55,7 @@ test('launch local Chromium for responsive preview checks', async () => {
 for (const viewport of viewports) {
   test(`${viewport.name}: landing and browse expose readable key content without page overflow`, async () => {
     const page = await browser.newPage({ viewport });
+    await installEmptyCatalogFixture(page);
     try {
       await page.goto(`${baseURL}/`, { waitUntil: 'domcontentloaded' });
       const hero = page.getByRole('heading', { name: 'Everything you need, on rent.' });
@@ -65,6 +66,7 @@ for (const viewport of viewports) {
       assert.ok(await subtitle.isVisible());
       assert.ok(await textMeetsMinimum(subtitle, 14));
       assert.match(await page.locator('body').innerText(), /Join Waitlist/);
+      await assertAuthNavigationIsReachable(page);
       await assertNoHorizontalOverflow(page, viewport);
       await page.screenshot({ path: `${evidenceDir}/landing-${viewport.name}.png`, fullPage: true });
 
@@ -73,9 +75,7 @@ for (const viewport of viewports) {
       await heading.waitFor();
       assert.ok(await heading.isVisible());
       assert.ok(await textMeetsMinimum(heading, 20, 1));
-      const browseText = await page.locator('body').innerText();
-      assert.match(browseText, /Login/);
-      assert.match(browseText, /Sign Up/);
+      await page.getByText('No listings are available in this category yet.').waitFor();
       await assertNoHorizontalOverflow(page, viewport);
     } finally {
       await page.close();
@@ -182,6 +182,23 @@ async function installProductFixture(page, { failFirstDetailRequest = false } = 
   return requests;
 }
 
+async function installEmptyCatalogFixture(page) {
+  await page.route('**/rest/v1/**', async (route) => {
+    const request = route.request();
+    const headers = {
+      'access-control-allow-origin': baseURL,
+      'access-control-allow-headers': 'apikey, authorization, x-client-info, content-type, prefer, accept-profile, content-profile',
+      'access-control-allow-methods': 'GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS',
+      'access-control-expose-headers': 'content-range, x-supabase-api-version',
+    };
+    if (request.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers });
+      return;
+    }
+    await route.fulfill({ status: 200, headers, contentType: 'application/json', body: '[]' });
+  });
+}
+
 async function assertNoHorizontalOverflow(page, viewport) {
   const dimensions = await page.evaluate(() => ({
     innerWidth: window.innerWidth,
@@ -193,6 +210,13 @@ async function assertNoHorizontalOverflow(page, viewport) {
     dimensions.documentWidth <= dimensions.innerWidth && dimensions.bodyWidth <= dimensions.innerWidth,
     `unexpected horizontal page overflow at ${viewport.name}: ${JSON.stringify(dimensions)}`,
   );
+}
+
+async function assertAuthNavigationIsReachable(page) {
+  const menuButton = page.getByRole('button', { name: 'Open menu' });
+  if (await menuButton.isVisible()) await menuButton.click();
+  await page.getByRole('link', { name: 'Sign in' }).waitFor();
+  await page.getByRole('link', { name: 'Create account' }).waitFor();
 }
 
 async function textMeetsMinimum(locator, minimumFontSize, minimumLineHeightRatio = 1.15) {
