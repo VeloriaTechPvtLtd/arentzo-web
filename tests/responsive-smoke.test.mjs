@@ -278,10 +278,20 @@ async function assertNoHorizontalOverflow(page, viewport) {
 }
 
 async function assertAuthNavigationIsReachable(page) {
-  const menuButton = page.getByRole('button', { name: 'Open menu' });
-  if (await menuButton.isVisible()) await menuButton.click();
-  await page.getByRole('link', { name: 'Sign in' }).waitFor();
-  await page.getByRole('link', { name: 'Create account' }).waitFor();
+  const navigation = page.locator('.waitlist-nav');
+  // Sign-in remains directly reachable even when the compact menu is closed.
+  await navigation.locator('.waitlist-nav__signin').waitFor();
+  const menuButton = navigation.getByRole('button', { name: 'Open menu' });
+  if (await menuButton.isVisible()) {
+    await menuButton.click();
+    const menu = navigation.locator('#waitlist-mobile-menu');
+    await menu.getByRole('link', { name: 'Sign in', exact: true }).waitFor();
+    await menu.getByRole('link', { name: 'Create account', exact: true }).waitFor();
+    await navigation.getByRole('button', { name: 'Close menu' }).click();
+    await menu.waitFor({ state: 'hidden' });
+  } else {
+    await navigation.getByRole('link', { name: 'Create account', exact: true }).waitFor();
+  }
 }
 
 async function textMeetsMinimum(locator, minimumFontSize, minimumLineHeightRatio = 1.15) {
