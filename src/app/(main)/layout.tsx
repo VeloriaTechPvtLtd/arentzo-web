@@ -18,7 +18,10 @@ export default function MainGroupLayout({
   const { user, loading } = useAuth();
   const requiresAccount = pathname === '/favorites' || pathname === '/my-rentals' || pathname.startsWith('/my-rentals/') || pathname === '/provider-onboarding';
   useEffect(() => {
-    if (!loading && requiresAccount && !user) router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+    if (!loading && requiresAccount && !user) {
+      const next = `${pathname}${window.location.search}`;
+      router.replace(`/login?next=${encodeURIComponent(next)}`);
+    }
   }, [loading, pathname, requiresAccount, router, user]);
   const hideAppHeader =
     pathname === '/' ? !user : isWaitlistMarketingPath(pathname);

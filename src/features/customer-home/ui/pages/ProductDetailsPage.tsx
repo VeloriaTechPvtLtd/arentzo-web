@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { BackHeader } from '../../../../shared/components/layout/BackHeader';
 import { useCart } from '../../../../shared/hooks/useCart';
@@ -11,8 +11,7 @@ import { RelatedProducts } from '../components/product-details/RelatedProducts';
 import { useProductDetails } from '@/features/catalog/ui/hooks/useProductDetails';
 import '../styles/CustomerHome.css';
 
-export const ProductDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+export const ProductDetailsPage: React.FC<{ id: string }> = ({ id }) => {
   const router = useRouter();
   const { addToCart, items: cartItems, updateQuantity } = useCart();
   const { product, related, loading, error, favoriteError, toggleFavorite, retry } = useProductDetails(id);
