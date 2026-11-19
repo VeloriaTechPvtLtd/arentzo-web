@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   package:
-    if: github.ref == 'refs/heads/feat/web-ci-cd-dev' && inputs.confirm_dev_artifact
+    if: github.ref == 'refs/heads/dev' && inputs.confirm_dev_artifact
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
