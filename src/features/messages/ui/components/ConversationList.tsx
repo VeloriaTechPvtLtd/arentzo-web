@@ -13,10 +13,18 @@ export const ConversationList: React.FC<ConversationListProps> = ({ conversation
                 <div
                     key={conv.id}
                     className="conversation-item"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => onSelectConversation(conv)}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            onSelectConversation(conv);
+                        }
+                    }}
                 >
                     <div className="conversation-item__avatar-wrapper">
-                        <img src={conv.participantAvatar} alt={conv.participantName} className="conversation-item__avatar" />
+                        {conv.participantAvatar ? <img src={conv.participantAvatar} alt="" className="conversation-item__avatar" /> : <div className="conversation-item__avatar-placeholder" aria-hidden="true">{conv.participantName.slice(0, 1).toUpperCase()}</div>}
                         {conv.isOnline && <div className="conversation-item__status" />}
                     </div>
                     <div className="conversation-item__info">

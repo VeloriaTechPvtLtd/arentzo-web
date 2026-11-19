@@ -1,37 +1,19 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Calendar, MapPin, Store, Clock, CreditCard, QrCode, RotateCcw, MessageCircle, Star } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { Calendar, MapPin, Store, Clock, CreditCard } from 'lucide-react';
 import { BackHeader } from '../../../../shared/components/layout/BackHeader';
-import { ReportIssueModal } from '../components/ReportIssueModal';
-import { ExtendRentalModal } from '../components/ExtendRentalModal';
-import { CancelRentalModal } from '../components/CancelRentalModal';
-import { PickupPassModal } from '../components/PickupPassModal';
-import { LeaveRatingModal } from '../components/LeaveRatingModal';
-import { ContactSupportModal } from '../components/ContactSupportModal';
-import { RentAgainModal } from '../components/RentAgainModal';
-import { mockRentals } from '../../infrastructure/api/mockRentals';
+import { useCustomerRentals } from '../hooks/useCustomerRentals';
 import '../styles/RentalDetailPage.css';
 
-type ActionModalType =
-    | 'report-issue'
-    | 'extend-rental'
-    | 'cancel-rental'
-    | 'pickup-pass'
-    | 'leave-rating'
-    | 'contact-support'
-    | 'rent-again'
-    | null;
-
-export const RentalDetailPage: React.FC = () => {
+export const RentalDetailPage: React.FC<{ rentalId: string }> = ({ rentalId }) => {
     const router = useRouter();
-    const { id } = useParams() as { id: string };
-    const [activeAction, setActiveAction] = useState<ActionModalType>(null);
+    const { rentals, loading, error } = useCustomerRentals(rentalId);
+    const rental = useMemo(() => rentals[0], [rentals]);
 
-    const rental = useMemo(() => {
-        return mockRentals.find(r => r.id === id);
-    }, [id]);
+    if (loading) return <div className="rental-detail-page"><BackHeader title="Rental Details" /><p role="status">Loading rental…</p></div>;
+    if (error) return <div className="rental-detail-page"><BackHeader title="Rental Details" /><p role="alert">We couldn’t load this rental. Refresh and try again.</p></div>;
 
     if (!rental) {
         return (
@@ -59,7 +41,7 @@ export const RentalDetailPage: React.FC = () => {
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: 'INR',
+            currency: rental.currency || 'INR',
             maximumFractionDigits: 0
         }).format(amount);
     };
@@ -68,104 +50,12 @@ export const RentalDetailPage: React.FC = () => {
         return `rental-detail-page__status-badge rental-detail-page__status-badge--${status}`;
     };
 
-    const handleCloseActionModal = () => {
-        setActiveAction(null);
-    };
-
     const handleBrowseSimilar = () => {
         router.push('/browse');
     };
 
     const renderFooterActions = () => {
-        switch (rental.status) {
-            case 'pending':
-                return (
-                    <>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--destructive"
-                            onClick={() => setActiveAction('cancel-rental')}
-                        >
-                            Cancel Rental
-                        </button>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--primary"
-                            onClick={() => setActiveAction('contact-support')}
-                        >
-                            <MessageCircle size={16} />
-                            Contact Support
-                        </button>
-                    </>
-                );
-            case 'ongoing':
-                return (
-                    <>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--secondary"
-                            onClick={() => setActiveAction('report-issue')}
-                        >
-                            <MessageCircle size={16} />
-                            Report Issue
-                        </button>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--primary"
-                            onClick={() => setActiveAction('extend-rental')}
-                        >
-                            <Clock size={16} />
-                            Extend Rental
-                        </button>
-                    </>
-                );
-            case 'upcoming':
-                return (
-                    <>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--destructive"
-                            onClick={() => setActiveAction('cancel-rental')}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--primary"
-                            onClick={() => setActiveAction('pickup-pass')}
-                        >
-                            <QrCode size={16} />
-                            Pickup Pass
-                        </button>
-                    </>
-                );
-            case 'completed':
-                return (
-                    <>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--secondary"
-                            onClick={() => setActiveAction('leave-rating')}
-                        >
-                            <Star size={16} />
-                            Leave Review
-                        </button>
-                        <button
-                            className="rental-detail-page__btn rental-detail-page__btn--primary"
-                            onClick={() => setActiveAction('rent-again')}
-                        >
-                            <RotateCcw size={16} />
-                            Rent Again
-                        </button>
-                    </>
-                );
-            case 'cancelled':
-                return (
-                    <button
-                        className="rental-detail-page__btn rental-detail-page__btn--primary"
-                        style={{ flex: 1 }}
-                        onClick={handleBrowseSimilar}
-                    >
-                        <RotateCcw size={16} />
-                        Browse Similar Items
-                    </button>
-                );
-            default:
-                return null;
-        }
+        return rental.status === 'cancelled' ? <button className="rental-detail-page__btn rental-detail-page__btn--primary" onClick={handleBrowseSimilar}>Browse Similar Items</button> : <p role="status" className="text-sm text-muted-foreground">Rental changes and handover actions are unavailable while their backend workflows are being verified.</p>;
     };
 
     return (
@@ -246,42 +136,6 @@ export const RentalDetailPage: React.FC = () => {
                 </footer>
             </div>
 
-            {/* Action Modals */}
-            <ReportIssueModal
-                rental={rental}
-                isOpen={activeAction === 'report-issue'}
-                onClose={handleCloseActionModal}
-            />
-            <ExtendRentalModal
-                rental={rental}
-                isOpen={activeAction === 'extend-rental'}
-                onClose={handleCloseActionModal}
-            />
-            <CancelRentalModal
-                rental={rental}
-                isOpen={activeAction === 'cancel-rental'}
-                onClose={handleCloseActionModal}
-            />
-            <PickupPassModal
-                rental={rental}
-                isOpen={activeAction === 'pickup-pass'}
-                onClose={handleCloseActionModal}
-            />
-            <LeaveRatingModal
-                rental={rental}
-                isOpen={activeAction === 'leave-rating'}
-                onClose={handleCloseActionModal}
-            />
-            <ContactSupportModal
-                rental={rental}
-                isOpen={activeAction === 'contact-support'}
-                onClose={handleCloseActionModal}
-            />
-            <RentAgainModal
-                rental={rental}
-                isOpen={activeAction === 'rent-again'}
-                onClose={handleCloseActionModal}
-            />
         </>
     );
 };

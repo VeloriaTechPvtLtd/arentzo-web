@@ -35,7 +35,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     };
 
     return (
-        <section className="px-4 py-8 max-w-7xl mx-auto">
+        <section className="w-full min-w-0 px-4 py-8 max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl md:text-2xl font-bold text-[var(--foreground)] tracking-tight">{title}</h2>
                 {onSeeAll && (

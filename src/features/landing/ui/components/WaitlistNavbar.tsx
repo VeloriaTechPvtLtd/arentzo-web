@@ -97,6 +97,8 @@ export function WaitlistNavbar() {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <Link href="/login" className="hidden rounded-full px-3 py-2 text-sm font-semibold text-foreground hover:text-primary min-[900px]:inline-flex">Sign in</Link>
+          <Link href="/signup" className="hidden rounded-full border border-border px-3 py-2 text-sm font-semibold text-foreground hover:bg-muted min-[900px]:inline-flex">Create account</Link>
           <Button
             type="button"
             onClick={goToWaitlist}
@@ -143,6 +145,10 @@ export function WaitlistNavbar() {
             ))}
           </nav>
           <div className="mt-3 border-t border-border pt-3">
+            <div className="mb-3 grid grid-cols-2 gap-2">
+              <Link href="/login" onClick={() => setMobileOpen(false)} className="rounded-xl border border-border px-3 py-3 text-center text-sm font-semibold">Sign in</Link>
+              <Link href="/signup" onClick={() => setMobileOpen(false)} className="rounded-xl bg-secondary px-3 py-3 text-center text-sm font-semibold text-primary">Create account</Link>
+            </div>
             <Button
               type="button"
               className="w-full font-semibold"

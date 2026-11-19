@@ -1,139 +1,117 @@
-import React from 'react';
-import { Bell, CheckCircle2, Clock, Info, Package, MessageCircle, AlertCircle } from 'lucide-react';
+'use client';
 
-interface Notification {
+import React, { useEffect, useState } from 'react';
+import { AlertCircle, Bell, CheckCircle2, Clock, Info, MessageCircle, Package } from 'lucide-react';
+import { useAuth } from '@/features/auth/ui/context/AuthContext';
+import { getSupabaseClient } from '@/shared/infrastructure/supabase/client';
+
+interface NotificationRecord {
     id: string;
-    title: string;
-    message: string;
-    time: string;
-    type: 'success' | 'warning' | 'info' | 'order' | 'message' | 'alert';
-    isRead: boolean;
+    title: string | null;
+    subtitle: string | null;
+    type: string | null;
+    created_at: string;
+    is_read: boolean | null;
+    redirect_path: string | null;
 }
 
-interface NotificationGroup {
-    title: string;
-    notifications: Notification[];
+function groupName(dateValue: string): string {
+    const date = new Date(dateValue);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    const sameDate = (left: Date, right: Date) => left.toDateString() === right.toDateString();
+    if (sameDate(date, today)) return 'Today';
+    if (sameDate(date, yesterday)) return 'Yesterday';
+    return 'Earlier';
 }
 
-const MOCK_GROUPS: NotificationGroup[] = [
-    {
-        title: 'Today',
-        notifications: [
-            {
-                id: '1',
-                title: 'Order Delivered',
-                message: 'Your order #ORD-102 has been successfully delivered and is ready for use.',
-                time: '2 hours ago',
-                type: 'success',
-                isRead: false
-            },
-            {
-                id: '2',
-                title: 'New Message from Alex',
-                message: 'Hey, is the camera kit available for an extension next week?',
-                time: '5 hours ago',
-                type: 'message',
-                isRead: false
-            }
-        ]
-    },
-    {
-        title: 'Yesterday',
-        notifications: [
-            {
-                id: '3',
-                title: 'Rental Request',
-                message: 'You have a new inquiry for your "Professional DSLR Kit".',
-                time: '1 day ago',
-                type: 'order',
-                isRead: true
-            },
-            {
-                id: '4',
-                title: 'Identity Verification',
-                message: 'Your KYC documents have been successfully verified.',
-                time: '1 day ago',
-                type: 'success',
-                isRead: true
-            }
-        ]
-    },
-    {
-        title: 'Earlier',
-        notifications: [
-            {
-                id: '5',
-                title: 'System Maintenance',
-                message: 'Arentzo will be undergoing maintenance tomorrow at 2 AM.',
-                time: '3 days ago',
-                type: 'info',
-                isRead: true
-            },
-            {
-                id: '6',
-                title: 'Payment Failed',
-                message: 'We couldn\'t process your last rental payment. Please update your card.',
-                time: '5 days ago',
-                type: 'alert',
-                isRead: true
-            }
-        ]
-    }
-];
+function iconFor(type: string | null) {
+    const value = (type || '').toLowerCase();
+    if (value.includes('success') || value.includes('complete')) return <CheckCircle2 size={18} />;
+    if (value.includes('warning') || value.includes('pending')) return <Clock size={18} />;
+    if (value.includes('order') || value.includes('booking') || value.includes('rental')) return <Package size={18} />;
+    if (value.includes('message')) return <MessageCircle size={18} />;
+    if (value.includes('alert') || value.includes('payment')) return <AlertCircle size={18} />;
+    return <Info size={18} />;
+}
 
 export const MyNotifications: React.FC = () => {
-    const getIcon = (type: Notification['type']) => {
-        switch (type) {
-            case 'success': return <CheckCircle2 size={18} />;
-            case 'warning': return <Clock size={18} />;
-            case 'order': return <Package size={18} />;
-            case 'message': return <MessageCircle size={18} />;
-            case 'alert': return <AlertCircle size={18} />;
-            default: return <Info size={18} />;
-        }
-    };
+    const { user } = useAuth();
+    const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        let active = true;
+        const load = async () => {
+            if (!user) {
+                setError('Sign in to view your notifications.');
+                setLoading(false);
+                return;
+            }
+            try {
+                const { data, error: queryError } = await getSupabaseClient().from('notifications')
+                    .select('id,title,subtitle,type,created_at,is_read,redirect_path')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false })
+                    .range(0, 49);
+                if (queryError) throw queryError;
+                if (active) setNotifications((data || []) as NotificationRecord[]);
+            } catch {
+                if (active) setError('Notifications could not be loaded. Please try again.');
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+        void load();
+        return () => { active = false; };
+    }, [user]);
+
+    const groups = notifications.reduce<Record<string, NotificationRecord[]>>((result, notification) => {
+        const key = groupName(notification.created_at);
+        (result[key] ||= []).push(notification);
+        return result;
+    }, {});
 
     return (
         <div className="settings-view">
             <div className="settings-section">
                 <div className="notifications-header-group">
-                    <h3 className="settings-section__title">Your Notifications</h3>
-                    <p className="settings-section__subtitle">Stay updated with your latest activities</p>
+                    <h3 className="settings-section__title">Your notifications</h3>
+                    <p className="settings-section__subtitle">Updates for your account and rentals.</p>
                 </div>
-
-                <div className="notifications-container mt-6">
-                    {MOCK_GROUPS.length > 0 ? (
-                        MOCK_GROUPS.map((group) => (
-                            <div key={group.title} className="notification-group">
-                                <h4 className="notification-group__title">{group.title}</h4>
+                {loading ? <p role="status">Loading notifications…</p> : null}
+                {error ? <p role="alert">{error}</p> : null}
+                {!loading && !error && notifications.length === 0 ? (
+                    <div className="messages-panel__empty">
+                        <Bell size={28} />
+                        <p>You’re all caught up.</p>
+                    </div>
+                ) : null}
+                {!loading && !error && notifications.length > 0 ? (
+                    <div className="notifications-container mt-6">
+                        {Object.entries(groups).map(([title, items]) => (
+                            <div key={title} className="notification-group">
+                                <h4 className="notification-group__title">{title}</h4>
                                 <div className="notification-group__list">
-                                    {group.notifications.map((notif) => (
-                                        <div key={notif.id} className={`notification-item ${!notif.isRead ? 'notification-item--unread' : ''}`}>
-                                            <div className={`notification-item__icon notification-item__icon--${notif.type}`}>
-                                                {getIcon(notif.type)}
+                                    {items.map((notification) => (
+                                        <article key={notification.id} className={`notification-item ${notification.is_read ? '' : 'notification-item--unread'}`}>
+                                            <div className={`notification-item__icon notification-item__icon--${(notification.type || 'info').toLowerCase()}`}>
+                                                {iconFor(notification.type)}
                                             </div>
                                             <div className="notification-item__content">
-                                                <div className="notification-item__header">
-                                                    <h5 className="notification-item__title">{notif.title}</h5>
-                                                    <span className="notification-item__time">{notif.time}</span>
-                                                </div>
-                                                <p className="notification-item__message">{notif.message}</p>
+                                                <h5 className="notification-item__title">{notification.title || 'Arentzo update'}</h5>
+                                                <p className="notification-item__message">{notification.subtitle || ''}</p>
+                                                <time dateTime={notification.created_at}>{new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(notification.created_at))}</time>
                                             </div>
-                                            {!notif.isRead && <div className="notification-item__unread-dot" />}
-                                        </div>
+                                        </article>
                                     ))}
                                 </div>
                             </div>
-                        ))
-                    ) : (
-                        <div className="notification-empty-state">
-                            <div className="notification-empty-icon">
-                                <Bell size={40} />
-                            </div>
-                            <p className="notification-empty-text">No notifications yet</p>
-                        </div>
-                    )}
-                </div>
+                        ))}
+                    </div>
+                ) : null}
             </div>
         </div>
     );

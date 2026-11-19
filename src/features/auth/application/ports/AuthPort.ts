@@ -12,11 +12,12 @@ export interface AuthPort {
      */
     verifyOtp(email: string, otp: string): Promise<Session>;
     
-    signUp(email: string, name: string): Promise<void>;
+    signUp(email: string, password: string, name: string): Promise<Session | null>;
     
     forgotPassword(email: string): Promise<void>;
     verifyResetOtp(email: string, otp: string): Promise<boolean>;
     resetPassword(email: string, otp: string, password: string): Promise<void>;
+    updatePassword(password: string): Promise<void>;
     
     signOut(): Promise<void>;
 
@@ -29,4 +30,6 @@ export interface AuthPort {
      * Refreshes the session token
      */
     refreshSession(refreshToken: string): Promise<Session>;
+    subscribeToAuthChanges(listener: (session: Session | null) => void): () => void;
+    completeAuthCallback(code: string): Promise<Session>;
 }

@@ -6,7 +6,7 @@
     z-index: 1000;
     background: var(--card);
     border-bottom: 2px solid var(--border);
-    transition: all 0.3s ease;
+    transition: all var(--motion-standard) ease;
     height: 72px;
     display: flex;
     align-items: center;

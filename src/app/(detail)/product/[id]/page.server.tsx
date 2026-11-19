@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default function ProductDetailsRoute() {
-  return <ProductDetailsPage />;
+export default async function ProductDetailsRoute({ params }: Props) {
+  const { id } = await params;
+  return <ProductDetailsPage id={id} />;
 }

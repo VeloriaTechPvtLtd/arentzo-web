@@ -9,8 +9,8 @@ export interface Offer {
     startDate: string;
     endDate: string;
     applicableProductIds: string[];
-    revenueGenerated: number;
-    totalSales: number;
+    revenueGenerated?: number;
+    totalSales?: number;
     targetAudience?: string;
     termsAndConditions?: string;
     spendingLimit?: number;

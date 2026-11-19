@@ -21,7 +21,6 @@ export const AppHeader: React.FC = () => {
   const {
     openProfile,
     openMessages,
-    openAuth,
   } = useDrawer();
 
   const isAuthPage = [
@@ -160,10 +159,10 @@ export const AppHeader: React.FC = () => {
             </>
           ) : (
             <div className="app-header__auth-btns">
-              <button className="app-header__login-btn" onClick={openAuth}>
+              <button className="app-header__login-btn" onClick={() => router.push(`/login?next=${encodeURIComponent(pathname)}`)}>
                 Login
               </button>
-              <button className="app-header__signup-btn" onClick={openAuth}>
+              <button className="app-header__signup-btn" onClick={() => router.push(`/signup?next=${encodeURIComponent(pathname)}`)}>
                 Sign Up
               </button>
             </div>

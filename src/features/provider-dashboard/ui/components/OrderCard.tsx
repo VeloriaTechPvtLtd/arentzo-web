@@ -17,7 +17,10 @@ interface OrderCardProps {
 
 export const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-IN', {
+        if (!dateString) return 'Not provided';
+        const date = new Date(dateString);
+        if (Number.isNaN(date.valueOf())) return 'Not provided';
+        return date.toLocaleDateString('en-IN', {
             day: '2-digit',
             month: 'short'
         });
@@ -74,7 +77,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
                     <span className="order-amount-label">Total Amount</span>
                     <div className="order-amount-value">
                         <IndianRupee size={16} />
-                        <span>{order.totalAmount.toLocaleString('en-IN')}</span>
+                        <span>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: order.currency || 'INR' }).format(order.totalAmount)}</span>
                     </div>
                 </div>
                 <div className="order-badges">

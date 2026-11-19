@@ -38,8 +38,8 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ email, otp
             setTimeout(() => {
                 onSuccess();
             }, 2000);
-        } catch (err: any) {
-            setError(err.message || 'Failed to reset password');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to reset password');
         }
     };
 

@@ -41,10 +41,7 @@ export const GlobalDrawers: React.FC = () => {
                     <div className="checkout-panel__content" style={{ padding: 0 }}>
                         <SelectDeliveryLocation
                             showActions={true}
-                            onSelect={() => {
-                                // selected location handled in callback above
-                                closeLocation();
-                            }}
+                            onSelect={() => closeLocation()}
                         />
                     </div>
                 </div>

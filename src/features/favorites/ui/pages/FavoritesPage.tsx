@@ -1,25 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { ProductCard } from '../../../../shared/components/ui/ProductCard';
-import { mockProducts } from '../../../customer-home/infrastructure/api/mockData';
+import { useFavoriteProducts } from '../../../catalog/ui/hooks/useCatalogProducts';
+import { useCart } from '@/shared/hooks/useCart';
 import '../styles/FavoritesPage.css';
 
 export const FavoritesPage: React.FC = () => {
     const router = useRouter();
-    const [favorites, setFavorites] = useState(mockProducts.filter(p => p.isFavorite));
-
-    const handleFavoriteToggle = (productId: string) => {
-        setFavorites(prev => prev.filter(p => p.id !== productId));
-        // In a real app, this would call an API
-    };
-
-    const handleAddToCart = (_productId: string) => {
-        // 'added to cart' handled in addToCart callback above
-        // In a real app, this would use CartContext
-    };
+    const { products: favorites, loading, error, removeFavorite } = useFavoriteProducts();
+    const { addToCart } = useCart();
 
     return (
         <div className="favorites-page">
@@ -31,18 +23,21 @@ export const FavoritesPage: React.FC = () => {
                     </p>
                 </header>
 
-                {favorites.length > 0 ? (
+                {loading ? <p role="status">Loading your saved listings…</p> : null}
+                {error ? <p role="alert">We couldn’t load your saved listings. Refresh and try again.</p> : null}
+                {!loading && !error && favorites.length > 0 ? (
                     <div className="favorites-grid">
                         {favorites.map((product) => (
                             <ProductCard
                                 key={product.id}
                                 product={product}
-                                onFavoriteToggle={handleFavoriteToggle}
-                                onAddToCart={handleAddToCart}
+                                onFavoriteToggle={removeFavorite}
+                                onAddToCart={(id) => { const product = favorites.find((item) => item.id === id); if (product) addToCart(product); }}
                             />
                         ))}
                     </div>
-                ) : (
+                ) : null}
+                {!loading && !error && favorites.length === 0 ? (
                     <div className="empty-favorites">
                         <Heart className="empty-icon" />
                         <h2 className="empty-text">Your list is empty</h2>
@@ -56,9 +51,9 @@ export const FavoritesPage: React.FC = () => {
                             Start Exploring
                         </button>
                     </div>
-                )}
+                ) : null}
 
-                {favorites.length > 0 && (
+                {!loading && !error && favorites.length > 0 && (
                     <div className="mt-12 p-6 rounded-2xl bg-secondary/30 border border-border flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -66,7 +61,7 @@ export const FavoritesPage: React.FC = () => {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-foreground">Ready to rent?</h3>
-                                <p className="text-sm text-muted-foreground">Add your favorites to cart and check out in minutes.</p>
+                                <p className="text-sm text-muted-foreground">Save listings here and add an item to your cart when you are ready.</p>
                             </div>
                         </div>
                         <button

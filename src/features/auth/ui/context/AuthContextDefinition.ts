@@ -5,12 +5,14 @@ export interface AuthContextType {
     user: User | null;
     session: Session | null;
     loading: boolean;
-    signIn: (email: string, password?: string) => Promise<void>;
+    signIn: (email: string, password: string) => Promise<void>;
     verifyOtp: (email: string, otp: string) => Promise<void>;
-    signUp: (email: string, name: string) => Promise<void>;
+    signUp: (email: string, name: string, password: string) => Promise<boolean>;
     forgotPassword: (email: string) => Promise<void>;
     verifyResetOtp: (email: string, otp: string) => Promise<boolean>;
     resetPassword: (email: string, otp: string, password: string) => Promise<void>;
+    updatePassword: (password: string) => Promise<void>;
+    completeAuthCallback: (code: string) => Promise<void>;
     signOut: () => Promise<void>;
     activeRole: UserRole;
     switchRole: (role: UserRole) => void;

@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
     Search,
     Filter,
     Plus
 } from 'lucide-react';
-import { mockProducts, type Product } from '../../infrastructure/api/productsMockData';
-import { AddProductForm } from '../components/AddProductForm';
+import type { Product } from '../../infrastructure/api/productsMockData';
 import { useProviderFilters } from '../hooks/useProviderFilters';
 import { ProviderFilterModal, type FilterDefinition } from '../components/ProviderFilterModal';
 import { ProductCard } from '../components/ProductCard';
 import { ProductDetailsDrawer } from '../components/ProductDetailsDrawer';
 import '../styles/ProviderProductsPage.css';
+import { useProviderProducts } from '../hooks/useProviderRecords';
 
 export const ProviderProductsPage: React.FC = () => {
     const {
@@ -33,10 +33,10 @@ export const ProviderProductsPage: React.FC = () => {
         stockRange: { min: null, max: null } as { min: number | null; max: number | null }
     });
 
-    const [showAddProduct, setShowAddProduct] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const { items: products, loading, error } = useProviderProducts();
 
-    const uniqueCategories = Array.from(new Set(mockProducts.map(p => p.category)));
+    const uniqueCategories = useMemo(() => Array.from(new Set(products.map(p => p.category))), [products]);
 
     const filterDefinitions: FilterDefinition[] = [
         {
@@ -83,7 +83,7 @@ export const ProviderProductsPage: React.FC = () => {
         }
     ];
 
-    const filteredProducts = mockProducts.filter(product => {
+    const filteredProducts = products.filter(product => {
         const matchesSearch =
             product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             product.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -129,38 +129,34 @@ export const ProviderProductsPage: React.FC = () => {
                         )}
                     </button>
 
-                    <button className="create-product-btn" onClick={() => setShowAddProduct(true)}>
+                    <button className="create-product-btn" disabled title="Provider listing writes are awaiting backend verification">
                         <Plus size={20} />
-                        <span>Add Product</span>
+                        <span>Add Product unavailable</span>
                     </button>
                 </div>
             </div>
 
             {/* Product Grid View */}
+            {loading ? <p role="status">Loading provider listings…</p> : null}
+            {error ? <p role="alert">We couldn’t load provider listings. Refresh and try again.</p> : null}
+            {!loading && !error ? <p role="status" className="mb-3 text-sm text-muted-foreground">Listing changes are disabled until provider-write workflows are verified.</p> : null}
             <div className="products-grid">
-                {filteredProducts.map((product) => (
+                {!loading && !error ? filteredProducts.map((product) => (
                     <ProductCard
                         key={product.id}
                         product={product}
                         onClick={() => setSelectedProduct(product)}
                     />
-                ))}
+                )) : null}
             </div>
 
-            {filteredProducts.length === 0 && (
+            {!loading && !error && filteredProducts.length === 0 && (
                 <div className="no-results">
                     <p>No products found matching your criteria.</p>
                     <button onClick={resetFilters} className="text-primary hover:underline mt-2">
                         Clear all filters
                     </button>
                 </div>
-            )}
-
-            {showAddProduct && (
-                <AddProductForm
-                    onClose={() => setShowAddProduct(false)}
-                    onSuccess={() => setShowAddProduct(false)}
-                />
             )}
 
             <ProviderFilterModal

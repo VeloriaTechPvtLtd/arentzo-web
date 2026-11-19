@@ -5,15 +5,16 @@ import { useRouter } from 'next/navigation';
 import { Calendar, History, Clock, CheckCircle2, Box, AlertCircle, LayoutGrid } from 'lucide-react';
 import { RentalCard } from '../components/RentalCard';
 import { RentalTabs } from '../components/RentalTabs';
-import { mockRentals } from '../../infrastructure/api/mockRentals';
+import { useCustomerRentals } from '../hooks/useCustomerRentals';
 import type { RentalStatus } from '../../domain/entities';
 import '../styles/MyRentalsPage.css';
 
 export const MyRentalsPage: React.FC = () => {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<RentalStatus | 'all'>('all');
+    const { rentals, loading, error } = useCustomerRentals();
 
-    const filteredRentals = mockRentals.filter(rental => {
+    const filteredRentals = rentals.filter(rental => {
         return activeTab === 'all' || rental.status === activeTab;
     });
 
@@ -27,7 +28,7 @@ export const MyRentalsPage: React.FC = () => {
     ];
 
     const handleRentalClick = (rentalId: string) => {
-        router.push(`/my-rentals/${rentalId}`);
+        router.push(`/my-rentals/?id=${encodeURIComponent(rentalId)}`);
     };
 
     return (
@@ -43,7 +44,9 @@ export const MyRentalsPage: React.FC = () => {
             </header>
 
             <main className="rentals-content">
-                {filteredRentals.length > 0 ? (
+                {loading ? <p role="status">Loading your rentals…</p> : null}
+                {error ? <p role="alert">We couldn’t load your rentals. Refresh and try again.</p> : null}
+                {!loading && !error && filteredRentals.length > 0 ? (
                     <div className="rentals-grid">
                         {filteredRentals.map((rental) => (
                             <RentalCard
@@ -53,7 +56,8 @@ export const MyRentalsPage: React.FC = () => {
                             />
                         ))}
                     </div>
-                ) : (
+                ) : null}
+                {!loading && !error && filteredRentals.length === 0 ? (
                     <div className="empty-state">
                         <div className="empty-state__icon">
                             <Box size={40} />
@@ -64,7 +68,7 @@ export const MyRentalsPage: React.FC = () => {
                             Browse Items
                         </button>
                     </div>
-                )}
+                ) : null}
             </main>
         </div>
     );
