@@ -6,8 +6,8 @@ const id='00000000-0000-4000-8000-000000000002';
 const productId='00000000-0000-4000-8000-000000000003';
 function fixture({auth=true,error=null,throws=null,expectedUserId}={}) {
  const calls=[];let currentTable;
- const chain=new Proxy({}, {get(_,method){if(method==='then')return (resolve,reject)=>currentTable==='products'?resolve({data:[{id:productId,is_active:true,quantity_available:10}]}):throws?reject(throws):resolve({data:[{id,user_id:uid}],error});return (...args)=>{calls.push([method,...args]);return chain;};}});
- const client={auth:{getUser:async()=>{calls.push(['getUser']);return {data:{user:auth?{id:uid}:null},error:null};}},from:(...args)=>{currentTable=args[0];calls.push(['from',...args]);return chain;},rpc:(...args)=>{calls.push(['rpc',...args]);return chain;}};
+ const chain=new Proxy({}, {get(_,method){if(method==='then')return (resolve,reject)=>currentTable==='products'?resolve({data:[{id:productId,is_active:true,quantity_available:10}]}):throws?reject(throws):resolve({data:[{id,user_id:uid,product_id:productId}],error});return (...args)=>{calls.push([method,...args]);return chain;};}});
+ const client={auth:{getUser:async()=>{calls.push(['getUser']);return {data:{user:auth?{id:uid}:null},error:null};}},from:(...args)=>{currentTable=args[0];calls.push(['from',...args]);return chain;},rpc:(...args)=>{calls.push(['rpc',...args]);return Promise.resolve({data:{available:true,conflicts:[]}});}};
  return {repo:createCartRepository(client,expectedUserId),calls};
 }
 const dates={start:'2030-01-01T10:00:00+05:30',end:'2030-01-02T10:00:00+05:30'};

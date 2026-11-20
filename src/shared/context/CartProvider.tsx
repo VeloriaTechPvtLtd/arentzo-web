@@ -19,7 +19,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [guest, setGuest] = useState<CartItem[]>([]);
   const [ready, setReady] = useState(false);
   const [account, setAccount] = useState<{owner: string; items: CartItem[]}>({owner:'',items:[]});
-  const [status, setStatus] = useState<{owner:string; busy:boolean; error:string; advisory:string}>({owner:'',busy:false,error:'',advisory:''});
+  const [status, setStatus] = useState<{owner:string; busy:boolean; error:string; advisory:string; conflicts?:{cartItemId:string;message:string}[] }>({owner:'',busy:false,error:'',advisory:''});
   const generation = useRef(0);
   const lock = useRef(false);
   const items = useMemo(() => owner ? account.owner === owner ? account.items : [] : guest, [owner, account, guest]);
@@ -95,12 +95,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const epoch=++generation.current;lock.current=true;setStatus({owner,busy:true,error:'',advisory:''});
     try{
       const result=await repo().checkAvailability(ids);
-      if(epoch===generation.current)setStatus({owner,busy:false,error:'',advisory:result.available?'No conflicts reported for saved items. This is not a reservation or price guarantee.':'Saved items have availability conflicts. Review dates and quantities; nothing has been booked.'});
+      if(epoch===generation.current)setStatus({owner,busy:false,error:'',conflicts:result.conflicts,advisory:result.available?'No conflicts reported for saved items. This is not a reservation or price guarantee.':'Saved items have availability conflicts. Review dates and quantities; nothing has been booked.'});
     }catch{if(epoch===generation.current)setStatus({owner,busy:false,error:'Availability could not be checked. Nothing has been booked.',advisory:''});}
     finally{if(epoch===generation.current)lock.current=false;}
   },[owner,items,repo]);
   const clearCart=useCallback(()=>{if(!owner)setGuest([]);},[owner]);
   const totalItems=useMemo(()=>items.reduce((n,i)=>n+i.quantity,0),[items]);
   const totalPrice=useMemo(()=>items.reduce((n,i)=>n+i.product.price*i.quantity,0),[items]);
-  return <CartContext.Provider value={{items,addToCart,removeFromCart,updateQuantity,clearCart,totalItems,totalPrice,signedIn:!!owner,busy:status.owner===owner&&status.busy,error:status.owner===owner?status.error:'',advisory:status.owner===owner?status.advisory:'',refresh:()=>void refresh(),saveDates,checkAvailability:()=>void checkAvailability()}}>{children}</CartContext.Provider>;
+  return <CartContext.Provider value={{items,addToCart,removeFromCart,updateQuantity,clearCart,totalItems,totalPrice,signedIn:!!owner,busy:status.owner===owner&&status.busy,error:status.owner===owner?status.error:'',advisory:status.owner===owner?status.advisory:'',conflicts:status.owner===owner?status.conflicts||[]:[],refresh:()=>void refresh(),saveDates,checkAvailability:()=>void checkAvailability()}}>{children}</CartContext.Provider>;
 };

@@ -1,3 +1,4 @@
+import {parseCheckoutPreflight} from '../../checkout/domain/checkoutPreflight.mjs';
 import {CartError,uuid,quantity,dateFields,updateFields} from '../domain/cartValidation.mjs';
 export {CartError};
 
@@ -82,10 +83,20 @@ export function createCartRepository(client, expectedUserId, {timeoutMs=15000}={
       const user=await userId();
       if(!Array.isArray(ids)||!ids.length||new Set(ids).size!==ids.length) throw new CartError('validation','Select unique cart items.');
       ids.forEach(id=>uuid(id,'Cart item ID'));
-      const owned=await execute(()=>client.from('cart_items').select('id').eq('user_id',user).in('id',ids));
+      const owned=await execute(()=>client.from('cart_items').select('id,product_id').eq('user_id',user).in('id',ids));
       if(owned.length!==ids.length||ids.some(id=>!owned.some(row=>row.id===id))) throw new CartError('validation','Refresh your cart before checking availability.');
-      // Advisory only: never a booking, price guarantee or capacity reservation.
-      return execute(()=>client.rpc('check_cart_availability',{p_cart_item_ids:ids}));
+      // The RPC inner-joins products and otherwise omits vanished rows. Fail closed.
+      const productIds=[...new Set(owned.map(row=>uuid(row.product_id,'Product ID')))];
+      for(let offset=0;offset<productIds.length;offset+=100) {
+        if(await userId()!==user) throw new CartError('unauthenticated','Your account changed. Reload the cart.');
+        const batch=productIds.slice(offset,offset+100);
+        const products=await execute(()=>client.from('products').select('id').in('id',batch));
+        if(batch.some(id=>!products.some(product=>product.id===id))) throw new CartError('not_found','A saved listing is no longer accessible. Reload your cart before continuing.');
+      }
+      if(await userId()!==user) throw new CartError('unauthenticated','Your account changed. Reload the cart.');
+      const result=await execute(()=>client.rpc('check_cart_availability',{p_cart_item_ids:ids}));
+      if(await userId()!==user) throw new CartError('unauthenticated','Your account changed. Reload the cart.');
+      return parseCheckoutPreflight(result,ids);
     },
   };
 }

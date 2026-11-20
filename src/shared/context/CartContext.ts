@@ -13,6 +13,7 @@ export interface CartContextType {
     busy: boolean;
     error: string;
     advisory: string;
+    conflicts: { cartItemId: string; message: string }[];
     refresh: () => void;
     saveDates: (id: string, start: string, end: string, quantity: number) => void;
     checkAvailability: () => void;

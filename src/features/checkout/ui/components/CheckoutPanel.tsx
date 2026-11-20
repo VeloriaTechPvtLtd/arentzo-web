@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '@/shared/hooks/useCart';
 import type { CartItem } from '@/shared/types/product';
+import { CheckoutRecovery } from './CheckoutRecovery';
 import { CheckoutHeader } from './CheckoutHeader';
 import '../styles/Checkout.css';
 interface CheckoutPanelProps { isOpen: boolean; onClose: () => void; }
@@ -18,7 +19,7 @@ function Dates({item,disabled,onSave}:{item:CartItem;disabled:boolean;onSave:(id
   </form>;
 }
 export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose }) => {
-  const { items,updateQuantity,removeFromCart,signedIn,busy,error,advisory,refresh,saveDates,checkAvailability }=useCart();
+  const { items,updateQuantity,removeFromCart,signedIn,busy,error,advisory,conflicts,refresh,saveDates,checkAvailability }=useCart();
   useEffect(()=>{if(!isOpen)return;const old=document.body.style.overflow;document.body.style.overflow='hidden';return()=>{document.body.style.overflow=old;};},[isOpen]);
   useEffect(()=>{if(!isOpen)return;const key=(e:KeyboardEvent)=>{if(e.key==='Escape')onClose();};document.addEventListener('keydown',key);return()=>document.removeEventListener('keydown',key);},[isOpen,onClose]);
   if(!isOpen)return null;
@@ -41,8 +42,10 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({ isOpen, onClose })
             <button className="rounded border p-2" aria-label={`Increase ${item.product.name} quantity`} disabled={busy||!!error||!!(item.saved&&item.rentalType!=='daily')} onClick={()=>updateQuantity(item.id,item.quantity+1)}><Plus size={16}/></button>
             <button className="ml-auto p-2 text-destructive" aria-label={`Remove ${item.product.name}`} disabled={busy||!!error} onClick={()=>removeFromCart(item.id)}><Trash2 size={18}/></button>
           </div>
+          {conflicts.filter(conflict=>conflict.cartItemId===item.id).map((conflict,index)=><p key={index} role="status" className="mt-3 text-sm text-destructive">{conflict.message}</p>)}
           {signedIn?<Dates item={item} disabled={busy||!!error} onSave={saveDates}/>:null}
         </li>)}</ul>:<p className="py-8 text-center">Your cart is empty. Browse listings to add items.</p>}
+        {signedIn?<CheckoutRecovery/>:null}
       </div>
       <footer className="border-t border-border p-5">
         {signedIn?<button className="mb-3 w-full rounded border border-border p-3" disabled={busy||!!error||!items.some(i=>i.saved)} onClick={checkAvailability}>Check saved-item availability</button>:null}

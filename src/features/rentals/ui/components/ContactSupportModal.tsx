@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Phone, Mail, MessageCircle, Send, CheckCircle2, HelpCircle, ChevronRight } from 'lucide-react';
+import { X, Phone, Mail, MessageCircle, Send, HelpCircle, ChevronRight } from 'lucide-react';
 import type { Rental } from '../../domain/entities';
 import '../styles/RentalActionModals.css';
 
@@ -18,15 +18,14 @@ const SUPPORT_SUBJECTS = [
 ];
 
 const FAQ_LINKS = [
-    { label: 'How long does order confirmation take?', href: '#' },
-    { label: 'Can I change my pickup date?', href: '#' },
-    { label: 'What is the refund policy?', href: '#' },
+    { label: 'How long does order confirmation take?', href: '/faqs' },
+    { label: 'Can I change my pickup date?', href: '/faqs' },
+    { label: 'What is the refund policy?', href: '/terms-and-conditions' },
 ];
 
 export const ContactSupportModal: React.FC<ContactSupportModalProps> = ({ rental, isOpen, onClose }) => {
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
     if (!isOpen) return null;
 
@@ -39,51 +38,12 @@ export const ContactSupportModal: React.FC<ContactSupportModalProps> = ({ rental
     const handleClose = () => {
         setSubject('');
         setMessage('');
-        setIsSubmitted(false);
         onClose();
     };
 
-    const handleSubmit = () => {
-        if (!subject || !message.trim()) return;
-        setIsSubmitted(true);
-    };
-
     const isFormValid = subject && message.trim().length > 10;
-
-    if (isSubmitted) {
-        return (
-            <div className="rental-action-modal" onClick={handleBackdropClick}>
-                <div className="rental-action-modal__container">
-                    <header className="rental-action-modal__header">
-                        <h2 className="rental-action-modal__title">Contact Support</h2>
-                        <button className="rental-action-modal__close-btn" onClick={handleClose}>
-                            <X size={20} />
-                        </button>
-                    </header>
-                    <div className="rental-action-modal__content">
-                        <div className="rental-action-modal__success">
-                            <div className="rental-action-modal__success-icon">
-                                <CheckCircle2 size={40} />
-                            </div>
-                            <h3 className="rental-action-modal__success-title">Message Sent</h3>
-                            <p className="rental-action-modal__success-text">
-                                Our support team will get back to you within 2-4 hours.
-                            </p>
-                        </div>
-                    </div>
-                    <footer className="rental-action-modal__footer">
-                        <button
-                            className="rental-action-modal__btn rental-action-modal__btn--primary"
-                            onClick={handleClose}
-                            style={{ flex: 1 }}
-                        >
-                            Done
-                        </button>
-                    </footer>
-                </div>
-            </div>
-        );
-    }
+    const selectedSubject = SUPPORT_SUBJECTS.find((item) => item.value === subject)?.label ?? 'Rental support';
+    const emailHref = `mailto:support@arentzo.com?subject=${encodeURIComponent(`${selectedSubject} — rental ${rental.id}`)}&body=${encodeURIComponent(`Rental ID: ${rental.id}\n\n${message.trim()}`)}`;
 
     return (
         <div className="rental-action-modal" onClick={handleBackdropClick}>
@@ -97,18 +57,18 @@ export const ContactSupportModal: React.FC<ContactSupportModalProps> = ({ rental
 
                 <div className="rental-action-modal__content">
                     <div className="rental-action-modal__contact-options">
-                        <button className="rental-action-modal__contact-option">
+                        <a className="rental-action-modal__contact-option" href="tel:+916361562262">
                             <Phone size={24} />
                             <span>Call</span>
-                        </button>
-                        <button className="rental-action-modal__contact-option">
+                        </a>
+                        <a className="rental-action-modal__contact-option" href="mailto:support@arentzo.com">
                             <Mail size={24} />
                             <span>Email</span>
-                        </button>
-                        <button className="rental-action-modal__contact-option">
+                        </a>
+                        <a className="rental-action-modal__contact-option" href="/contact-us">
                             <MessageCircle size={24} />
-                            <span>Chat</span>
-                        </button>
+                            <span>Help</span>
+                        </a>
                     </div>
 
                     <div className="rental-action-modal__info-card">
@@ -167,14 +127,17 @@ export const ContactSupportModal: React.FC<ContactSupportModalProps> = ({ rental
                     >
                         Cancel
                     </button>
-                    <button
-                        className="rental-action-modal__btn rental-action-modal__btn--primary"
-                        onClick={handleSubmit}
-                        disabled={!isFormValid}
-                    >
-                        <Send size={16} />
-                        Send Message
-                    </button>
+                    {isFormValid ? (
+                        <a className="rental-action-modal__btn rental-action-modal__btn--primary" href={emailHref}>
+                            <Send size={16} />
+                            Open email draft
+                        </a>
+                    ) : (
+                        <button className="rental-action-modal__btn rental-action-modal__btn--primary" disabled>
+                            <Send size={16} />
+                            Open email draft
+                        </button>
+                    )}
                 </footer>
             </div>
         </div>
