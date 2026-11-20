@@ -11,6 +11,7 @@ import { ProviderFilterModal, type FilterDefinition } from '../components/Provid
 import { ProductCard } from '../components/ProductCard';
 import { ProductDetailsDrawer } from '../components/ProductDetailsDrawer';
 import '../styles/ProviderProductsPage.css';
+import { PrivateDraftForm } from '../components/PrivateDraftForm';
 import { useProviderProducts } from '../hooks/useProviderRecords';
 
 export const ProviderProductsPage: React.FC = () => {
@@ -131,10 +132,11 @@ export const ProviderProductsPage: React.FC = () => {
                 </div>
             </div>
 
+            <PrivateDraftForm onSaved={retry} />
             {/* Product Grid View */}
             {loading ? <p role="status">Loading provider listings…</p> : null}
             {error ? <div role="alert">We couldn’t load provider listings. <button onClick={retry}>Try again</button></div> : null}
-            {!loading && !error ? <p role="status" className="mb-3 text-sm text-muted-foreground">Listing changes are disabled until provider-write workflows are verified.</p> : null}
+            {!loading && !error ? <p role="status" className="mb-3 text-sm text-muted-foreground">Existing listing edits, uploads and publication are not available here.</p> : null}
             <div className="products-grid">
                 {!loading && !error ? filteredProducts.map((product) => (
                     <ProductCard
