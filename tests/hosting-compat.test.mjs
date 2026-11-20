@@ -179,7 +179,11 @@ for (const viewport of viewports) {
       await page.getByRole('heading', { name: 'Check your booking status' }).waitFor();
       const signIn = page.getByRole('link', { name: 'Sign in to check status' });
       await signIn.waitFor();
-      assert.equal(await signIn.getAttribute('href'), '/login?next=%2Fcheckout%2Freturn%2F');
+      const signInUrl = new URL(await signIn.getAttribute('href'), baseURL);
+      assert.equal(signInUrl.origin, new URL(baseURL).origin);
+      assert.match(signInUrl.pathname, /^\/login\/?$/);
+      assert.deepEqual([...signInUrl.searchParams.entries()], [['next', '/checkout/return/']]);
+      assert.equal(signInUrl.hash, '');
       assert.equal(await page.getByText('Payment successful', { exact: true }).count(), 0);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.reload({ waitUntil: 'networkidle' });
