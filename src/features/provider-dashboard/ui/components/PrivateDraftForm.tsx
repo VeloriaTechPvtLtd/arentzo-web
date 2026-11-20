@@ -22,6 +22,7 @@ function OwnedDraftForm({owner,providerId,url,onSaved}:{owner:string;providerId:
     const [saving,setSaving]=useState(false);
     const [message,setMessage]=useState('');
     const [saved,setSaved]=useState(false);
+    const [rejected,setRejected]=useState(false);
     const [restored,setRestored]=useState(false);
     const alive=useRef(true);
     const inFlight=useRef(false);
@@ -42,7 +43,7 @@ function OwnedDraftForm({owner,providerId,url,onSaved}:{owner:string;providerId:
         return()=>{active=false;};
     },[url,attempt]);
     async function submit(event:React.FormEvent) {
-        event.preventDefault();if(inFlight.current||saved||!restored)return;
+        event.preventDefault();if(inFlight.current||saved||rejected||!restored)return;
         if(!draft.title.trim()||!draft.description.trim()||!draft.categoryId||!draft.subcategoryId){setMessage('Enter a title, description and matching category before saving.');requestAnimationFrame(()=>status.current?.focus());return;}
         inFlight.current=true;setSaving(true);setMessage('Saving private draft…');
         try {
@@ -54,7 +55,7 @@ function OwnedDraftForm({owner,providerId,url,onSaved}:{owner:string;providerId:
             setSaved(true);setMessage(`Private draft saved. ID: ${value.productId}. It is inactive and has not been submitted or published.`);
             try {sessionStorage.removeItem(key);} catch { /* Save is confirmed; recovery remains idempotent. */ }
             try {onSaved();} catch { /* Refresh failure cannot undo a confirmed save. */ }
-        } catch {if(alive.current)setMessage('Save not confirmed. Keep these details and choose Retry save. An existing matching draft will be recovered rather than duplicated.');}
+        } catch (error) {if(alive.current){if(error instanceof Error && error.name==='DraftRejected'){setRejected(true);setMessage('The database rejected this save. This attempt did not create a new draft. Saving is stopped; ask for the configuration to be checked.');}else setMessage('Save not confirmed. Keep these details and choose Retry save. An existing matching draft will be recovered rather than duplicated.');}}
         finally {inFlight.current=false;if(alive.current){setSaving(false);requestAnimationFrame(()=>status.current?.focus());}}
     }
     function startAnother(){setDraft({productId:'',providerId,categoryId:'',subcategoryId:'',title:'',description:''});setLocked(false);setSaved(false);setMessage('');requestAnimationFrame(()=>title.current?.focus());}
@@ -71,7 +72,7 @@ function OwnedDraftForm({owner,providerId,url,onSaved}:{owner:string;providerId:
                 <label>Subcategory<select style={inputStyle} required value={draft.subcategoryId} onChange={e=>setDraft({...draft,subcategoryId:e.target.value})}><option value="">Select subcategory</option>{catalogue?.subcategories.filter(c=>c.category_id===draft.categoryId).map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
             </fieldset>
             <p ref={status} tabIndex={-1} role="status" aria-live="polite" className="my-3">{message}</p>
-            {!saved?<button className="rounded-lg border px-4 py-2" type="submit" disabled={saving||!restored||!catalogue}>{saving?'Saving…':locked?'Retry save':'Save private draft'}</button>:<button className="rounded-lg border px-4 py-2" type="button" onClick={startAnother}>Create another private draft</button>}
+            {!saved?<button className="rounded-lg border px-4 py-2" type="submit" disabled={saving||rejected||!restored||!catalogue}>{rejected?'Save rejected':saving?'Saving…':locked?'Retry save':'Save private draft'}</button>:<button className="rounded-lg border px-4 py-2" type="button" onClick={startAnother}>Create another private draft</button>}
         </form>
     </details>;
 }

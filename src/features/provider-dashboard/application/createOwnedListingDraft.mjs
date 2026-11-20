@@ -1,5 +1,6 @@
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const columns = 'id,provider_id,title,description,category_id,subcategory_id,status,verification_status,visibility,is_active';
+export class DraftRejected extends Error { constructor(code) { super('The database rejected this draft save. No new draft was saved by this attempt.'); this.name = 'DraftRejected'; this.code = code; } }
 /** Local candidate, NOT wired to UI. Retain productId across uncertain outcomes. Never upsert. */
 export async function createOwnedListingDraft(client, input, { enabled = false } = {}) {
     if (!enabled) throw new Error('Draft creation is awaiting Dev acceptance.');
@@ -18,9 +19,9 @@ export async function createOwnedListingDraft(client, input, { enabled = false }
     const { data: category, error: catError } = await client.from('categories').select('id').eq('id', categoryId).eq('is_active', true).maybeSingle();
     if (catError) throw catError;
     if (!subcategory || !category) throw new Error('Select an available category and matching subcategory.');
-    const payload = { id: productId, provider_id: providerId, category_id: categoryId, subcategory_id: subcategoryId, title: title.trim(), description: description.trim(), status: 'draft', verification_status: 'draft', visibility: 'private', is_active: false };
+    const payload = { id: productId, provider_id: providerId, category_id: categoryId, subcategory_id: subcategoryId, title: title.trim(), description: description.trim(), status: 'draft', visibility: 'private', is_active: false };
     function confirm(row) {
-        if (!row || Object.entries(payload).some(([k,v]) => row[k] !== v)) throw new Error('Draft save is not confirmed. Reload before retrying.');
+        if (!row || row.verification_status !== 'draft' || Object.entries(payload).some(([k,v]) => row[k] !== v)) throw new Error('Draft save is not confirmed. Reload before retrying.');
         return row;
     }
     const { data: existing, error: readError } = await client.from('products').select(columns).eq('id', productId).eq('provider_id', providerId).is('deleted_at', null).maybeSingle();
@@ -28,8 +29,13 @@ export async function createOwnedListingDraft(client, input, { enabled = false }
     if (existing) return confirm(existing);
     const current = await client.auth.getUser();
     if (current.error || current.data?.user?.id !== auth.user.id) throw new Error('Your account changed. Reload before saving.');
-    const { data, error } = await client.from('products').insert(payload).select(columns).single();
+    const { data, error } = await client.from('products').insert(payload, { defaultToNull: false }).select(columns).single();
     // Any uncertain write must retain the same productId; next attempt reads it first.
-    if (error) throw error;
+    if (error) {
+        // Explicit SQL rejection rolls this statement back. Duplicate IDs and network
+        // failures stay uncertain because an earlier attempt may have committed.
+        if (['42501', '23502', '23503', '23514', '22P02'].includes(error.code)) throw new DraftRejected(error.code);
+        throw error;
+    }
     return confirm(data);
 }
