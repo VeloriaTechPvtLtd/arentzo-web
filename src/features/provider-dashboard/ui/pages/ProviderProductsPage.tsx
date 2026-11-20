@@ -11,6 +11,7 @@ import { ProviderFilterModal, type FilterDefinition } from '../components/Provid
 import { ProductCard } from '../components/ProductCard';
 import { ProductDetailsDrawer } from '../components/ProductDetailsDrawer';
 import '../styles/ProviderProductsPage.css';
+import { PrivateDraftEditor } from '../components/PrivateDraftEditor';
 import { PrivateDraftForm } from '../components/PrivateDraftForm';
 import { useProviderProducts } from '../hooks/useProviderRecords';
 
@@ -133,6 +134,7 @@ export const ProviderProductsPage: React.FC = () => {
             </div>
 
             <PrivateDraftForm onSaved={retry} />
+            <PrivateDraftEditor onSaved={retry} />
             {/* Product Grid View */}
             {loading ? <p role="status">Loading provider listings…</p> : null}
             {error ? <div role="alert">We couldn’t load provider listings. <button onClick={retry}>Try again</button></div> : null}

@@ -8,7 +8,7 @@
     "test:cart-storage": "node --test tests/cart-storage.test.mjs",
     "test:additional-charge-disclosure": "node --test tests/additional-charge-disclosure.test.mjs",
     "test:request-timeout": "node --test tests/request-with-timeout.test.mjs",
-    "test:unit": "node --test tests/cart-storage.test.mjs tests/additional-charge-disclosure.test.mjs tests/request-with-timeout.test.mjs tests/active-subcategory-attributes.test.mjs tests/rental-page.test.mjs tests/rental-repository.test.mjs tests/cartRepository.test.mjs tests/provider-listings.test.mjs tests/checkout-preflight.test.mjs tests/checkout-recovery.test.mjs tests/contact-support-links.test.mjs tests/provider-listing-create.test.mjs tests/provider-listing-dev-flow.test.mjs tests/provider-listing-form-render.test.mjs tests/footer-navigation.test.mjs",
+    "test:unit": "node --test tests/cart-storage.test.mjs tests/additional-charge-disclosure.test.mjs tests/request-with-timeout.test.mjs tests/active-subcategory-attributes.test.mjs tests/rental-page.test.mjs tests/rental-repository.test.mjs tests/cartRepository.test.mjs tests/provider-listings.test.mjs tests/checkout-preflight.test.mjs tests/checkout-recovery.test.mjs tests/contact-support-links.test.mjs tests/provider-listing-create.test.mjs tests/provider-listing-dev-flow.test.mjs tests/provider-listing-form-render.test.mjs tests/footer-navigation.test.mjs tests/provider-listing-edit-private.test.mjs",
     "build": "next build",
     "build:dev": "STATIC_EXPORT=true next build",
     "build:stage": "next build",
@@ -21,7 +21,7 @@
     "test:responsive": "node --test tests/responsive-smoke.test.mjs",
     "test:active-attribute-capabilities": "node --test tests/active-subcategory-attributes.test.mjs",
     "test:hosting-routes": "node --test tests/hosting-compat.test.mjs",
-    "test:provider-private-draft": "node --test tests/provider-listing-create.test.mjs tests/provider-listing-dev-flow.test.mjs tests/provider-listing-form-render.test.mjs"
+    "test:provider-private-draft": "node --test tests/provider-listing-create.test.mjs tests/provider-listing-dev-flow.test.mjs tests/provider-listing-form-render.test.mjs tests/provider-listing-edit-private.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.11",
