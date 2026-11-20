@@ -110,18 +110,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     />
                 </button>
 
-                {/* Quick Add Overlay (Mobile Friendly) */}
-                {!isOutOfStock && quantity === 0 && (
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 w-[85%]">
-                        <button
-                            onClick={(e) => handleAction(e, () => onAddToCart?.(product.id))}
-                            className="w-full py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-lg text-xs font-bold shadow-lg flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
-                        >
-                            <Plus size={14} />
-                            ADD TO CART
-                        </button>
-                    </div>
-                )}
+
             </div>
 
             {/* Content Section */}
@@ -151,7 +140,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         )}
                     </div>
 
-                    {/* Quantity Selector / Add Button for Small Screens or Hover */}
+                    {/* Quantity selector / persistent add button */}
                     {quantity > 0 ? (
                         <div className="flex items-center gap-2 bg-[var(--muted)]/50 rounded-full p-1 border border-[var(--border)] shadow-inner">
                             <button
@@ -172,17 +161,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         </div>
                     ) : isOutOfStock ? (
                         <span className="text-[10px] font-bold text-[var(--destructive)] uppercase">Out of Stock</span>
-                    ) : (
-                        <div className="sm:hidden w-full">
+                    ) : onAddToCart ? (
+                        <div className="w-full sm:w-auto">
                             <button
-                                onClick={(e) => handleAction(e, () => onAddToCart?.(product.id))}
+                                type="button"
+                                onClick={(e) => handleAction(e, () => onAddToCart(product.id))}
                                 aria-label={t('mobileRental.addItem', { name: product.name })}
                                 className="w-full min-w-10 min-h-10 flex items-center justify-center gap-1 p-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-lg shadow-sm active:scale-95"
                             >
-                                <Plus size={16} aria-hidden="true" /><span className="text-xs font-semibold">Add</span>
+                                <Plus size={16} aria-hidden="true" /><span className="text-xs font-semibold">Add to cart</span>
                             </button>
                         </div>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </div>

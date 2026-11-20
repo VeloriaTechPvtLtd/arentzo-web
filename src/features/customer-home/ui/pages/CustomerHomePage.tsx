@@ -5,6 +5,7 @@ import { CategoryTabs } from '../components/CategoryTabs';
 import { ProductsGrid } from '../components/ProductsGrid';
 import { CustomerLayout } from '../layouts/CustomerLayout';
 import { useCart } from '@/shared/hooks/useCart';
+import { useDrawer } from '@/shared/hooks/useDrawer';
 import { useCatalogProducts } from '@/features/catalog/ui/hooks/useCatalogProducts';
 import { useCatalogCategories } from '@/features/catalog/ui/hooks/useCatalogCategories';
 import '../styles/CustomerHome.css';
@@ -14,13 +15,16 @@ export function CustomerHomePage() {
   const { products, loading, error, favoritesError, toggleFavorite } = useCatalogProducts();
   const categories = useCatalogCategories();
   const { items: cartItems, addToCart, updateQuantity } = useCart();
+  const { openCheckout } = useDrawer();
   const visibleProducts = useMemo(() => products
     .filter((product) => activeCategory === 'all' || product.category === activeCategory)
     .map((product) => ({ ...product, quantity: cartItems.find((item) => item.product.id === product.id)?.quantity || 0 })), [activeCategory, cartItems, products]);
 
   const addProductToCart = (productId: string) => {
     const product = visibleProducts.find((item) => item.id === productId);
-    if (product?.isAvailable) addToCart(product);
+    if (!product?.isAvailable) return;
+    addToCart(product);
+    openCheckout();
   };
   const changeQuantity = (productId: string, quantity: number) => updateQuantity(productId, quantity);
   const selectedName = categories.categories.find((category) => category.id === activeCategory)?.name;
