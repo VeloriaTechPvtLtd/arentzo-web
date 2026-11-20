@@ -1,11 +1,18 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/ui/context/useAuth';
 import type { Product } from '@/shared/types/product';
 import { CatalogService } from '../../application/services/CatalogService';
 import { SupabaseCatalogRepository } from '../../infrastructure/SupabaseCatalogRepository';
+import {
+  beginFavoritesLoad,
+  completeFavoriteRemoval,
+  completeFavoritesLoad,
+  failFavoriteMutation,
+  failFavoritesLoad,
+} from '../../../favorites/domain/favoriteCollectionState.mjs';
 
 const service = new CatalogService(new SupabaseCatalogRepository());
 
@@ -51,23 +58,57 @@ export function useCatalogProducts() {
 
 export function useFavoriteProducts() {
   const { user } = useAuth();
-  const [result, setResult] = useState<{ userId: string; items: Product[]; error: boolean }>({ userId: '', items: [], error: false });
+  const [attempt, setAttempt] = useState(0);
+  const [removalKeys, setRemovalKeys] = useState<Set<string>>(new Set());
+  const inFlight = useRef(new Set<string>());
+  const [result, setResult] = useState<{ userId: string; items: Product[]; loading: boolean; loadError: boolean; mutationError: boolean }>({ userId: '', items: [], loading: false, loadError: false, mutationError: false });
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setResult({ userId: '', items: [], loading: false, loadError: false, mutationError: false });
+      return;
+    }
     let active = true;
-    void service.listFavorites(user.id).then((products) => { if (active) setResult({ userId: user.id, items: products.map((product) => ({ ...product, isFavorite: true })), error: false }); })
-      .catch(() => { if (active) setResult({ userId: user.id, items: [], error: true }); });
+    setResult((current) => beginFavoritesLoad(current, user.id));
+    void service.listFavorites(user.id).then((products) => {
+      if (active) setResult(completeFavoritesLoad(user.id, products.map((product) => ({ ...product, isFavorite: true }))));
+    }).catch(() => {
+      if (active) setResult((current) => failFavoritesLoad(current, user.id));
+    });
     return () => { active = false; };
-  }, [user]);
+  }, [attempt, user]);
 
   const removeFavorite = useCallback(async (productId: string) => {
-    if (!user) return;
+    if (!user || result.userId !== user.id || result.loading || result.loadError || result.mutationError) return;
+    const key = `${user.id}:${productId}`;
+    if (inFlight.current.has(key)) return;
+    inFlight.current.add(key);
+    setRemovalKeys((current) => new Set(current).add(key));
+    setResult((current) => ({ ...current, mutationError: false }));
     try {
       await service.toggleFavorite(user.id, productId, true);
-      setResult((current) => ({ ...current, items: current.items.filter((item) => item.id !== productId) }));
-    } catch { setResult((current) => ({ ...current, error: true })); }
-  }, [user]);
+      setResult((current) => completeFavoriteRemoval(current, user.id, productId));
+    } catch {
+      setResult((current) => failFavoriteMutation(current, user.id));
+    } finally {
+      inFlight.current.delete(key);
+      setRemovalKeys((current) => { const next = new Set(current); next.delete(key); return next; });
+    }
+  }, [result.userId, result.loading, result.loadError, result.mutationError, user]);
   const ready = Boolean(user) && result.userId === user?.id;
-  return { products: ready ? result.items : [], loading: Boolean(user) && !ready, error: ready && result.error, removeFavorite };
+  const removalPrefix = user ? user.id + ":" : "";
+  const removingIds = new Set(user ? [...removalKeys].filter((key) => key.startsWith(removalPrefix)).map((key) => key.slice(removalPrefix.length)) : []);
+  const retry = useCallback(() => {
+    if (!user || [...inFlight.current].some((key) => key.startsWith(user.id + ":"))) return;
+    setAttempt((current) => current + 1);
+  }, [user]);
+  return {
+    products: ready ? result.items : [],
+    loading: Boolean(user) && (!ready || result.loading),
+    error: ready && result.loadError,
+    mutationError: ready && result.mutationError,
+    removingIds,
+    removeFavorite,
+    retry,
+  };
 }
