@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {readOwnedListings} from '../src/features/provider-dashboard/infrastructure/readOwnedListings.mjs';
+const uid='user-a',pid='provider-a';
+function fake({owner=true,rows=[],authError=false,queryError=false}={}){const calls=[];const client={auth:{getUser:async()=>({data:{user:authError?null:{id:uid}}})},from(table){const q={};for(const m of ['select','eq','is','order','range','maybeSingle'])q[m]=(...a)=>{calls.push([table,m,...a]);return q};q.then=(yes,no)=>Promise.resolve({data:table==='service_providers'?(owner?{id:pid}:null):rows,error:queryError?new Error('no'):null}).then(yes,no);return q}};return {client,calls};}
+test('owner proof and scoped product query are required',async()=>{const {client,calls}=fake({rows:[{id:'one'}]});assert.equal((await readOwnedListings(client,pid)).length,1);assert.ok(calls.some(x=>x[0]==='service_providers'&&x[1]==='eq'&&x[2]==='user_id'&&x[3]===uid));assert.ok(calls.some(x=>x[0]==='products'&&x[1]==='eq'&&x[2]==='provider_id'&&x[3]===pid));});
+test('publicly visible provider is not ownership',async()=>{const {client,calls}=fake({owner:false});await assert.rejects(readOwnedListings(client,pid),/own/);assert.equal(calls.some(c=>c[0]==='products'),false);});
+test('signed out fails before table read',async()=>{const {client,calls}=fake({authError:true});await assert.rejects(readOwnedListings(client,pid),/Sign in/);assert.equal(calls.length,0);});
+test('backend errors do not become empty results',async()=>{await assert.rejects(readOwnedListings(fake({queryError:true}).client,pid));});
+test('empty owned catalog is valid',async()=>{assert.deepEqual(await readOwnedListings(fake().client,pid),[]);});
+test('stalled reads have deadline',async()=>{await assert.rejects(readOwnedListings({auth:{getUser:()=>new Promise(()=>{})}},pid,5),/timed out/);});
+test('large results fail explicitly instead of hanging or truncating',async()=>{await assert.rejects(readOwnedListings(fake({rows:Array.from({length:100},(_,i)=>({id:String(i)}))}).client,pid),/limit/);});
+test('account switch after ownership blocks listing fetch',async()=>{const {client,calls}=fake();let n=0;client.auth.getUser=async()=>({data:{user:{id:++n===1?uid:'user-b'}}});await assert.rejects(readOwnedListings(client,pid),/account changed/);assert.equal(calls.some(c=>c[0]==='products'),false);});
+test('listing requests use stable secondary ordering',async()=>{const {client,calls}=fake();await readOwnedListings(client,pid);assert.deepEqual(calls.filter(c=>c[0]==='products'&&c[1]==='order').map(c=>c[2]),['created_at','id']);assert.ok(calls.some(c=>c[0]==='products'&&c[1]==='is'&&c[2]==='deleted_at'&&c[3]===null));});

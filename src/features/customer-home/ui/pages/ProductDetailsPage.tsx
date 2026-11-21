@@ -26,7 +26,7 @@ export const ProductDetailsPage: React.FC<{ id: string }> = ({ id }) => {
   return <div className="product-details-page">
     <BackHeader title="Product Details" />
     <main className="product-details-content"><div className="product-details-container"><div className="product-main-section">
-      <ProductGallery images={product.images?.length ? product.images : [product.image]} name={product.name} isImported={product.isImported} specifications={product.specifications} />
+      <ProductGallery key={product.id} images={product.images?.length ? product.images : [product.image]} name={product.name} isImported={product.isImported} specifications={product.specifications} />
       <ProductInfo product={product} quantity={quantity} isAvailable={Boolean(product.isAvailable)} onQuantityChange={handleQuantityChange} onAddToCart={handleAddToCart} onFavoriteToggle={() => void toggleFavorite(product.id)} />
     </div></div>
       {favoriteError ? <p role="alert" className="px-4 text-sm text-destructive">We couldn’t update saved listings.</p> : null}

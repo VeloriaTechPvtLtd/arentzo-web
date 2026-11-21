@@ -1,4 +1,9 @@
 export interface Product {
+    sourceStatus?: string;
+    verificationStatus?: string;
+    visibility?: string;
+    activeFlag?: boolean | null;
+    hasDailyRate?: boolean;
     id: string;
     name: string;
     category: string;

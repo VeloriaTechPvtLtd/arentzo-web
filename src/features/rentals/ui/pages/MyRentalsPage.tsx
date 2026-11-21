@@ -12,7 +12,7 @@ import '../styles/MyRentalsPage.css';
 export const MyRentalsPage: React.FC = () => {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<RentalStatus | 'all'>('all');
-    const { rentals, loading, error } = useCustomerRentals();
+    const { rentals, loading, error, hasMore, retry, loadMore } = useCustomerRentals();
 
     const filteredRentals = rentals.filter(rental => {
         return activeTab === 'all' || rental.status === activeTab;
@@ -45,8 +45,8 @@ export const MyRentalsPage: React.FC = () => {
 
             <main className="rentals-content">
                 {loading ? <p role="status">Loading your rentals…</p> : null}
-                {error ? <p role="alert">We couldn’t load your rentals. Refresh and try again.</p> : null}
-                {!loading && !error && filteredRentals.length > 0 ? (
+                {error ? <div role="alert">We couldn’t load your rentals. <button onClick={retry}>Try again</button></div> : null}
+                {filteredRentals.length > 0 ? (
                     <div className="rentals-grid">
                         {filteredRentals.map((rental) => (
                             <RentalCard
@@ -63,12 +63,13 @@ export const MyRentalsPage: React.FC = () => {
                             <Box size={40} />
                         </div>
                         <h3>No rentals found</h3>
-                        <p>You haven't made any rentals in this category yet.</p>
+                        <p>No matching rentals in the loaded history. Use Load more to check older rentals when available.</p>
                         <button className="browse-btn" onClick={() => router.push('/browse')}>
                             Browse Items
                         </button>
                     </div>
                 ) : null}
+                {hasMore ? <button className="browse-btn" disabled={loading} onClick={loadMore}>{loading ? 'Loading…' : 'Load more rentals'}</button> : null}
             </main>
         </div>
     );

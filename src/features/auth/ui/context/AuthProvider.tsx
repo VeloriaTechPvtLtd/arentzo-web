@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './AuthContextDefinition';
+import { keepRoleSelection, resolveActiveRole, type RoleSelection } from '../../application/services/activeRoleSelection';
 import { AuthService } from '../../application/services/AuthService';
 import { SupabaseAuthAdapter } from '../../infrastructure/adapters/SupabaseAuthAdapter';
 import type { Session, User, UserRole } from '../../domain/entities/User';
@@ -12,11 +13,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeRole, setActiveRole] = useState<UserRole>('customer');
+  const [roleSelection, setRoleSelection] = useState<RoleSelection|null>(null);
+  const activeRole = resolveActiveRole(user,roleSelection);
 
   const acceptSession = useCallback((nextSession: Session | null) => {
     setSession(nextSession);
     setUser(nextSession?.user ?? null);
+    setRoleSelection(previous=>keepRoleSelection(previous,nextSession?.user ?? null));
   }, []);
 
   useEffect(() => {
@@ -37,10 +40,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       unsubscribe();
     };
   }, [acceptSession]);
-
-  useEffect(() => {
-    setActiveRole(user?.role ?? 'customer');
-  }, [user]);
 
   const signIn = useCallback(async (email: string, password: string) => {
     setLoading(true);
@@ -127,8 +126,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [acceptSession]);
 
   const switchRole = useCallback((role: UserRole) => {
-    if (role === 'service_provider' && user?.role !== 'service_provider') return;
-    setActiveRole(role);
+    if (!user || (role === 'service_provider' && user.role !== 'service_provider')) return;
+    setRoleSelection({ownerId:user.id,role});
   }, [user]);
 
   const value = useMemo(() => ({

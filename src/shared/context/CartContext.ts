@@ -9,6 +9,14 @@ export interface CartContextType {
     clearCart: () => void;
     totalItems: number;
     totalPrice: number;
+    signedIn: boolean;
+    busy: boolean;
+    error: string;
+    advisory: string;
+    conflicts: { cartItemId: string; message: string }[];
+    refresh: () => void;
+    saveDates: (id: string, start: string, end: string, quantity: number) => void;
+    checkAvailability: () => void;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);

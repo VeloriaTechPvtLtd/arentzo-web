@@ -8,7 +8,10 @@ const fixtureId = 'qa-fixture-product-0001';
 const fixturePath = `/product/?id=${encodeURIComponent(fixtureId)}`;
 const evidenceDir = process.env.RESPONSIVE_ARTIFACT_DIR ?? '/tmp/arentzo-web-responsive-evidence';
 const viewports = [
+  { name: 'phone-small', width: 360, height: 800 },
   { name: 'phone', width: 390, height: 844 },
+  { name: 'phone-large', width: 430, height: 900 },
+  { name: 'compact-tablet', width: 500, height: 900 },
   { name: 'tablet', width: 768, height: 1024 },
   { name: 'desktop', width: 1440, height: 900 },
 ];
@@ -66,6 +69,7 @@ for (const viewport of viewports) {
       const subtitle = page.getByText('Cars, bikes, electronics, furniture — from verified providers near you.');
       assert.ok(await subtitle.isVisible());
       assert.ok(await textMeetsMinimum(subtitle, 14));
+      assert.ok(await page.getByRole('link', { name: 'Browse rentals', exact: true }).first().isVisible());
       assert.match(await page.locator('body').innerText(), /Join Waitlist/);
       await assertAuthNavigationIsReachable(page);
       await assertNoHorizontalOverflow(page, viewport);
@@ -95,6 +99,15 @@ for (const viewport of viewports) {
       assert.ok(await title.isVisible());
       assert.ok(await textMeetsMinimum(title, 20));
       await page.getByText('₹480.00', { exact: true }).waitFor();
+      await page.getByText('Photo not available', { exact: true }).waitFor();
+      if (viewport.width < 1024) {
+        const galleryBox = await page.locator('.main-image-container').boundingBox();
+        assert.ok(galleryBox && galleryBox.height <= 340, 'Single-column gallery must leave room for listing details');
+      }
+      const action = page.getByRole('button', { name: 'Add to cart', exact: true });
+      assert.ok(await action.isVisible());
+      const actionBox = await action.boundingBox();
+      assert.ok(actionBox && actionBox.x >= 0 && actionBox.x + actionBox.width <= viewport.width);
       await page.getByText('Late return rate', { exact: true }).waitFor();
       await page.getByText('₹50 per hour', { exact: true }).waitFor();
       await page.getByText('80 km per day', { exact: true }).waitFor();
@@ -265,10 +278,20 @@ async function assertNoHorizontalOverflow(page, viewport) {
 }
 
 async function assertAuthNavigationIsReachable(page) {
-  const menuButton = page.getByRole('button', { name: 'Open menu' });
-  if (await menuButton.isVisible()) await menuButton.click();
-  await page.getByRole('link', { name: 'Sign in' }).waitFor();
-  await page.getByRole('link', { name: 'Create account' }).waitFor();
+  const navigation = page.locator('.waitlist-nav');
+  // Sign-in remains directly reachable even when the compact menu is closed.
+  await navigation.locator('.waitlist-nav__signin').waitFor();
+  const menuButton = navigation.getByRole('button', { name: 'Open menu' });
+  if (await menuButton.isVisible()) {
+    await menuButton.click();
+    const menu = navigation.locator('#waitlist-mobile-menu');
+    await menu.getByRole('link', { name: 'Sign in', exact: true }).waitFor();
+    await menu.getByRole('link', { name: 'Create account', exact: true }).waitFor();
+    await navigation.getByRole('button', { name: 'Close menu' }).click();
+    await menu.waitFor({ state: 'hidden' });
+  } else {
+    await navigation.getByRole('link', { name: 'Create account', exact: true }).waitFor();
+  }
 }
 
 async function textMeetsMinimum(locator, minimumFontSize, minimumLineHeightRatio = 1.15) {
