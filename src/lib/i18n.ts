@@ -27,6 +27,14 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: {
+        mobileRental: {
+          browse: 'Browse rentals', how: 'How it works', photoMissing: 'Photo not available',
+          previousPhoto: 'Previous photo', nextPhoto: 'Next photo',
+          listingCount: '{{count}} listings', viewCart: 'View cart',
+          cartNote: 'Saved on this device · Booking is not available yet',
+          cartQuantity: 'Cart quantity', removeOne: 'Remove one from cart', addOne: 'Add one to cart',
+          addItem: 'Add {{name}} to cart',
+        },
         auth: authEn,
         nav: {
           categories: 'Categories',

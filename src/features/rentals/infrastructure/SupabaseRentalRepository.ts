@@ -1,3 +1,4 @@
+import { rentalPage } from '../domain/rentalPage.js';
 import type { Rental, RentalStatus } from '../domain/entities';
 import type { RentalRepository } from '../application/ports/RentalRepository';
 import { getSupabaseClient } from '@/shared/infrastructure/supabase/client';
@@ -36,11 +37,12 @@ function mapBooking(row: BookingRow): Rental {
 }
 
 export class SupabaseRentalRepository implements RentalRepository {
-  async getForCustomer(customerId: string): Promise<Rental[]> {
+  async getForCustomer(customerId: string, offset = 0) {
+    if (!Number.isSafeInteger(offset) || offset < 0) throw new Error('Invalid rental offset');
     const { data, error } = await getSupabaseClient().from('bookings').select(columns)
-      .eq('renter_id', customerId).order('created_at', { ascending: false }).limit(100);
+      .eq('renter_id', customerId).order('created_at', { ascending: false }).order('id', { ascending: false }).range(offset, offset + 20);
     if (error) throw error;
-    return ((data || []) as BookingRow[]).map(mapBooking);
+    return rentalPage(((data || []) as BookingRow[]).map(mapBooking), offset);
   }
 
   async getCustomerRental(customerId: string, rentalId: string): Promise<Rental | null> {

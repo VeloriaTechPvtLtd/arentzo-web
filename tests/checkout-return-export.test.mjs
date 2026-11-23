@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+test('static export has a neutral checkout return GET page',()=>{const html=fs.readFileSync('out/checkout/return/index.html','utf8');assert.match(html,/Check your booking status/);assert.match(html,/does not confirm a booking/);assert.ok(!html.includes('Payment successful'));const cfg=JSON.parse(fs.readFileSync('firebase.json','utf8'));assert.equal(cfg.hosting.public,'out');assert.ok(cfg.hosting.rewrites.every(r=>!r.function&&!r.run));});

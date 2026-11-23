@@ -170,3 +170,28 @@ test('trailing-slash protected routes redirect signed-out visitors and marketing
     assert.deepEqual(errors, [], 'exported pages must hydrate without runtime errors');
   } finally { await page.close(); }
 });
+
+for (const viewport of viewports) {
+  test(`${viewport.name}: checkout return remains neutral across query, reload and sign-in`, async () => {
+    const page = await newFixturePage(viewport);
+    try {
+      await page.goto(`${baseURL}/checkout/return/?status=success&txnid=untrusted&next=https%3A%2F%2Fevil.example`, { waitUntil: 'networkidle' });
+      await page.getByRole('heading', { name: 'Check your booking status' }).waitFor();
+      const signIn = page.getByRole('link', { name: 'Sign in to check status' });
+      await signIn.waitFor();
+      const signInUrl = new URL(await signIn.getAttribute('href'), baseURL);
+      assert.equal(signInUrl.origin, new URL(baseURL).origin);
+      assert.match(signInUrl.pathname, /^\/login\/?$/);
+      assert.deepEqual([...signInUrl.searchParams.entries()], [['next', '/checkout/return/']]);
+      assert.equal(signInUrl.hash, '');
+      assert.equal(await page.getByText('Payment successful', { exact: true }).count(), 0);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.getByRole('heading', { name: 'Check your booking status' }).waitFor();
+      await page.screenshot({ path: `${evidenceDir}/checkout-return-${viewport.name}.png`, fullPage: true });
+      await signIn.click();
+      await page.getByRole('heading', { name: 'Welcome back' }).waitFor();
+      assert.equal(new URL(page.url()).searchParams.get('next'), '/checkout/return/');
+    } finally { await page.close(); }
+  });
+}

@@ -10,7 +10,7 @@ import '../styles/FavoritesPage.css';
 
 export const FavoritesPage: React.FC = () => {
     const router = useRouter();
-    const { products: favorites, loading, error, removeFavorite } = useFavoriteProducts();
+    const { products: favorites, loading, error, mutationError, removingIds, removeFavorite, retry } = useFavoriteProducts();
     const { addToCart } = useCart();
 
     return (
@@ -19,19 +19,22 @@ export const FavoritesPage: React.FC = () => {
                 <header className="favorites-header">
                     <h1 className="favorites-title">My Favorites</h1>
                     <p className="favorites-count">
-                        {favorites.length} {favorites.length === 1 ? 'item' : 'items'} saved
+                        {loading && favorites.length === 0
+                            ? 'Loading saved listings…'
+                            : error && favorites.length === 0 ? 'Saved listings unavailable' : `${favorites.length} ${favorites.length === 1 ? 'item' : 'items'} saved`}
                     </p>
                 </header>
 
-                {loading ? <p role="status">Loading your saved listings…</p> : null}
-                {error ? <p role="alert">We couldn’t load your saved listings. Refresh and try again.</p> : null}
-                {!loading && !error && favorites.length > 0 ? (
-                    <div className="favorites-grid">
+                {loading && favorites.length > 0 ? <p role="status" className="favorites-notice">Refreshing your saved listings…</p> : null}
+                {error ? <div className="favorites-notice favorites-notice--error" role="alert"><span>We couldn’t load your saved listings.</span><button type="button" onClick={retry}>Try again</button></div> : null}
+                {mutationError ? <div className="favorites-notice favorites-notice--error" role="alert"><span>The change was not confirmed. Reload your saved listings before trying again.</span><button type="button" onClick={retry} disabled={removingIds.size > 0}>Reload</button></div> : null}
+                {favorites.length > 0 ? (
+                    <div className="favorites-grid" aria-busy={removingIds.size > 0 || undefined}>
                         {favorites.map((product) => (
                             <ProductCard
                                 key={product.id}
                                 product={product}
-                                onFavoriteToggle={removeFavorite}
+                                onFavoriteToggle={(id) => { if (!loading && !error && !mutationError && !removingIds.has(id)) void removeFavorite(id); }}
                                 onAddToCart={(id) => { const product = favorites.find((item) => item.id === id); if (product) addToCart(product); }}
                             />
                         ))}
@@ -53,7 +56,7 @@ export const FavoritesPage: React.FC = () => {
                     </div>
                 ) : null}
 
-                {!loading && !error && favorites.length > 0 && (
+                {!error && favorites.length > 0 && (
                     <div className="mt-12 p-6 rounded-2xl bg-secondary/30 border border-border flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">

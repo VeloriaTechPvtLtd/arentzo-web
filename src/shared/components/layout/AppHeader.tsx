@@ -16,8 +16,8 @@ export const AppHeader: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
-  const activeRole = user?.role;
+  const { user, activeRole: selectedRole } = useAuth();
+  const activeRole = user ? selectedRole : undefined;
   const {
     openProfile,
     openMessages,

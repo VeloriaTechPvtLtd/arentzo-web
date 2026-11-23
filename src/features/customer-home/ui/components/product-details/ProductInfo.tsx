@@ -1,4 +1,6 @@
-import { Minus, Plus, Share2, Heart, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useDrawer } from '@/shared/hooks/useDrawer';
+import { Minus, Plus, Heart, Star } from 'lucide-react';
 import { ProductSpecs } from './ProductSpecs';
 import { SellerProfile } from './SellerProfile';
 import { RentalTerms } from './RentalTerms';
@@ -16,6 +18,8 @@ interface ProductInfoProps {
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQuantityChange, onAddToCart, onFavoriteToggle, isAvailable }) => {
 
+    const { t } = useTranslation();
+    const { openCheckout } = useDrawer();
     return (
         <div className="product-info-column">
             <div className="product-header">
@@ -36,9 +40,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
                     <h1 className="product-title">{product.name}</h1>
                 </div>
                 <div className="product-actions-top">
-                    <button className="action-btn" aria-label="Share">
-                        <Share2 size={20} />
-                    </button>
                     <button className="action-btn" aria-label={product.isFavorite ? 'Remove from favorites' : 'Add to favorites'} onClick={onFavoriteToggle}>
                         <Heart size={20} fill={product.isFavorite ? 'var(--home-primary)' : 'none'} color={product.isFavorite ? 'var(--home-primary)' : 'currentColor'} />
                     </button>
@@ -46,10 +47,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
             </div>
 
             {product.overview || product.specifications?.length ? <ProductSpecs overview={product.overview || ''} specifications={product.specifications || []} /> : null}
-
-            <button className="product-detail-add-button" onClick={onAddToCart} disabled={!isAvailable}>
-                {isAvailable ? 'Add to cart' : 'Unavailable'}
-            </button>
 
             {product.seller && <SellerProfile seller={product.seller} />}
 
@@ -72,7 +69,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
 
             {product.reviews && <CustomerReviews reviews={product.reviews} />}
 
-            {/* Sticky Bottom Actions */}
+            {/* The cart is a local shortlist, not a confirmed booking. */}
             <div className="purchase-actions-container">
                 <div className="purchase-actions-content">
                     <div className="price-info">
@@ -83,17 +80,15 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product, quantity, onQ
                         </div>
                     </div>
                     <div className="action-buttons">
-                        <div className="quantity-stepper-alt">
-                            <button className="qty-btn" onClick={() => onQuantityChange(Math.max(0, quantity - 1))}>
-                                <Minus size={18} />
-                            </button>
-                            <span className="qty-val">{quantity || 1}</span>
-                            <button className="qty-btn" onClick={() => onQuantityChange(quantity + 1)}>
-                                <Plus size={18} />
-                            </button>
-                        </div>
+                        {quantity > 0 ? <div className="quantity-stepper-alt" aria-label={t('mobileRental.cartQuantity')}>
+                            <button className="qty-btn" aria-label={t('mobileRental.removeOne')} onClick={() => onQuantityChange(Math.max(0, quantity - 1))}><Minus size={18} /></button>
+                            <span className="qty-val" aria-live="polite">{quantity}</span>
+                            <button className="qty-btn" aria-label={t('mobileRental.addOne')} disabled={!isAvailable} onClick={() => onQuantityChange(quantity + 1)}><Plus size={18} /></button>
+                        </div> : <button className="product-detail-add-button" onClick={onAddToCart} disabled={!isAvailable}>{isAvailable ? 'Add to cart' : 'Unavailable'}</button>}
+                        {quantity > 0 && <button className="product-view-cart" onClick={openCheckout}>{t('mobileRental.viewCart')}</button>}
                     </div>
                 </div>
+                <p className="product-cart-disclaimer">{t('mobileRental.cartNote')}</p>
             </div>
         </div>
     );
